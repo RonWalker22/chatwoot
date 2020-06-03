@@ -3,6 +3,7 @@
     <div
       v-if="!isCards && !isOptions && !isForm && !isArticle"
       class="chat-bubble agent"
+      :style="{ borderColor: widgetColor }"
     >
       <span v-html="formatMessage(message)"></span>
       <email-input
@@ -51,6 +52,7 @@ import ChatForm from 'shared/components/ChatForm';
 import ChatOptions from 'shared/components/ChatOptions';
 import ChatArticle from './template/Article';
 import EmailInput from './template/EmailInput';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'AgentMessageBubble',
@@ -91,6 +93,9 @@ export default {
     isArticle() {
       return this.contentType === 'article';
     },
+    ...mapGetters({
+      widgetColor: 'appConfig/getWidgetColor',
+    }),
   },
   methods: {
     onResponse(messageResponse) {
@@ -123,7 +128,6 @@ export default {
   &.agent {
     background: $color-white;
     border-bottom-left-radius: $space-smaller;
-    color: $color-body;
 
     .link {
       word-break: break-word;

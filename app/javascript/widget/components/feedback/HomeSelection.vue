@@ -3,7 +3,7 @@
     <div class="hero-body">
       <div class="container has-text-centered">
         <button
-          class="button is-black feedback is-outlined is-large is-rounded"
+          class="button is-danger feedback is-outlined is-large is-rounded"
           @click="$emit('decide', 'feedback')"
         >
           Feedback

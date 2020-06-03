@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="chat-bubble user"
-    :style="{ background: widgetColor }"
-    v-html="formatMessage(message)"
-  ></div>
+  <div class="chat-bubble user" v-html="formatMessage(message)" />
 </template>
 
 <script>
@@ -39,9 +35,10 @@ export default {
 
 .chat-bubble {
   @include light-shadow;
-  background: $color-woot;
+  background: $color-white;
+  border: solid 2px black;
   border-radius: $space-two;
-  color: $color-white;
+  color: $color-body;
   display: inline-block;
   font-size: $font-size-default;
   line-height: 1.5;
@@ -55,10 +52,6 @@ export default {
 
   &.user {
     border-bottom-right-radius: $space-smaller;
-
-    > a {
-      color: $color-white;
-    }
   }
 }
 </style>
