@@ -5,15 +5,17 @@
   <div v-else-if="homeChoice === 'chat'" class="home">
     <div class="header-wrap">
       <ChatHeaderExpanded
-        v-if="isHeaderExpanded && !hideWelcomeHeader"
+        v-if="true"
         :intro-heading="introHeading"
         :intro-body="introBody"
         :avatar-url="channelConfig.avatarUrl"
+        @decide="choose('feedback')"
       />
       <ChatHeader
         v-else
         :title="channelConfig.websiteName"
         :avatar-url="channelConfig.avatarUrl"
+        @decide="choose('feedback')"
       />
     </div>
     <AvailableAgents v-if="showAvailableAgents" :agents="availableAgents" />
@@ -26,7 +28,7 @@
     </div>
   </div>
   <div v-else class="feedback-home">
-    <feedbackHome />
+    <FeedbackHome @decide="choose('chat')" />
   </div>
 </template>
 
@@ -41,7 +43,7 @@ import ConversationWrap from 'widget/components/ConversationWrap.vue';
 import AvailableAgents from 'widget/components/AvailableAgents.vue';
 import configMixin from '../mixins/configMixin';
 import HomeSelection from 'widget/components/feedback/HomeSelection.vue';
-import feedbackHome from 'widget/components/feedback/feedbackHome.vue';
+import FeedbackHome from 'widget/components/feedback/FeedbackHome.vue';
 
 export default {
   name: 'Home',
@@ -53,14 +55,14 @@ export default {
     Branding,
     AvailableAgents,
     HomeSelection,
-    feedbackHome,
+    FeedbackHome,
   },
+  mixins: [configMixin],
   data() {
     return {
       homeChoice: undefined,
     };
   },
-  mixins: [configMixin],
   computed: {
     ...mapGetters({
       groupedMessages: 'conversation/getGroupedConversation',

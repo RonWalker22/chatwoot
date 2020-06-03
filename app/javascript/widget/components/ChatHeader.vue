@@ -5,6 +5,9 @@
       <h2 class="title" v-html="title"></h2>
     </div>
     <span class="close-button" @click="closeWindow"></span>
+    <button class="button" @click="$emit('decide')">
+      Feedback
+    </button>
   </header>
 </template>
 
