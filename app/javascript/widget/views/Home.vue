@@ -1,5 +1,8 @@
 <template>
-  <div class="home">
+  <div v-if="homeChoice === undefined" class="home-picker">
+    <HomeSelection @decide="choose($event)" />
+  </div>
+  <div v-else-if="homeChoice === 'chat'" class="home">
     <div class="header-wrap">
       <ChatHeaderExpanded
         v-if="isHeaderExpanded && !hideWelcomeHeader"
@@ -22,6 +25,9 @@
       <branding></branding>
     </div>
   </div>
+  <div v-else class="feedback-home">
+    <feedbackHome />
+  </div>
 </template>
 
 <script>
@@ -34,6 +40,8 @@ import ChatHeader from 'widget/components/ChatHeader.vue';
 import ConversationWrap from 'widget/components/ConversationWrap.vue';
 import AvailableAgents from 'widget/components/AvailableAgents.vue';
 import configMixin from '../mixins/configMixin';
+import HomeSelection from 'widget/components/feedback/HomeSelection.vue';
+import feedbackHome from 'widget/components/feedback/feedbackHome.vue';
 
 export default {
   name: 'Home',
@@ -44,6 +52,13 @@ export default {
     ChatHeader,
     Branding,
     AvailableAgents,
+    HomeSelection,
+    feedbackHome,
+  },
+  data() {
+    return {
+      homeChoice: undefined,
+    };
   },
   mixins: [configMixin],
   computed: {
@@ -80,6 +95,11 @@ export default {
     },
     hideWelcomeHeader() {
       return !(this.introHeading || this.introBody);
+    },
+  },
+  methods: {
+    choose(choice) {
+      this.homeChoice = choice;
     },
   },
 };
