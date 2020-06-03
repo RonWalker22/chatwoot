@@ -5,7 +5,7 @@
   <div v-else-if="homeChoice === 'chat'" class="home">
     <div class="header-wrap">
       <ChatHeaderExpanded
-        v-if="true"
+        v-if="isHeaderExpanded && !hideWelcomeHeader"
         :intro-heading="introHeading"
         :intro-body="introBody"
         :avatar-url="channelConfig.avatarUrl"
