@@ -1,31 +1,36 @@
+@function calculate-rem($size) {
+  $rem-size: $size * (10 / 16);
+  @return $rem-size;
+}
+
 // Font sizes
-$font-size-nano: 0.8rem;
-$font-size-micro: 0.8rem;
-$font-size-mini: 1rem;
-$font-size-small: 1.2rem;
-$font-size-default: 1.4rem;
-$font-size-medium: 1.6rem;
-$font-size-large: 2rem;
-$font-size-big: 2.4rem;
-$font-size-bigger: 3.2rem;
-$font-size-mega: 4rem;
-$font-size-giga: 5.6rem;
+$font-size-nano: calculate-rem(0.8rem);
+$font-size-micro: calculate-rem(0.8rem);
+$font-size-mini: calculate-rem(1rem);
+$font-size-small: calculate-rem(1.2rem);
+$font-size-default: calculate-rem(1.4rem);
+$font-size-medium: calculate-rem(1.6rem);
+$font-size-large: calculate-rem(2rem);
+$font-size-big: calculate-rem(2.4rem);
+$font-size-bigger: calculate-rem(3.2rem);
+$font-size-mega: calculate-rem(4rem);
+$font-size-giga: calculate-rem(5.6rem);
 
 // spaces
 $zero: 0;
-$space-micro: 0.2rem;
-$space-smaller: 0.4rem;
-$space-small: 0.8rem;
-$space-one: 1rem;
-$space-slab: 1.2rem;
-$space-normal: 1.6rem;
-$space-two: 2rem;
-$space-medium: 2.4rem;
-$space-large: 3.2rem;
-$space-larger: 4.8rem;
-$space-big: 6.4rem;
-$space-jumbo: 8rem;
-$space-mega: 10rem;
+$space-micro: calculate-rem(0.2rem);
+$space-smaller: calculate-rem(0.4rem);
+$space-small: calculate-rem(0.8rem);
+$space-one: calculate-rem(1rem);
+$space-slab: calculate-rem(1.2rem);
+$space-normal: calculate-rem(1.6rem);
+$space-two: calculate-rem(2rem);
+$space-medium: calculate-rem(2.4rem);
+$space-large: calculate-rem(3.2rem);
+$space-larger: calculate-rem(4.8rem);
+$space-big: calculate-rem(6.4rem);
+$space-jumbo: calculate-rem(8rem);
+$space-mega: calculate-rem(10rem);
 
 // font-weight
 $font-weight-feather: 100;
@@ -36,12 +41,12 @@ $font-weight-bold: 600;
 $font-weight-black: 700;
 
 //Navbar
-$nav-bar-width: 23rem;
-$header-height: 5.6rem;
+$nav-bar-width: calculate-rem(23rem);
+$header-height: calculate-rem(5.6rem);
 
 // Woot Logo
-$woot-logo-width: 20rem;
-$woot-logo-height: 8rem;
+$woot-logo-width: calculate-rem(20rem);
+$woot-logo-height: calculate-rem(8rem);
 $woot-logo-padding: $space-large $space-large $space-large $space-large;
 
 // Colors
@@ -62,22 +67,22 @@ $color-error: #ff382d;
 
 
 // Thumbnail
-$thumbnail-radius: 4rem;
+$thumbnail-radius: calculate-rem(4rem);
 
 // chat-header
-$conv-header-height: 4rem;
+$conv-header-height: calculate-rem(4rem);
 
 // login
 
 // Inbox List
 
-$inbox-thumb-size: 4.8rem;
+$inbox-thumb-size: calculate-rem(4.8rem);
 
 
 // Spinner
 $spinkit-spinner-color: $color-white !default;
-$spinkit-spinner-margin: 0 0 0 1.6rem !default;
-$spinkit-size: 1.6rem !default;
+$spinkit-spinner-margin: 0 0 0 calculate-rem(1.6rem) !default;
+$spinkit-size: calculate-rem(1.6rem) !default;
 
 // Snackbar default
 $woot-snackbar-bg: #323232;
@@ -89,7 +94,7 @@ $swift-ease-out: all $swift-ease-out-duration $swift-ease-out-timing-function !d
 
 $border-radius: 3px;
 $line-height: 1;
-$footer-height: 11.2rem;
+$footer-height: calculate-rem(11.2rem);
 $header-expanded-height: $space-medium * 10;
 
 $font-family: 'Inter',
@@ -104,8 +109,8 @@ sans-serif;
 $ionicons-font-path: '~ionicons/fonts';
 
 $spinkit-spinner-color: $color-white !default;
-$spinkit-spinner-margin: 0 0 0 1.6rem !default;
-$spinkit-size: 1.6rem !default;
+$spinkit-spinner-margin: 0 0 0 calculate-rem(1.6rem) !default;
+$spinkit-size: calculate-rem(1.6rem) !default;
 
 // Break points
 $break-point-medium: 667px;
