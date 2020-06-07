@@ -4,10 +4,14 @@
       <img v-if="avatarUrl" :src="avatarUrl" alt="avatar" />
       <h2 class="title" v-html="title"></h2>
     </div>
-    <span class="close-button" @click="closeWindow"></span>
-    <button class="button" @click="$emit('decide')">
+    <button
+      class="button feedback"
+      :style="{ backgroundColor: widgetColor }"
+      @click="$emit('decide')"
+    >
       Feedback
     </button>
+    <span class="close-button" @click="closeWindow"></span>
   </header>
 </template>
 
@@ -80,5 +84,9 @@ export default {
   .close-button {
     display: none;
   }
+}
+
+.feedback {
+  border: none;
 }
 </style>
