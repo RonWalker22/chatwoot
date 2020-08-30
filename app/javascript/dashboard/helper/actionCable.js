@@ -17,6 +17,7 @@ class ActionCableConnector extends BaseActionCableConnector {
       'conversation.typing_on': this.onTypingOn,
       'conversation.typing_off': this.onTypingOff,
       'conversation.contact_changed': this.onConversationContactChange,
+      'presence.update': this.onPresenceUpdate,
     };
   }
 
@@ -26,6 +27,12 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onMessageUpdated = data => {
     this.app.$store.dispatch('updateMessage', data);
+  };
+
+  onPresenceUpdate = data => {
+    this.app.$store.dispatch('contacts/updatePresence', data.contacts);
+    this.app.$store.dispatch('agents/updatePresence', data.users);
+    this.app.$store.dispatch('setCurrentUserAvailabilityStatus', data.users);
   };
 
   onConversationContactChange = payload => {
@@ -45,10 +52,12 @@ class ActionCableConnector extends BaseActionCableConnector {
     if (id) {
       this.app.$store.dispatch('updateAssignee', { id, assignee });
     }
+    this.fetchConversationStats();
   };
 
   onConversationCreated = data => {
     this.app.$store.dispatch('addConversation', data);
+    this.fetchConversationStats();
   };
 
   onLogout = () => AuthAPI.logout();
@@ -61,6 +70,7 @@ class ActionCableConnector extends BaseActionCableConnector {
 
   onStatusChange = data => {
     this.app.$store.dispatch('updateConversation', data);
+    this.fetchConversationStats();
   };
 
   onTypingOn = ({ conversation, user }) => {
@@ -99,6 +109,10 @@ class ActionCableConnector extends BaseActionCableConnector {
     this.CancelTyping[conversationId] = setTimeout(() => {
       this.onTypingOff({ conversation, user });
     }, 30000);
+  };
+
+  fetchConversationStats = () => {
+    bus.$emit('fetch_conversation_stats');
   };
 }
 

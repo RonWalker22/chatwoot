@@ -1,4 +1,7 @@
 class Api::V1::Widget::BaseController < ApplicationController
+  before_action :set_web_widget
+  before_action :set_contact
+
   private
 
   def conversation
@@ -26,5 +29,15 @@ class Api::V1::Widget::BaseController < ApplicationController
       source_id: auth_token_params[:source_id]
     )
     @contact = @contact_inbox.contact
+  end
+
+  def browser_params
+    {
+      browser_name: browser.name,
+      browser_version: browser.full_version,
+      device_name: browser.device.name,
+      platform_name: browser.platform.name,
+      platform_version: browser.platform.version
+    }
   end
 end

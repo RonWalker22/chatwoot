@@ -1,0 +1,49 @@
+{
+  "REPORT": {
+    "HEADER": "Отчёты",
+    "LOADING_CHART": "Загрузка данных графика...",
+    "NO_ENOUGH_DATA": "Недостаточно данных для создания отчета, пожалуйста, повторите попытку позже.",
+    "METRICS": [
+      {
+        "NAME": "Диалоги",
+        "KEY": "conversations_count",
+        "DESC": "( Всего )"
+      },
+      {
+        "NAME": "Входящие сообщения",
+        "KEY": "incoming_messages_count",
+        "DESC": "( Всего )"
+      },
+      {
+        "NAME": "Исходящие сообщения",
+        "KEY": "outgoing_messages_count",
+        "DESC": "( Всего )"
+      },
+      {
+        "NAME": "Время первого ответа",
+        "KEY": "avg_first_response_time",
+        "DESC": "(Среднее)"
+      },
+      {
+        "NAME": "Время Завершения",
+        "KEY": "avg_resolution_time",
+        "DESC": "(Среднее)"
+      },
+      {
+        "NAME": "Количество завершенных",
+        "KEY": "resolutions_count",
+        "DESC": "( Всего )"
+      }
+    ],
+    "DATE_RANGE": [
+      {
+        "id": 0,
+        "name": "Последние 7 дней"
+      },
+      {
+        "id": 1,
+        "name": "Последние 30 дней"
+      }
+    ]
+  }
+}

@@ -67,6 +67,7 @@ BlinkMacSystemFont,
 "Segoe UI",
 Roboto,
 "Helvetica Neue",
+Tahoma,
 Arial,
 sans-serif;
 $body-antialiased: true;
@@ -346,7 +347,7 @@ $helptext-color: $header-color;
 $helptext-font-size: $font-size-small;
 $helptext-font-style: italic;
 $input-prefix-color: $header-color;
-$input-prefix-background: $light-gray;
+$input-prefix-background: var(--b-100);
 $input-prefix-border: 1px solid $color-border;
 $input-prefix-padding: 1rem;
 $form-label-color: $header-color;
@@ -382,7 +383,7 @@ $label-color: $primary-color;
 $label-color-alt: $black;
 $label-palette: $foundation-palette;
 $label-font-size: $font-size-micro;
-$label-padding: $space-micro $space-smaller;
+$label-padding: $space-smaller $space-small;
 $label-radius: $space-micro;
 
 // 21. Media Object

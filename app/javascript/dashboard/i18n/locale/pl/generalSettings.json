@@ -1,0 +1,42 @@
+{
+  "GENERAL_SETTINGS": {
+    "TITLE": "Ustawienia konta",
+    "SUBMIT": "Aktualizuj ustawienia",
+    "BACK": "Back",
+    "UPDATE": {
+      "ERROR": "Nie można zaktualizować ustawień, spróbuj ponownie!",
+      "SUCCESS": "Pomyślnie zaktualizowano ustawienia konta"
+    },
+    "FORM": {
+      "ERROR": "Proszę naprawić błędy formularza",
+      "GENERAL_SECTION": {
+        "TITLE": "Ustawienia ogólne",
+        "NOTE": ""
+      },
+      "NAME": {
+        "LABEL": "Nazwa konta",
+        "PLACEHOLDER": "Nazwa konta",
+        "ERROR": "Wprowadź prawidłową nazwę konta"
+      },
+      "LANGUAGE": {
+        "LABEL": "Język witryny (beta)",
+        "PLACEHOLDER": "Nazwa konta",
+        "ERROR": ""
+      },
+      "DOMAIN": {
+        "LABEL": "Incoming Email Domain",
+        "PLACEHOLDER": "The domain where you will receive the emails",
+        "ERROR": ""
+      },
+      "SUPPORT_EMAIL": {
+        "LABEL": "Support Email",
+        "PLACEHOLDER": "Your company's support email",
+        "ERROR": ""
+      },
+      "FEATURES": {
+        "INBOUND_EMAIL_ENABLED": "Conversation continuity with emails is enabled for your account.",
+        "CUSTOM_EMAIL_DOMAIN_ENABLED": "You can receive emails in your custom domain now."
+      }
+    }
+  }
+}

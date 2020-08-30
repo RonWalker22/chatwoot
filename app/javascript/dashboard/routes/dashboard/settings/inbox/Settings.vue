@@ -3,9 +3,18 @@
     <woot-modal-header
       :header-image="inbox.avatarUrl"
       :header-title="inboxName"
-    />
+    >
+      <woot-tabs :index="selectedTabIndex" @change="onTabChange">
+        <woot-tabs-item
+          v-for="tab in tabs"
+          :key="tab.key"
+          :name="tab.name"
+          :show-badge="false"
+        />
+      </woot-tabs>
+    </woot-modal-header>
 
-    <div class="settings--content">
+    <div v-if="selectedTabKey === 'inbox_settings'" class="settings--content">
       <settings-section
         :title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_UPDATE_TITLE')"
         :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_UPDATE_SUB_TEXT')"
@@ -16,27 +25,27 @@
           @change="handleImageUpload"
         />
         <woot-input
-          v-if="isAWidgetInbox"
+          v-if="isAWebWidgetInbox"
           v-model.trim="selectedInboxName"
-          class="medium-12 columns"
+          class="medium-9 columns"
           :label="$t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_NAME.LABEL')"
           :placeholder="
             $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_NAME.PLACEHOLDER')
           "
         />
         <woot-input
-          v-if="isAWidgetInbox"
+          v-if="isAWebWidgetInbox"
           v-model.trim="channelWebsiteUrl"
-          class="medium-12 columns"
+          class="medium-9 columns"
           :label="$t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.LABEL')"
           :placeholder="
             $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_DOMAIN.PLACEHOLDER')
           "
         />
         <woot-input
-          v-if="isAWidgetInbox"
+          v-if="isAWebWidgetInbox"
           v-model.trim="channelWelcomeTitle"
-          class="medium-12 columns"
+          class="medium-9 columns"
           :label="
             $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TITLE.LABEL')
           "
@@ -46,10 +55,11 @@
             )
           "
         />
+
         <woot-input
-          v-if="isAWidgetInbox"
+          v-if="isAWebWidgetInbox"
           v-model.trim="channelWelcomeTagline"
-          class="medium-12 columns"
+          class="medium-9 columns"
           :label="
             $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_WELCOME_TAGLINE.LABEL')
           "
@@ -60,32 +70,59 @@
           "
         />
 
-        <woot-input
-          v-if="isAWidgetInbox"
-          v-model.trim="channelAgentAwayMessage"
-          class="medium-12 columns"
-          :label="
-            $t(
-              'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_AGENT_AWAY_MESSAGE.LABEL'
-            )
-          "
-          :placeholder="
-            $t(
-              'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_AGENT_AWAY_MESSAGE.PLACEHOLDER'
-            )
-          "
-        />
-        <label v-if="isAWidgetInbox" class="medium-12 columns">
+        <label v-if="isAWebWidgetInbox" class="medium-9 columns">
           {{ $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.WIDGET_COLOR.LABEL') }}
           <woot-color-picker v-model="inbox.widget_color" />
         </label>
-        <label class="medium-12 columns">
+
+        <label class="medium-9 columns">
+          {{
+            $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_TOGGLE.LABEL')
+          }}
+          <select v-model="greetingEnabled">
+            <option :value="true">
+              {{
+                $t(
+                  'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_TOGGLE.ENABLED'
+                )
+              }}
+            </option>
+            <option :value="false">
+              {{
+                $t(
+                  'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_TOGGLE.DISABLED'
+                )
+              }}
+            </option>
+          </select>
+          <p class="help-text">
+            {{
+              $t(
+                'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_TOGGLE.HELP_TEXT'
+              )
+            }}
+          </p>
+        </label>
+        <woot-input
+          v-if="greetingEnabled"
+          v-model.trim="greetingMessage"
+          class="medium-9 columns"
+          :label="
+            $t('INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_MESSAGE.LABEL')
+          "
+          :placeholder="
+            $t(
+              'INBOX_MGMT.ADD.WEBSITE_CHANNEL.CHANNEL_GREETING_MESSAGE.PLACEHOLDER'
+            )
+          "
+        />
+        <label class="medium-9 columns">
           {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT') }}
           <select v-model="autoAssignment">
-            <option value="true">
+            <option :value="true">
               {{ $t('INBOX_MGMT.EDIT.AUTO_ASSIGNMENT.ENABLED') }}
             </option>
-            <option value="false">
+            <option :value="false">
               {{ $t('INBOX_MGMT.EDIT.AUTO_ASSIGNMENT.DISABLED') }}
             </option>
           </select>
@@ -93,6 +130,33 @@
             {{ $t('INBOX_MGMT.SETTINGS_POPUP.AUTO_ASSIGNMENT_SUB_TEXT') }}
           </p>
         </label>
+
+        <label v-if="isAWebWidgetInbox">
+          {{ $t('INBOX_MGMT.FEATURES.LABEL') }}
+        </label>
+        <div v-if="isAWebWidgetInbox" class="widget--feature-flag">
+          <input
+            v-model="selectedFeatureFlags"
+            type="checkbox"
+            value="attachments"
+            @input="handleFeatureFlag"
+          />
+          <label for="attachments">
+            {{ $t('INBOX_MGMT.FEATURES.DISPLAY_FILE_PICKER') }}
+          </label>
+        </div>
+        <div v-if="isAWebWidgetInbox">
+          <input
+            v-model="selectedFeatureFlags"
+            type="checkbox"
+            value="emoji_picker"
+            @input="handleFeatureFlag"
+          />
+          <label for="emoji_picker">
+            {{ $t('INBOX_MGMT.FEATURES.DISPLAY_EMOJI_PICKER') }}
+          </label>
+        </div>
+
         <woot-submit-button
           :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
           :loading="uiFlags.isUpdatingInbox"
@@ -103,7 +167,7 @@
 
     <!-- update agents in inbox -->
 
-    <div class="settings--content">
+    <div v-if="selectedTabKey === 'collaborators'" class="settings--content">
       <settings-section
         :title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS')"
         :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.INBOX_AGENTS_SUB_TEXT')"
@@ -112,7 +176,7 @@
           v-model="selectedAgents"
           :options="agentList"
           track-by="id"
-          label="name"
+          label="available_name"
           :multiple="true"
           :close-on-select="false"
           :clear-on-select="false"
@@ -128,38 +192,24 @@
         />
       </settings-section>
     </div>
-
-    <div
-      v-if="inbox.channel_type === 'Channel::TwilioSms'"
-      class="settings--content"
-    >
-      <settings-section
-        :title="$t('INBOX_MGMT.ADD.TWILIO.API_CALLBACK.TITLE')"
-        :sub-title="$t('INBOX_MGMT.ADD.TWILIO.API_CALLBACK.SUBTITLE')"
-      >
-        <woot-code :script="twilioCallbackURL" lang="html"></woot-code>
-      </settings-section>
-    </div>
-
-    <div
-      v-if="inbox.channel_type === 'Channel::FacebookPage'"
-      class="settings--content"
-    >
-      <settings-section
-        :title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_HEADING')"
-        :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_SUB_HEAD')"
-      >
-        <woot-code :script="messengerScript"></woot-code>
-      </settings-section>
-    </div>
-    <div v-else-if="inbox.channel_type === 'Channel::WebWidget'">
-      <div class="settings--content">
+    <div v-if="selectedTabKey === 'configuration'">
+      <div v-if="isATwilioChannel" class="settings--content">
         <settings-section
-          :title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_HEADING')"
-          :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_SUB_HEAD')"
+          :title="$t('INBOX_MGMT.ADD.TWILIO.API_CALLBACK.TITLE')"
+          :sub-title="$t('INBOX_MGMT.ADD.TWILIO.API_CALLBACK.SUBTITLE')"
         >
-          <woot-code :script="inbox.web_widget_script"></woot-code>
+          <woot-code :script="twilioCallbackURL" lang="html"></woot-code>
         </settings-section>
+      </div>
+      <div v-else-if="isAWebWidgetInbox">
+        <div class="settings--content">
+          <settings-section
+            :title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_HEADING')"
+            :sub-title="$t('INBOX_MGMT.SETTINGS_POPUP.MESSENGER_SUB_HEAD')"
+          >
+            <woot-code :script="inbox.web_widget_script"></woot-code>
+          </settings-section>
+        </div>
       </div>
     </div>
   </div>
@@ -167,29 +217,32 @@
 
 <script>
 /* eslint no-console: 0 */
-/* global bus */
 import { mapGetters } from 'vuex';
 import { createMessengerScript } from 'dashboard/helper/scriptGenerator';
 import configMixin from 'shared/mixins/configMixin';
+import alertMixin from 'shared/mixins/alertMixin';
 import SettingsSection from '../../../../components/SettingsSection';
+import inboxMixin from 'shared/mixins/inboxMixin';
 
 export default {
   components: {
     SettingsSection,
   },
-  mixins: [configMixin],
+  mixins: [alertMixin, configMixin, inboxMixin],
   data() {
     return {
       avatarFile: null,
       avatarUrl: '',
       selectedAgents: [],
+      greetingEnabled: true,
+      greetingMessage: '',
       autoAssignment: false,
       isAgentListUpdating: false,
       selectedInboxName: '',
       channelWebsiteUrl: '',
       channelWelcomeTitle: '',
       channelWelcomeTagline: '',
-      channelAgentAwayMessage: '',
+      selectedFeatureFlags: [],
       autoAssignmentOptions: [
         {
           value: true,
@@ -200,6 +253,7 @@ export default {
           label: this.$t('INBOX_MGMT.EDIT.AUTO_ASSIGNMENT.DISABLED'),
         },
       ],
+      selectedTabIndex: 0,
     };
   },
   computed: {
@@ -207,17 +261,41 @@ export default {
       agentList: 'agents/getAgents',
       uiFlags: 'inboxes/getUIFlags',
     }),
+    selectedTabKey() {
+      return this.tabs[this.selectedTabIndex]?.key;
+    },
+    tabs() {
+      const visibleToAllChannelTabs = [
+        {
+          key: 'inbox_settings',
+          name: this.$t('INBOX_MGMT.TABS.SETTINGS'),
+        },
+        {
+          key: 'collaborators',
+          name: this.$t('INBOX_MGMT.TABS.COLLABORATORS'),
+        },
+      ];
+
+      if (this.isAWebWidgetInbox || this.isATwilioChannel) {
+        return [
+          ...visibleToAllChannelTabs,
+          {
+            key: 'configuration',
+            name: this.$t('INBOX_MGMT.TABS.CONFIGURATION'),
+          },
+        ];
+      }
+
+      return visibleToAllChannelTabs;
+    },
     currentInboxId() {
       return this.$route.params.inboxId;
     },
     inbox() {
       return this.$store.getters['inboxes/getInbox'](this.currentInboxId);
     },
-    isAWidgetInbox() {
-      return this.inbox.channel_type === 'Channel::WebWidget';
-    },
     inboxName() {
-      if (this.inbox.channel_type === 'Channel::TwilioSms') {
+      if (this.isATwilioSMSChannel || this.isATwilioWhatsappChannel) {
         return `${this.inbox.name} (${this.inbox.phone_number})`;
       }
       return this.inbox.name;
@@ -237,21 +315,38 @@ export default {
     this.fetchInboxSettings();
   },
   methods: {
-    showAlert(message) {
-      bus.$emit('newToastMessage', message);
+    handleFeatureFlag(e) {
+      console.log(e.target.value);
+      this.selectedFeatureFlags = this.toggleInput(
+        this.selectedFeatureFlags,
+        e.target.value
+      );
+    },
+    toggleInput(selected, current) {
+      if (selected.includes(current)) {
+        const newSelectedFlags = selected.filter(flag => flag !== current);
+        return newSelectedFlags;
+      }
+      return [...selected, current];
+    },
+    onTabChange(selectedTabIndex) {
+      this.selectedTabIndex = selectedTabIndex;
     },
     fetchInboxSettings() {
+      this.selectedTabIndex = 0;
       this.selectedAgents = [];
       this.$store.dispatch('agents/get');
       this.$store.dispatch('inboxes/get').then(() => {
         this.fetchAttachedAgents();
         this.avatarUrl = this.inbox.avatar_url;
         this.selectedInboxName = this.inbox.name;
+        this.greetingEnabled = this.inbox.greeting_enabled;
+        this.greetingMessage = this.inbox.greeting_message;
         this.autoAssignment = this.inbox.enable_auto_assignment;
         this.channelWebsiteUrl = this.inbox.website_url;
         this.channelWelcomeTitle = this.inbox.welcome_title;
         this.channelWelcomeTagline = this.inbox.welcome_tagline;
-        this.channelAgentAwayMessage = this.inbox.agent_away_message;
+        this.selectedFeatureFlags = this.inbox.selected_feature_flags || [];
       });
     },
     async fetchAttachedAgents() {
@@ -260,16 +355,9 @@ export default {
           inboxId: this.currentInboxId,
         });
         const {
-          data: { payload },
+          data: { payload: inboxMembers },
         } = response;
-        payload.forEach(el => {
-          const [item] = this.agentList.filter(
-            agent => agent.id === el.user_id
-          );
-          if (item) {
-            this.selectedAgents.push(item);
-          }
-        });
+        this.selectedAgents = inboxMembers;
       } catch (error) {
         console.log(error);
       }
@@ -294,12 +382,14 @@ export default {
           id: this.currentInboxId,
           name: this.selectedInboxName,
           enable_auto_assignment: this.autoAssignment,
+          greeting_enabled: this.greetingEnabled,
+          greeting_message: this.greetingMessage || '',
           channel: {
             widget_color: this.inbox.widget_color,
             website_url: this.channelWebsiteUrl,
-            welcome_title: this.channelWelcomeTitle,
-            welcome_tagline: this.channelWelcomeTagline,
-            agent_away_message: this.channelAgentAwayMessage,
+            welcome_title: this.channelWelcomeTitle || '',
+            welcome_tagline: this.channelWelcomeTagline || '',
+            selectedFeatureFlags: this.selectedFeatureFlags,
           },
         };
         if (this.avatarFile) {
@@ -345,7 +435,16 @@ export default {
   .page-top-bar {
     @include background-light;
     @include border-normal-bottom;
-    padding: $space-normal $space-larger;
+    padding: $space-normal $space-large 0;
+
+    .tabs {
+      padding: 0;
+      margin-bottom: -1px;
+    }
   }
+}
+
+.widget--feature-flag {
+  padding-top: var(--space-small);
 }
 </style>

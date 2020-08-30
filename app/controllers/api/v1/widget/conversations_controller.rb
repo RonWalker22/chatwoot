@@ -1,10 +1,26 @@
 class Api::V1::Widget::ConversationsController < Api::V1::Widget::BaseController
   include Events::Types
-  before_action :set_web_widget
-  before_action :set_contact
 
   def index
     @conversation = conversation
+  end
+
+  def update_last_seen
+    head :ok && return if conversation.nil?
+
+    conversation.user_last_seen_at = DateTime.now.utc
+    conversation.save!
+    head :ok
+  end
+
+  def transcript
+    if permitted_params[:email].present? && conversation.present?
+      ConversationReplyMailer.conversation_transcript(
+        conversation,
+        permitted_params[:email]
+      )&.deliver_later
+    end
+    head :ok
   end
 
   def toggle_typing
@@ -26,6 +42,6 @@ class Api::V1::Widget::ConversationsController < Api::V1::Widget::BaseController
   end
 
   def permitted_params
-    params.permit(:id, :typing_status, :website_token)
+    params.permit(:id, :typing_status, :website_token, :email)
   end
 end

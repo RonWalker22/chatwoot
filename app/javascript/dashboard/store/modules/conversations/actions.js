@@ -2,14 +2,14 @@ import Vue from 'vue';
 import * as types from '../../mutation-types';
 import ConversationApi from '../../../api/inbox/conversation';
 import MessageApi from '../../../api/inbox/message';
-import FBChannel from '../../../api/channel/fbChannel';
+import { MESSAGE_TYPE } from 'widget/helpers/constants';
 
 // actions
 const actions = {
   getConversation: async ({ commit }, conversationId) => {
     try {
       const response = await ConversationApi.show(conversationId);
-      commit(types.default.ADD_CONVERSATION, response.data);
+      commit(types.default.UPDATE_CONVERSATION, response.data);
       commit(
         `contacts/${types.default.SET_CONTACT_ITEM}`,
         response.data.meta.sender
@@ -26,7 +26,8 @@ const actions = {
       const { data } = response.data;
       const { payload: chatList, meta: metaData } = data;
       commit(types.default.SET_ALL_CONVERSATION, chatList);
-      commit(types.default.SET_CONV_TAB_META, metaData);
+      dispatch('conversationStats/set', metaData);
+      dispatch('conversationLabels/setBulkConversationLabels', chatList);
       commit(types.default.CLEAR_LIST_LOADING_STATUS);
       commit(
         `contacts/${types.default.SET_CONTACTS}`,
@@ -84,35 +85,21 @@ const actions = {
     }
   },
 
-  setActiveChat(store, data) {
-    const { commit } = store;
-    const localDispatch = store.dispatch;
-    let donePromise = null;
-
-    commit(types.default.CURRENT_CHAT_WINDOW, data);
+  async setActiveChat({ commit, dispatch }, data) {
+    commit(types.default.SET_CURRENT_CHAT_WINDOW, data);
     commit(types.default.CLEAR_ALL_MESSAGES_LOADED);
 
     if (data.dataFetched === undefined) {
-      donePromise = new Promise(resolve => {
-        localDispatch('fetchPreviousMessages', {
+      try {
+        await dispatch('fetchPreviousMessages', {
           conversationId: data.id,
           before: data.messages[0].id,
-        })
-          .then(() => {
-            Vue.set(data, 'dataFetched', true);
-            resolve();
-          })
-          .catch(() => {
-            // Handle error
-          });
-      });
-    } else {
-      donePromise = new Promise(resolve => {
-        commit(types.default.SET_CHAT_META, { id: data.id });
-        resolve();
-      });
+        });
+        Vue.set(data, 'dataFetched', true);
+      } catch (error) {
+        // Ignore error
+      }
     }
-    return donePromise;
   },
 
   assignAgent: async ({ commit }, { conversationId, agentId }) => {
@@ -150,51 +137,51 @@ const actions = {
 
   addMessage({ commit }, message) {
     commit(types.default.ADD_MESSAGE, message);
+    if (message.message_type === MESSAGE_TYPE.INCOMING) {
+      commit(types.default.SET_CONVERSATION_CAN_REPLY, {
+        conversationId: message.conversation_id,
+        canReply: true,
+      });
+    }
   },
 
   updateMessage({ commit }, message) {
     commit(types.default.ADD_MESSAGE, message);
   },
 
-  addConversation({ commit, state }, conversation) {
+  addConversation({ commit, state, dispatch }, conversation) {
     const { currentInbox } = state;
-    if (!currentInbox || Number(currentInbox) === conversation.inbox_id) {
+    const {
+      inbox_id: inboxId,
+      meta: { sender },
+    } = conversation;
+    if (!currentInbox || Number(currentInbox) === inboxId) {
       commit(types.default.ADD_CONVERSATION, conversation);
-      commit(
-        `contacts/${types.default.SET_CONTACT_ITEM}`,
-        conversation.meta.sender
-      );
+      dispatch('contacts/setContact', sender);
     }
   },
 
-  updateConversation({ commit }, conversation) {
+  updateConversation({ commit, dispatch }, conversation) {
+    const {
+      meta: { sender },
+    } = conversation;
     commit(types.default.UPDATE_CONVERSATION, conversation);
-  },
-
-  toggleTyping: async ({ commit }, { status, conversationId }) => {
-    try {
-      commit(types.default.SET_AGENT_TYPING, { status });
-      await ConversationApi.toggleTyping({ status, conversationId });
-    } catch (error) {
-      // Handle error
-    }
-  },
-
-  markSeen: async ({ commit }, data) => {
-    try {
-      await FBChannel.markSeen(data);
-      commit(types.default.MARK_SEEN);
-    } catch (error) {
-      // Handle error
-    }
+    dispatch('contacts/setContact', sender);
   },
 
   markMessagesRead: async ({ commit }, data) => {
-    setTimeout(() => {
-      commit(types.default.MARK_MESSAGE_READ, data);
-    }, 4000);
     try {
-      await ConversationApi.markMessageRead(data);
+      const {
+        data: { id, agent_last_seen_at: lastSeen },
+      } = await ConversationApi.markMessageRead(data);
+      setTimeout(
+        () =>
+          commit(types.default.MARK_MESSAGE_READ, {
+            id,
+            lastSeen,
+          }),
+        4000
+      );
     } catch (error) {
       // Handle error
     }
@@ -234,6 +221,14 @@ const actions = {
       commit(types.default.MUTE_CONVERSATION);
     } catch (error) {
       //
+    }
+  },
+
+  sendEmailTranscript: async (_, { conversationId, email }) => {
+    try {
+      await ConversationApi.sendEmailTranscript({ conversationId, email });
+    } catch (error) {
+      throw new Error(error);
     }
   },
 };

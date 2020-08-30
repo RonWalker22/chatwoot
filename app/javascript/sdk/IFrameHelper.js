@@ -1,11 +1,9 @@
 import Cookies from 'js-cookie';
-import { wootOn, loadCSS } from './DOMHelpers';
+import { wootOn, addClass, loadCSS, removeClass } from './DOMHelpers';
 import {
   body,
   widgetHolder,
   createBubbleHolder,
-  disableScroll,
-  enableScroll,
   createBubbleIcon,
   bubbleImg,
   chatBubble,
@@ -14,7 +12,11 @@ import {
   createNotificationBubble,
   onClickChatBubble,
   onBubbleClick,
+  setBubbleText,
 } from './bubbleHelpers';
+import { dispatchWindowEvent } from 'shared/helpers/CustomEventHelper';
+
+const EVENT_NAME = 'chatwoot:ready';
 
 export const IFrameHelper = {
   getUrl({ baseUrl, websiteToken }) {
@@ -31,12 +33,15 @@ export const IFrameHelper = {
 
     iframe.id = 'chatwoot_live_chat_widget';
     iframe.style.visibility = 'hidden';
-    widgetHolder.className = `woot-widget-holder woot--hide woot-elements--${window.$chatwoot.position}`;
+
+    const holderClassName = `woot-widget-holder woot--hide woot-elements--${window.$chatwoot.position}`;
+    addClass(widgetHolder, holderClassName);
     widgetHolder.appendChild(iframe);
     body.appendChild(widgetHolder);
     IFrameHelper.initPostMessageCommunication();
     IFrameHelper.initLocationListener();
     IFrameHelper.initWindowSizeListener();
+    IFrameHelper.preventDefaultScroll();
   },
   getAppFrame: () => document.getElementById('chatwoot_live_chat_widget'),
   sendMessage: (key, value) => {
@@ -66,30 +71,84 @@ export const IFrameHelper = {
     };
   },
   initWindowSizeListener: () => {
-    wootOn(window, 'resize', () => {
-      IFrameHelper.toggleCloseButton();
+    wootOn(window, 'resize', () => IFrameHelper.toggleCloseButton());
+  },
+  preventDefaultScroll: () => {
+    widgetHolder.addEventListener('wheel', event => {
+      const deltaY = event.deltaY;
+      const contentHeight = widgetHolder.scrollHeight;
+      const visibleHeight = widgetHolder.offsetHeight;
+      const scrollTop = widgetHolder.scrollTop;
+
+      if (
+        (scrollTop === 0 && deltaY < 0) ||
+        (visibleHeight + scrollTop === contentHeight && deltaY > 0)
+      ) {
+        event.preventDefault();
+      }
     });
   },
   events: {
     loaded: message => {
       Cookies.set('cw_conversation', message.config.authToken, {
         expires: 365,
+        sameSite: 'Lax',
       });
       window.$chatwoot.hasLoaded = true;
       IFrameHelper.sendMessage('config-set', {
         locale: window.$chatwoot.locale,
+        position: window.$chatwoot.position,
+        hideMessageBubble: window.$chatwoot.hideMessageBubble,
       });
-      IFrameHelper.onLoad(message.config.channelConfig);
+      IFrameHelper.onLoad({
+        widgetColor: message.config.channelConfig.widgetColor,
+      });
       IFrameHelper.setCurrentUrl();
       IFrameHelper.toggleCloseButton();
 
       if (window.$chatwoot.user) {
         IFrameHelper.sendMessage('set-user', window.$chatwoot.user);
       }
+      dispatchWindowEvent(EVENT_NAME);
+    },
+
+    setBubbleLabel(message) {
+      setBubbleText(window.$chatwoot.launcherTitle || message.label);
     },
 
     toggleBubble: () => {
       onBubbleClick();
+    },
+
+    onBubbleToggle: isOpen => {
+      if (!isOpen) {
+        IFrameHelper.events.resetUnreadMode();
+      } else {
+        IFrameHelper.pushEvent('webwidget.triggered');
+      }
+    },
+
+    setUnreadMode: message => {
+      const { unreadMessageCount } = message;
+      const { isOpen } = window.$chatwoot;
+      const toggleValue = true;
+
+      if (!isOpen && unreadMessageCount > 0) {
+        IFrameHelper.sendMessage('set-unread-view');
+        onBubbleClick({ toggleValue });
+        const holderEl = document.querySelector('.woot-widget-holder');
+        addClass(holderEl, 'has-unread-view');
+      }
+    },
+
+    resetUnreadMode: () => {
+      IFrameHelper.sendMessage('unset-unread-view');
+      IFrameHelper.events.removeUnreadClass();
+    },
+
+    removeUnreadClass: () => {
+      const holderEl = document.querySelector('.woot-widget-holder');
+      removeClass(holderEl, 'has-unread-view');
     },
   },
   pushEvent: eventName => {
@@ -99,8 +158,6 @@ export const IFrameHelper = {
     const iframe = IFrameHelper.getAppFrame();
     iframe.style.visibility = '';
     iframe.setAttribute('id', `chatwoot_live_chat_widget`);
-    iframe.onmouseenter = disableScroll;
-    iframe.onmouseleave = enableScroll;
 
     loadCSS();
     createBubbleHolder();
@@ -113,7 +170,8 @@ export const IFrameHelper = {
       });
 
       const closeIcon = closeBubble;
-      closeIcon.className = `woot-elements--${window.$chatwoot.position} woot-widget-bubble woot--close woot--hide`;
+      const closeIconclassName = `woot-elements--${window.$chatwoot.position} woot-widget-bubble woot--close woot--hide`;
+      addClass(closeIcon, closeIconclassName);
 
       chatIcon.style.background = widgetColor;
       closeIcon.style.background = widgetColor;
@@ -131,9 +189,13 @@ export const IFrameHelper = {
   },
   toggleCloseButton: () => {
     if (window.matchMedia('(max-width: 668px)').matches) {
-      IFrameHelper.sendMessage('toggle-close-button', { showClose: true });
+      IFrameHelper.sendMessage('toggle-close-button', {
+        showClose: true,
+      });
     } else {
-      IFrameHelper.sendMessage('toggle-close-button', { showClose: false });
+      IFrameHelper.sendMessage('toggle-close-button', {
+        showClose: false,
+      });
     }
   },
 };

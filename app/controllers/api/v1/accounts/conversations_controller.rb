@@ -1,6 +1,5 @@
-class Api::V1::Accounts::ConversationsController < Api::BaseController
+class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseController
   include Events::Types
-  before_action :current_account
   before_action :conversation, except: [:index]
   before_action :contact_inbox, only: [:create]
 
@@ -26,6 +25,11 @@ class Api::V1::Accounts::ConversationsController < Api::BaseController
     head :ok
   end
 
+  def transcript
+    ConversationReplyMailer.conversation_transcript(@conversation, params[:email])&.deliver_later if params[:email].present?
+    head :ok
+  end
+
   def toggle_status
     if params[:status]
       @conversation.status = params[:status]
@@ -45,9 +49,8 @@ class Api::V1::Accounts::ConversationsController < Api::BaseController
   end
 
   def update_last_seen
-    @conversation.agent_last_seen_at = parsed_last_seen_at
+    @conversation.agent_last_seen_at = DateTime.now.utc
     @conversation.save!
-    head :ok
   end
 
   private
@@ -57,12 +60,8 @@ class Api::V1::Accounts::ConversationsController < Api::BaseController
     Rails.configuration.dispatcher.dispatch(event, Time.zone.now, conversation: @conversation, user: user)
   end
 
-  def parsed_last_seen_at
-    DateTime.strptime(params[:agent_last_seen_at].to_s, '%s')
-  end
-
   def conversation
-    @conversation ||= current_account.conversations.find_by(display_id: params[:id])
+    @conversation ||= Current.account.conversations.find_by(display_id: params[:id])
   end
 
   def contact_inbox
@@ -71,7 +70,7 @@ class Api::V1::Accounts::ConversationsController < Api::BaseController
 
   def conversation_params
     {
-      account_id: current_account.id,
+      account_id: Current.account.id,
       inbox_id: @contact_inbox.inbox_id,
       contact_id: @contact_inbox.contact_id,
       contact_inbox_id: @contact_inbox.id

@@ -2,6 +2,7 @@
   "GENERAL_SETTINGS": {
     "TITLE": "Configuració del compte",
     "SUBMIT": "Actualització de la configuració",
+    "BACK": "Back",
     "UPDATE": {
       "ERROR": "No s'ha pogut actualitzar la configuració, torna-ho a provar!",
       "SUCCESS": "La configuració del compte s'ha actualitzat correctament"
@@ -21,6 +22,20 @@
         "LABEL": "Idioma del lloc (Beta)",
         "PLACEHOLDER": "El nom del vostre compte",
         "ERROR": ""
+      },
+      "DOMAIN": {
+        "LABEL": "Incoming Email Domain",
+        "PLACEHOLDER": "The domain where you will receive the emails",
+        "ERROR": ""
+      },
+      "SUPPORT_EMAIL": {
+        "LABEL": "Support Email",
+        "PLACEHOLDER": "Your company's support email",
+        "ERROR": ""
+      },
+      "FEATURES": {
+        "INBOUND_EMAIL_ENABLED": "Conversation continuity with emails is enabled for your account.",
+        "CUSTOM_EMAIL_DOMAIN_ENABLED": "You can receive emails in your custom domain now."
       }
     }
   }

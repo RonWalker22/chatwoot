@@ -1,11 +1,12 @@
 <template>
   <div class="conv-header">
-    <div class="user">
+    <div v-if="!isContactPanelOpen" class="user">
       <Thumbnail
         :src="currentContact.thumbnail"
         size="40px"
-        :badge="currentContact.channel"
+        :badge="chatMetadata.channel"
         :username="currentContact.name"
+        :status="currentContact.availability_status"
       />
       <div class="user--profile__meta">
         <h3 v-if="!isContactPanelOpen" class="user--name text-truncate">
@@ -13,22 +14,29 @@
         </h3>
         <button
           class="user--profile__button clear button small"
-          @click="$emit('contactPanelToggle')"
+          @click="$emit('contact-panel-toggle')"
         >
-          {{ viewProfileButtonLabel }}
+          {{
+            `${$t('CONVERSATION.HEADER.OPEN')} ${$t(
+              'CONVERSATION.HEADER.DETAILS'
+            )}`
+          }}
         </button>
       </div>
     </div>
-    <div class="flex-container">
+    <div
+      class="flex-container"
+      :class="{ 'justify-space-between w-100': isContactPanelOpen }"
+    >
       <div class="multiselect-box ion-headphone">
         <multiselect
           v-model="currentChat.meta.assignee"
           :options="agentList"
-          label="name"
+          label="available_name"
           :allow-empty="true"
           deselect-label="Remove"
           placeholder="Select Agent"
-          selected-label=""
+          selected-label
           select-label="Assign"
           track-by="id"
           @select="assignAgent"
@@ -37,24 +45,19 @@
           <span slot="noResult">{{ $t('AGENT_MGMT.SEARCH.NO_RESULTS') }}</span>
         </multiselect>
       </div>
-      <ResolveButton />
+      <more-actions :conversation-id="currentChat.id" />
     </div>
   </div>
 </template>
 <script>
-/* eslint no-console: 0 */
-/* eslint no-param-reassign: 0 */
-/* eslint no-shadow: 0 */
-/* global bus */
-
 import { mapGetters } from 'vuex';
+import MoreActions from './MoreActions';
 import Thumbnail from '../Thumbnail';
-import ResolveButton from '../../buttons/ResolveButton';
 
 export default {
   components: {
+    MoreActions,
     Thumbnail,
-    ResolveButton,
   },
 
   props: {
@@ -80,6 +83,10 @@ export default {
       currentChat: 'getSelectedChat',
     }),
 
+    chatMetadata() {
+      return this.chat.meta;
+    },
+
     currentContact() {
       return this.$store.getters['contacts/getContact'](
         this.chat.meta.sender.id
@@ -90,7 +97,7 @@ export default {
       return [
         {
           confirmed: true,
-          name: 'None',
+          available_name: 'None',
           id: 0,
           role: 'agent',
           account_id: 0,
@@ -98,13 +105,6 @@ export default {
         },
         ...this.agents,
       ];
-    },
-    viewProfileButtonLabel() {
-      return `${
-        this.isContactPanelOpen
-          ? this.$t('CONVERSATION.HEADER.CLOSE')
-          : this.$t('CONVERSATION.HEADER.OPEN')
-      } ${this.$t('CONVERSATION.HEADER.DETAILS')}`;
     },
   },
 

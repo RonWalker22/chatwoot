@@ -1,13 +1,14 @@
-class Api::V1::Accounts::Conversations::MessagesController < Api::BaseController
-  before_action :set_conversation, only: [:index, :create]
-
+class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::Conversations::BaseController
   def index
     @messages = message_finder.perform
   end
 
   def create
-    mb = Messages::Outgoing::NormalBuilder.new(current_user, @conversation, params)
+    user = current_user || @resource
+    mb = Messages::MessageBuilder.new(user, @conversation, params)
     @message = mb.perform
+  rescue StandardError => e
+    render_could_not_create_error(e.message)
   end
 
   private

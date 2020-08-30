@@ -1,0 +1,34 @@
+{
+  "CONTACT_PANEL": {
+    "CONVERSATION_TITLE": "تفاصيل المحادثة",
+    "BROWSER": "المتصفح",
+    "OS": "نظام التشغيل",
+    "INITIATED_FROM": "تم البدء من",
+    "INITIATED_AT": "تم البدء في",
+    "CONVERSATIONS": {
+      "NO_RECORDS_FOUND": "لا توجد محادثات سابقة مرتبطة بجهة الاتصال هذه.",
+      "TITLE": "المحادثات السابقة"
+    },
+    "CUSTOM_ATTRIBUTES": {
+      "TITLE": "Custom Attributes"
+    },
+    "LABELS": {
+      "TITLE": "وسوم المحادثة",
+      "MODAL": {
+        "TITLE": "الوسوم الخاصة بـ",
+        "ACTIVE_LABELS": "تم إضافة الوسوم للمحادثة",
+        "INACTIVE_LABELS": "الوسوم المتاحة في الحساب",
+        "REMOVE": "انقر على أيقونة X لإزالة الوسم",
+        "ADD": "اضغط على أيقونة + لإضافة وسوم",
+        "UPDATE_BUTTON": "تحديث الوسوم",
+        "UPDATE_ERROR": "تعذر تحديث الوسوم، الرجاء المحاولة مرة أخرى."
+      },
+      "NO_LABELS_TO_ADD": "لا يوجد وسوم في الحساب.",
+      "NO_AVAILABLE_LABELS": "لا يوجد وسوم مضافة لهذه المحادثة."
+    },
+    "MUTE_CONTACT": "Mute Conversation",
+    "MUTED_SUCCESS": "This conversation is muted for 6 hours",
+    "SEND_TRANSCRIPT": "Send Transcript",
+    "EDIT_LABEL": "تعديل"
+  }
+}

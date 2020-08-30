@@ -49,6 +49,15 @@
           "NO": "Não, mantenha"
         }
       }
+    },
+    "DELETE": {
+      "BUTTON_TEXT": "Excluir",
+      "API": {
+        "SUCCESS_MESSAGE": "Integração excluída com sucesso"
+      }
+    },
+    "CONNECT": {
+      "BUTTON_TEXT": "Conectar"
     }
   }
 }

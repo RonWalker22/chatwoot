@@ -5,8 +5,10 @@ class Conversations::EventDataPresenter < SimpleDelegator
 
   def push_data
     {
-      id: display_id,
       additional_attributes: additional_attributes,
+      can_reply: can_reply?,
+      channel: inbox.try(:channel_type),
+      id: display_id,
       inbox_id: inbox_id,
       messages: push_messages,
       meta: push_meta,
@@ -23,7 +25,7 @@ class Conversations::EventDataPresenter < SimpleDelegator
   end
 
   def push_meta
-    { sender: contact.push_event_data, assignee: assignee }
+    { sender: contact.push_event_data, assignee: assignee&.push_event_data }
   end
 
   def push_timestamps

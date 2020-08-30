@@ -2,16 +2,16 @@
 #
 # Table name: channel_web_widgets
 #
-#  id                 :integer          not null, primary key
-#  agent_away_message :string
-#  website_token      :string
-#  website_url        :string
-#  welcome_tagline    :string
-#  welcome_title      :string
-#  widget_color       :string           default("#1f93ff")
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  account_id         :integer
+#  id              :integer          not null, primary key
+#  feature_flags   :integer          default(3), not null
+#  website_token   :string
+#  website_url     :string
+#  welcome_tagline :string
+#  welcome_title   :string
+#  widget_color    :string           default("#1f93ff")
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  account_id      :integer
 #
 # Indexes
 #
@@ -19,6 +19,8 @@
 #
 
 class Channel::WebWidget < ApplicationRecord
+  include FlagShihTzu
+
   self.table_name = 'channel_web_widgets'
 
   validates :website_url, presence: true
@@ -27,6 +29,13 @@ class Channel::WebWidget < ApplicationRecord
   belongs_to :account
   has_one :inbox, as: :channel, dependent: :destroy
   has_secure_token :website_token
+  has_flags 1 => :attachments,
+            2 => :emoji_picker,
+            :column => 'feature_flags'
+
+  def has_24_hour_messaging_window?
+    false
+  end
 
   def web_widget_script
     "<script>

@@ -3,17 +3,18 @@
 # Table name: users
 #
 #  id                     :integer          not null, primary key
+#  availability           :integer          default("online")
 #  confirmation_sent_at   :datetime
 #  confirmation_token     :string
 #  confirmed_at           :datetime
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string
+#  display_name           :string
 #  email                  :string
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string
 #  name                   :string           not null
-#  nickname               :string
 #  provider               :string           default("email"), not null
 #  pubsub_token           :string
 #  remember_created_at    :datetime
@@ -53,9 +54,12 @@ class User < ApplicationRecord
          :validatable,
          :confirmable
 
+  enum availability: { online: 0, offline: 1, busy: 2 }
+
   # The validation below has been commented out as it does not
   # work because :validatable in devise overrides this.
   # validates_uniqueness_of :email, scope: :account_id
+
   validates :email, :name, presence: true
 
   has_many :account_users, dependent: :destroy
@@ -65,7 +69,7 @@ class User < ApplicationRecord
   has_many :assigned_conversations, foreign_key: 'assignee_id', class_name: 'Conversation', dependent: :nullify
   has_many :inbox_members, dependent: :destroy
   has_many :inboxes, through: :inbox_members, source: :inbox
-  has_many :messages
+  has_many :messages, as: :sender
   has_many :invitees, through: :account_users, class_name: 'User', foreign_key: 'inviter_id', dependent: :nullify
 
   has_many :notifications, dependent: :destroy
@@ -75,6 +79,9 @@ class User < ApplicationRecord
   before_validation :set_password_and_uid, on: :create
 
   after_create :create_access_token
+  after_save :update_presence_in_redis, if: :saved_change_to_availability?
+
+  scope :order_by_full_name, -> { order('lower(name) ASC') }
 
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
@@ -90,6 +97,10 @@ class User < ApplicationRecord
 
   def current_account_user
     account_users.find_by(account_id: Current.account.id) if Current.account
+  end
+
+  def available_name
+    self[:display_name].presence || name
   end
 
   def account
@@ -118,7 +129,6 @@ class User < ApplicationRecord
 
   def serializable_hash(options = nil)
     serialized_user = super(options).merge(confirmed: confirmed?)
-    serialized_user.merge(subscription: account.try(:subscription).try(:summary)) if ENV['BILLING_ENABLED']
     serialized_user
   end
 
@@ -126,8 +136,10 @@ class User < ApplicationRecord
     {
       id: id,
       name: name,
+      available_name: available_name,
       avatar_url: avatar_url,
-      type: 'user'
+      type: 'user',
+      availability_status: availability_status
     }
   end
 
@@ -138,5 +150,13 @@ class User < ApplicationRecord
       email: email,
       type: 'user'
     }
+  end
+
+  private
+
+  def update_presence_in_redis
+    accounts.each do |account|
+      OnlineStatusTracker.set_status(account.id, id, availability)
+    end
   end
 end

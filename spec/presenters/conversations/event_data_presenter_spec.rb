@@ -22,6 +22,8 @@ RSpec.describe Conversations::EventDataPresenter do
         messages: [],
         inbox_id: conversation.inbox_id,
         status: conversation.status,
+        can_reply: conversation.can_reply?,
+        channel: conversation.inbox.channel_type,
         timestamp: conversation.created_at.to_i,
         user_last_seen_at: conversation.user_last_seen_at.to_i,
         agent_last_seen_at: conversation.agent_last_seen_at.to_i,

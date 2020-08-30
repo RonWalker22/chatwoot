@@ -44,9 +44,31 @@
         "LABEL": "Imagem do Perfil"
       },
       "NAME": {
-        "LABEL": "Seu Nome",
-        "ERROR": "Por favor, insira um nome válido",
-        "PLACEHOLDER": "Por favor, insira seu nome, isto seria exibido em conversas"
+        "LABEL": "Seu nome completo",
+        "ERROR": "Por favor, insira um nome completo válido",
+        "PLACEHOLDER": "Por favor, digite seu nome completo"
+      },
+      "DISPLAY_NAME": {
+        "LABEL": "Nome para exibição",
+        "ERROR": "Por favor, insira um nome de exibição válido",
+        "PLACEHOLDER": "Por favor, insira um nome de exibição para ser exibido em conversas"
+      },
+      "AVAILABILITY": {
+        "LABEL": "Disponibilidade",
+        "STATUSES_LIST": [
+          {
+            "value": "online",
+            "label": "Disponível"
+          },
+          {
+            "value": "busy",
+            "label": "Ocupado"
+          },
+          {
+            "value": "offline",
+            "label": "Desconectado"
+          }
+        ]
       },
       "EMAIL": {
         "LABEL": "Seu e-mail",
@@ -66,6 +88,8 @@
     }
   },
   "SIDEBAR_ITEMS": {
+    "CHANGE_ACCOUNTS": "Trocar Conta",
+    "SELECTOR_SUBTITLE": "Selecione uma conta da lista a seguir",
     "PROFILE_SETTINGS": "Configurações do Perfil",
     "LOGOUT": "Sair"
   },
@@ -100,8 +124,24 @@
     "AGENTS": "Agentes",
     "INBOXES": "Caixas de Entrada",
     "CANNED_RESPONSES": "Atalhos",
-    "BILLING": "Faturamento",
     "INTEGRATIONS": "Integrações",
-    "ACCOUNT_SETTINGS": "Configurações da conta"
+    "ACCOUNT_SETTINGS": "Configurações da conta",
+    "LABELS": "Marcadores"
+  },
+  "CREATE_ACCOUNT": {
+    "NEW_ACCOUNT": "Nova conta",
+    "SELECTOR_SUBTITLE": "Criar nova conta",
+    "API": {
+      "SUCCESS_MESSAGE": "Conta criada com sucesso",
+      "EXIST_MESSAGE": "Esta conta já existe",
+      "ERROR_MESSAGE": "Não foi possível conectar ao servidor Woot, por favor tente novamente mais tarde"
+    },
+    "FORM": {
+      "NAME": {
+        "LABEL": "Nome do Cliente",
+        "PLACEHOLDER": "Informe o nome da conta"
+      },
+      "SUBMIT": "Enviar"
+    }
   }
 }

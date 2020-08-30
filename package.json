@@ -1,6 +1,6 @@
 {
   "name": "@chatwoot/chatwoot",
-  "version": "0.1.0",
+  "version": "1.7.2",
   "license": "MIT",
   "scripts": {
     "eslint": "eslint app/javascript --fix",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@rails/actioncable": "^6.0.0",
-    "@rails/webpacker": "^4.2.2",
+    "@rails/webpacker": "^5.2.0",
     "axios": "^0.19.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "babel-plugin-transform-vue-jsx": "^3.7.0",
@@ -36,7 +36,6 @@
     "url-loader": "^2.0.0",
     "v-tooltip": "~2.0.2",
     "vue": "^2.6.0",
-    "vue-aplayer": "~0.1.1",
     "vue-audio": "~0.0.7",
     "vue-axios": "~1.2.2",
     "vue-chartjs": "^3.4.2",
@@ -64,6 +63,7 @@
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-jest": "^25.3.0",
     "babel-loader": "^8.1.0",
+    "cypress": "^4.10.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^4.0.0",

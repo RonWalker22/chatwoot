@@ -36,7 +36,13 @@
               v-if="computedInboxClass(child)"
               class="inbox-icon"
               :class="computedInboxClass(child)"
-            ></i>
+            />
+            <span
+              v-if="child.color"
+              class="label-color--display"
+              :style="{ backgroundColor: child.color }"
+            />
+
             {{ child.label }}
           </div>
         </a>
@@ -51,13 +57,8 @@ import { mapGetters } from 'vuex';
 
 import router from '../../routes';
 import adminMixin from '../../mixins/isAdmin';
+import { INBOX_TYPES } from 'shared/mixins/inboxMixin';
 
-const INBOX_TYPES = {
-  WEB: 'Channel::WebWidget',
-  FB: 'Channel::FacebookPage',
-  TWITTER: 'Channel::TwitterProfile',
-  TWILIO: 'Channel::TwilioSms',
-};
 const getInboxClassByType = type => {
   switch (type) {
     case INBOX_TYPES.WEB:
@@ -71,6 +72,12 @@ const getInboxClassByType = type => {
 
     case INBOX_TYPES.TWILIO:
       return 'ion-android-textsms';
+
+    case INBOX_TYPES.API:
+      return 'ion-cloud';
+
+    case INBOX_TYPES.EMAIL:
+      return 'ion-email';
 
     default:
       return '';
@@ -126,8 +133,22 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import '~dashboard/assets/scss/variables';
+
 .sub-menu-title {
   display: flex;
   justify-content: space-between;
+}
+
+.wrap {
+  display: flex;
+  align-items: center;
+}
+
+.label-color--display {
+  border-radius: $space-smaller;
+  height: $space-normal;
+  margin-right: $space-small;
+  width: $space-normal;
 }
 </style>

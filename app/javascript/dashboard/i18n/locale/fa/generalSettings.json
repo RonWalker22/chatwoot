@@ -1,0 +1,42 @@
+{
+  "GENERAL_SETTINGS": {
+    "TITLE": "تنظیمات حساب",
+    "SUBMIT": "تغییر تنظیمات",
+    "BACK": "Back",
+    "UPDATE": {
+      "ERROR": "تنظیمات تغییری نکرد، دوباره امتحان کنید!",
+      "SUCCESS": "تنظیمات با موفقیت اعمال شد"
+    },
+    "FORM": {
+      "ERROR": "لطفا ایرادات فرم را برطرف کنید",
+      "GENERAL_SECTION": {
+        "TITLE": "تنظیمات عمومی",
+        "NOTE": ""
+      },
+      "NAME": {
+        "LABEL": "عنوان حساب",
+        "PLACEHOLDER": "عنوان حساب شما",
+        "ERROR": "لطفا عنوان حساب را به درستی وارد نمایید"
+      },
+      "LANGUAGE": {
+        "LABEL": "زبان سایت (آزمایشی)",
+        "PLACEHOLDER": "زبان نمایش المان‌های متنی سایت",
+        "ERROR": ""
+      },
+      "DOMAIN": {
+        "LABEL": "Incoming Email Domain",
+        "PLACEHOLDER": "The domain where you will receive the emails",
+        "ERROR": ""
+      },
+      "SUPPORT_EMAIL": {
+        "LABEL": "ایمیل پشتیبانی",
+        "PLACEHOLDER": "ایمیل پشتیبانی شرکت شما",
+        "ERROR": ""
+      },
+      "FEATURES": {
+        "INBOUND_EMAIL_ENABLED": "Conversation continuity with emails is enabled for your account.",
+        "CUSTOM_EMAIL_DOMAIN_ENABLED": "You can receive emails in your custom domain now."
+      }
+    }
+  }
+}

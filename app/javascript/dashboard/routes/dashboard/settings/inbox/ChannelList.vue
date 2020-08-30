@@ -9,6 +9,7 @@
         v-for="channel in channelList"
         :key="channel"
         :channel="channel"
+        :enabled-features="enabledFeatures"
         @channel-item-click="initChannelAuth"
       />
     </div>
@@ -19,6 +20,7 @@
 import ChannelItem from 'dashboard/components/widgets/ChannelItem';
 import router from '../../../index';
 import PageHeader from '../SettingsSubPageHeader';
+import { mapGetters } from 'vuex';
 
 export default {
   components: {
@@ -28,16 +30,34 @@ export default {
   data() {
     return {
       channelList: [
-        'website',
-        'facebook',
-        'twitter',
-        'twilio',
-        'telegram',
-        'line',
+        { key: 'website', name: 'Website' },
+        { key: 'facebook', name: 'Facebook' },
+        { key: 'twitter', name: 'Twitter' },
+        { key: 'twilio', name: 'Twilio' },
+        { key: 'email', name: 'Email' },
+        { key: 'api', name: 'API' },
+        { key: 'telegram', name: 'Telegram' },
+        { key: 'line', name: 'Line' },
       ],
+      enabledFeatures: {},
     };
   },
+  computed: {
+    account() {
+      return this.$store.getters['accounts/getAccount'](this.accountId);
+    },
+    ...mapGetters({
+      accountId: 'getCurrentAccountId',
+    }),
+  },
+  mounted() {
+    this.initializeEnabledFeatures();
+  },
   methods: {
+    async initializeEnabledFeatures() {
+      await this.$store.dispatch('accounts/get', this.accountId);
+      this.enabledFeatures = this.account.features;
+    },
     initChannelAuth(channel) {
       const params = {
         page: 'new',

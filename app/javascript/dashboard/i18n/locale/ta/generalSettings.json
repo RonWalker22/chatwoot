@@ -1,0 +1,42 @@
+{
+  "GENERAL_SETTINGS": {
+    "TITLE": "கணக்கு அமைப்புகள்",
+    "SUBMIT": "அமைப்புகளைப் புதுப்பிக்கவும்",
+    "BACK": "Back",
+    "UPDATE": {
+      "ERROR": "அமைப்புகளைப் புதுப்பிக்க முடியவில்லை, மீண்டும் முயற்சிக்கவும்!",
+      "SUCCESS": "கணக்கு அமைப்புகளை வெற்றிகரமாக புதுப்பிக்கப்பட்டுள்ளது"
+    },
+    "FORM": {
+      "ERROR": "படிவ பிழைகளை சரிசெய்யவும்",
+      "GENERAL_SECTION": {
+        "TITLE": "பொது அமைப்புகள்",
+        "NOTE": ""
+      },
+      "NAME": {
+        "LABEL": "கணக்கின் பெயர்",
+        "PLACEHOLDER": "உங்கள் கணக்கின் பெயர்",
+        "ERROR": "செல்லுபடியாகும் கணக்கு பெயரை உள்ளிடவும்"
+      },
+      "LANGUAGE": {
+        "LABEL": "தள மொழி (சோதனை பதிப்பு)",
+        "PLACEHOLDER": "உங்கள் கணக்கின் பெயர்",
+        "ERROR": ""
+      },
+      "DOMAIN": {
+        "LABEL": "Incoming Email Domain",
+        "PLACEHOLDER": "The domain where you will receive the emails",
+        "ERROR": ""
+      },
+      "SUPPORT_EMAIL": {
+        "LABEL": "சேவைக்கான ஈ-மெயில் முகவரி",
+        "PLACEHOLDER": "உங்கள் நிறுவனத்தின் சேவைக்கான ஈ-மெயில் முகவரி",
+        "ERROR": ""
+      },
+      "FEATURES": {
+        "INBOUND_EMAIL_ENABLED": "Conversation continuity with emails is enabled for your account.",
+        "CUSTOM_EMAIL_DOMAIN_ENABLED": "You can receive emails in your custom domain now."
+      }
+    }
+  }
+}

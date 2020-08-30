@@ -1,0 +1,42 @@
+{
+  "GENERAL_SETTINGS": {
+    "TITLE": "Nastavení účtu",
+    "SUBMIT": "Aktualizovat nastavení",
+    "BACK": "Back",
+    "UPDATE": {
+      "ERROR": "Nelze aktualizovat nastavení, zkuste to znovu!",
+      "SUCCESS": "Nastavení účtu bylo úspěšně aktualizováno"
+    },
+    "FORM": {
+      "ERROR": "Opravte chyby formuláře",
+      "GENERAL_SECTION": {
+        "TITLE": "Obecná nastavení",
+        "NOTE": ""
+      },
+      "NAME": {
+        "LABEL": "Název účtu",
+        "PLACEHOLDER": "Název vašeho účtu",
+        "ERROR": "Zadejte prosím platný název účtu"
+      },
+      "LANGUAGE": {
+        "LABEL": "Jazyk webu (Beta)",
+        "PLACEHOLDER": "Název vašeho účtu",
+        "ERROR": ""
+      },
+      "DOMAIN": {
+        "LABEL": "Incoming Email Domain",
+        "PLACEHOLDER": "The domain where you will receive the emails",
+        "ERROR": ""
+      },
+      "SUPPORT_EMAIL": {
+        "LABEL": "Support Email",
+        "PLACEHOLDER": "Your company's support email",
+        "ERROR": ""
+      },
+      "FEATURES": {
+        "INBOUND_EMAIL_ENABLED": "Conversation continuity with emails is enabled for your account.",
+        "CUSTOM_EMAIL_DOMAIN_ENABLED": "You can receive emails in your custom domain now."
+      }
+    }
+  }
+}

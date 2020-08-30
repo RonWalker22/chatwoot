@@ -1,0 +1,57 @@
+{
+  "CONVERSATION": {
+    "404": "الرجاء اختيار محادثة من سجل المحادثات",
+    "NO_MESSAGE_1": "لا توجد رسائل بعد من العملاء في صندوق الوارد الخاص بك.",
+    "NO_MESSAGE_2": " لإرسال رسالة إلى الصفحة الخاصة بك!",
+    "NO_INBOX_1": "يبدو أنك لم تقم بإضافة أي صناديق بريدية بعد.",
+    "NO_INBOX_2": " للبدء",
+    "NO_INBOX_AGENT": "يبدو أنه لم يتم إسنادك لأي قنوات تواصل بعد. الرجاء التواصل مع المدير لإضافتك لصناديق الوارد الخاصة بقنوات التواصل",
+    "CLICK_HERE": "اضغط هنا",
+    "LOADING_INBOXES": "جار تحميل صناديق الوارد",
+    "LOADING_CONVERSATIONS": "جاري تحميل المحادثات",
+    "CANNOT_REPLY": "You cannot reply due to",
+    "24_HOURS_WINDOW": "24 hour message window restriction",
+    "LAST_INCOMING_TWEET": "You are replying to the last incoming tweet",
+    "REPLYING_TO": "You are replying to:",
+    "REMOVE_SELECTION": "Remove Selection",
+    "DOWNLOAD": "تنزيل",
+    "HEADER": {
+      "RESOLVE_ACTION": "إغلاق المحادثة",
+      "REOPEN_ACTION": "إعادة فتح",
+      "OPEN": "المزيد",
+      "CLOSE": "أغلق",
+      "DETAILS": "التفاصيل"
+    },
+    "FOOTER": {
+      "MSG_INPUT": "زر Shift + Enter لإضافة سطر جديد. ابدأ بزر / للاختيار من الردود السريعة.",
+      "PRIVATE_MSG_INPUT": "زر Shift + Enter لإضافة سطر جديد. سيكون هذا مرئياً للموظفين فقط"
+    },
+    "REPLYBOX": {
+      "REPLY": "إضافة رد",
+      "PRIVATE_NOTE": "إضافة ملاحظة خاصة",
+      "SEND": "إرسال",
+      "CREATE": "إضافة ملاحظة",
+      "TWEET": "تغريد"
+    },
+    "VISIBLE_TO_AGENTS": "ملاحظة خاصة: مرئية فقط لأعضاء فريق العمل والموظفين",
+    "CHANGE_STATUS": "تم تغيير حالة المحادثة",
+    "CHANGE_AGENT": "تم تغيير الموظف الذي تم إحالة المحادثة إليه"
+  },
+  "EMAIL_TRANSCRIPT": {
+    "TITLE": "Send conversation transcript",
+    "DESC": "Send a copy of the conversation transcript to the specified email address",
+    "SUBMIT": "إرسال",
+    "CANCEL": "إلغاء",
+    "SEND_EMAIL_SUCCESS": "The chat transcript was sent successfully",
+    "SEND_EMAIL_ERROR": "حدث خطأ، الرجاء المحاولة مرة أخرى",
+    "FORM": {
+      "SEND_TO_CONTACT": "Send the transcript to the customer",
+      "SEND_TO_AGENT": "Send the transcript of the assigned agent",
+      "SEND_TO_OTHER_EMAIL_ADDRESS": "Send the transcript to another email address",
+      "EMAIL": {
+        "PLACEHOLDER": "Enter an email address",
+        "ERROR": "الرجاء إدخال عنوان بريد إلكتروني صحيح"
+      }
+    }
+  }
+}

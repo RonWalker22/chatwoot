@@ -51,7 +51,7 @@ linters:
 
   ElsePlacement:
     enabled: true
-    style: same_line # or 'new_line'
+    style: new_line
 
   EmptyLineBetweenBlocks:
     enabled: true
@@ -282,3 +282,4 @@ exclude:
   - 'app/javascript/widget/assets/scss/_reset.scss'
   - 'app/javascript/widget/assets/scss/sdk.css'
   - 'app/assets/stylesheets/administrate/reset/_normalize.scss'
+  - 'app/javascript/shared/assets/stylesheets/*.scss'

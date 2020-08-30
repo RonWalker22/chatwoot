@@ -63,9 +63,15 @@
           "LABEL": "Bienvenido Tagline",
           "PLACEHOLDER": "Facilitamos la conexión con nosotros. Pídanos cualquier cosa o comparte tus comentarios."
         },
-        "CHANNEL_AGENT_AWAY_MESSAGE": {
-          "LABEL": "Mensaje de Agentes Ausentes",
+        "CHANNEL_GREETING_MESSAGE": {
+          "LABEL": "Mensaje de bienvenida del canal",
           "PLACEHOLDER": "Acme Inc normalmente responde en unas pocas horas."
+        },
+        "CHANNEL_GREETING_TOGGLE": {
+          "LABEL": "Habilitar bienvenida al canal",
+          "HELP_TEXT": "Enviar un mensaje de bienvenida al usuario cuando inicie la conversación.",
+          "ENABLED": "Activado",
+          "DISABLED": "Deshabilitado"
         },
         "WIDGET_COLOR": {
           "LABEL": "Color del widget",
@@ -108,6 +114,43 @@
         "API": {
           "ERROR_MESSAGE": "No pudimos autenticar credenciales de Twilio, por favor inténtalo de nuevo"
         }
+      },
+      "API_CHANNEL": {
+        "TITLE": "Canal API",
+        "DESC": "Integrate with API channel and start supporting your customers.",
+        "CHANNEL_NAME": {
+          "LABEL": "Nombre del canal",
+          "PLACEHOLDER": "Por favor, introduzca un nombre de canal",
+          "ERROR": "Este campo es obligatorio"
+        },
+        "WEBHOOK_URL": {
+          "LABEL": "URL de Webhook",
+          "SUBTITLE": "Configure the URL where you want to recieve callbacks on events.",
+          "PLACEHOLDER": "URL de Webhook"
+        },
+        "SUBMIT_BUTTON": "Crear canal de API",
+        "API": {
+          "ERROR_MESSAGE": "No pudimos guardar el canal api"
+        }
+      },
+      "EMAIL_CHANNEL": {
+        "TITLE": "Canal de Email",
+        "DESC": "Integrate you email inbox.",
+        "CHANNEL_NAME": {
+          "LABEL": "Nombre del canal",
+          "PLACEHOLDER": "Por favor, introduzca un nombre de canal",
+          "ERROR": "Este campo es obligatorio"
+        },
+        "EMAIL": {
+          "LABEL": "E-mail",
+          "SUBTITLE": "Email donde tus clientes te envían tickets de soporte",
+          "PLACEHOLDER": "E-mail"
+        },
+        "SUBMIT_BUTTON": "Crear canal de email",
+        "API": {
+          "ERROR_MESSAGE": "No pudimos guardar el canal de email"
+        },
+        "FINISH_MESSAGE": "Empieza a reenviar tus emails a la siguiente dirección de email."
       },
       "AUTH": {
         "TITLE": "Canales",
@@ -169,7 +212,17 @@
         "ERROR_MESSAGE": "No se pudo eliminar la bandeja de entrada. Inténtalo de nuevo más tarde."
       }
     },
+    "TABS": {
+      "SETTINGS": "Ajustes",
+      "COLLABORATORS": "Collaborators",
+      "CONFIGURATION": "Configuration"
+    },
     "SETTINGS": "Ajustes",
+    "FEATURES": {
+      "LABEL": "Features",
+      "DISPLAY_FILE_PICKER": "Display file picker on the widget",
+      "DISPLAY_EMOJI_PICKER": "Display emoji picker on the widget"
+    },
     "SETTINGS_POPUP": {
       "MESSENGER_HEADING": "Script de Messenger",
       "MESSENGER_SUB_HEAD": "Coloca este botón dentro de tu etiqueta cuerpo",

@@ -18,20 +18,13 @@
           :key="inboxSection.toState"
           :menu-item="inboxSection"
         />
+        <sidebar-item
+          v-if="shouldShowInboxes"
+          :key="labelSection.toState"
+          :menu-item="labelSection"
+        />
       </transition-group>
     </div>
-
-    <!-- this block is only required in the hosted version with billing enabled -->
-    <transition name="fade" mode="out-in">
-      <woot-status-bar
-        v-if="shouldShowStatusBox"
-        :message="trialMessage"
-        :button-text="$t('APP_GLOBAL.TRAIL_BUTTON')"
-        :button-route="{ name: 'billing' }"
-        :type="statusBarClass"
-        :show-button="isAdmin"
-      />
-    </transition>
 
     <div class="bottom-nav">
       <transition name="menu-slide">
@@ -41,7 +34,7 @@
           class="dropdown-pane top"
         >
           <ul class="vertical dropdown menu">
-            <li v-if="currentUser.accounts.length > 1">
+            <li v-if="showChangeAccountOption">
               <button
                 class="button clear change-accounts--button"
                 @click="changeAccount"
@@ -63,10 +56,14 @@
         </div>
       </transition>
       <div class="current-user" @click.prevent="showOptions()">
-        <thumbnail :src="currentUser.avatar_url" :username="currentUser.name" />
+        <thumbnail
+          :src="currentUser.avatar_url"
+          :username="currentUserAvailableName"
+          :status="currentUser.availability_status"
+        />
         <div class="current-user--data">
           <h3 class="current-user--name">
-            {{ currentUser.name }}
+            {{ currentUserAvailableName }}
           </h3>
           <h5 class="current-user--role">
             {{ currentRole }}
@@ -97,6 +94,58 @@
           </label>
         </a>
       </div>
+      <div
+        v-if="globalConfig.createNewAccountFromDashboard"
+        class="modal-footer delete-item"
+      >
+        <button
+          class="button success large expanded nice"
+          @click="createAccount"
+        >
+          {{ $t('CREATE_ACCOUNT.NEW_ACCOUNT') }}
+        </button>
+      </div>
+    </woot-modal>
+
+    <woot-modal
+      :show="showCreateAccountModal"
+      :on-close="onCloseCreate"
+      class="account-selector--modal"
+    >
+      <div class="column content-box">
+        <woot-modal-header
+          :header-title="$t('CREATE_ACCOUNT.NEW_ACCOUNT')"
+          :header-content="$t('CREATE_ACCOUNT.SELECTOR_SUBTITLE')"
+        />
+
+        <form class="row" @submit.prevent="addAccount()">
+          <div class="medium-12 columns">
+            <label :class="{ error: $v.accountName.$error }">
+              {{ $t('CREATE_ACCOUNT.FORM.NAME.LABEL') }}
+              <input
+                v-model.trim="accountName"
+                type="text"
+                :placeholder="$t('CREATE_ACCOUNT.FORM.NAME.PLACEHOLDER')"
+                @input="$v.accountName.$touch"
+              />
+            </label>
+          </div>
+          <div class="modal-footer  medium-12 columns">
+            <div class="medium-12 columns">
+              <woot-submit-button
+                :disabled="
+                  $v.accountName.$invalid ||
+                    $v.accountName.$invalid ||
+                    uiFlags.isCreating
+                "
+                :button-text="$t('CREATE_ACCOUNT.FORM.SUBMIT')"
+                :loading="uiFlags.isCreating"
+                button-class="large expanded"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
     </woot-modal>
   </aside>
 </template>
@@ -108,18 +157,19 @@ import { mixin as clickaway } from 'vue-clickaway';
 import adminMixin from '../../mixins/isAdmin';
 import Auth from '../../api/auth';
 import SidebarItem from './SidebarItem';
-import WootStatusBar from '../widgets/StatusBar';
 import { frontendURL } from '../../helper/URLHelper';
 import Thumbnail from '../widgets/Thumbnail';
 import { getSidebarItems } from '../../i18n/default-sidebar';
+import { required, minLength } from 'vuelidate/lib/validators';
+import alertMixin from 'shared/mixins/alertMixin';
+// import accountMixin from '../../../../../mixins/account';
 
 export default {
   components: {
     SidebarItem,
-    WootStatusBar,
     Thumbnail,
   },
-  mixins: [clickaway, adminMixin],
+  mixins: [clickaway, adminMixin, alertMixin],
   props: {
     route: {
       type: String,
@@ -130,18 +180,38 @@ export default {
     return {
       showOptionsMenu: false,
       showAccountModal: false,
+      showCreateAccountModal: false,
+      accountName: '',
+      vertical: 'bottom',
+      horizontal: 'center',
     };
+  },
+  validations: {
+    accountName: {
+      required,
+      minLength: minLength(1),
+    },
   },
   computed: {
     ...mapGetters({
       currentUser: 'getCurrentUser',
-      daysLeft: 'getTrialLeft',
       globalConfig: 'globalConfig/get',
       inboxes: 'inboxes/getInboxes',
-      subscriptionData: 'getSubscription',
       accountId: 'getCurrentAccountId',
       currentRole: 'getCurrentRole',
+      uiFlags: 'agents/getUIFlags',
+      accountLabels: 'labels/getLabelsOnSidebar',
     }),
+    currentUserAvailableName() {
+      const { available_name: availableName } = this.currentUser;
+      return availableName;
+    },
+    showChangeAccountOption() {
+      if (this.globalConfig.createNewAccountFromDashboard) {
+        return true;
+      }
+      return this.currentUser.accounts.length > 1;
+    },
     sidemenuItems() {
       return getSidebarItems(this.accountId);
     },
@@ -158,10 +228,6 @@ export default {
         if (isRouteIncluded) {
           menuItems = Object.values(groupItem.menuItems);
         }
-      }
-
-      if (!window.chatwootConfig.billingEnabled) {
-        menuItems = this.filterBillingRoutes(menuItems);
       }
 
       return this.filterMenuItemsByRole(menuItems);
@@ -190,38 +256,33 @@ export default {
         })),
       };
     },
+    labelSection() {
+      return {
+        icon: 'ion-pound',
+        label: 'LABELS',
+        hasSubMenu: true,
+        key: 'label',
+        cssClass: 'menu-title align-justify',
+        toState: frontendURL(`accounts/${this.accountId}/settings/labels`),
+        toStateName: 'labels_list',
+        children: this.accountLabels.map(label => ({
+          id: label.id,
+          label: label.title,
+          color: label.color,
+          toState: frontendURL(
+            `accounts/${this.accountId}/label/${label.title}`
+          ),
+        })),
+      };
+    },
     dashboardPath() {
       return frontendURL(`accounts/${this.accountId}/dashboard`);
-    },
-    shouldShowStatusBox() {
-      return (
-        window.chatwootConfig.billingEnabled &&
-        (this.subscriptionData.state === 'trial' ||
-          this.subscriptionData.state === 'cancelled')
-      );
-    },
-    statusBarClass() {
-      if (this.subscriptionData.state === 'trial') {
-        return 'warning';
-      }
-      if (this.subscriptionData.state === 'cancelled') {
-        return 'danger';
-      }
-      return '';
-    },
-    trialMessage() {
-      return `${this.daysLeft} ${this.$t('APP_GLOBAL.TRIAL_MESSAGE')}`;
     },
   },
   mounted() {
     this.$store.dispatch('inboxes/get');
   },
   methods: {
-    filterBillingRoutes(menuItems) {
-      return menuItems.filter(
-        menuItem => !menuItem.toState.includes('billing')
-      );
-    },
     filterMenuItemsByRole(menuItems) {
       if (!this.currentRole) {
         return [];
@@ -244,6 +305,29 @@ export default {
     },
     onClose() {
       this.showAccountModal = false;
+    },
+    createAccount() {
+      this.showAccountModal = false;
+      this.showCreateAccountModal = true;
+    },
+    onCloseCreate() {
+      this.showCreateAccountModal = false;
+    },
+    async addAccount() {
+      try {
+        const account_id = await this.$store.dispatch('accounts/create', {
+          account_name: this.accountName,
+        });
+        this.onClose();
+        this.showAlert(this.$t('CREATE_ACCOUNT.API.SUCCESS_MESSAGE'));
+        window.location = `/app/accounts/${account_id}/dashboard`;
+      } catch (error) {
+        if (error.response.status === 422) {
+          this.showAlert(this.$t('CREATE_ACCOUNT.API.EXIST_MESSAGE'));
+        } else {
+          this.showAlert(this.$t('CREATE_ACCOUNT.API.ERROR_MESSAGE'));
+        }
+      }
     },
   },
 };

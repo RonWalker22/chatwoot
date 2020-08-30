@@ -12,7 +12,7 @@ class Twitter::DirectMessageParserService < Twitter::WebhooksBaseService
       account_id: @inbox.account_id,
       inbox_id: @inbox.id,
       message_type: outgoing_message? ? :outgoing : :incoming,
-      contact_id: @contact.id,
+      sender: @contact,
       source_id: direct_message_data['id']
     )
   end
@@ -64,7 +64,7 @@ class Twitter::DirectMessageParserService < Twitter::WebhooksBaseService
   end
 
   def set_conversation
-    @conversation = @contact_inbox.conversations.first
+    @conversation = @contact_inbox.conversations.where("additional_attributes ->> 'type' = 'direct_message'").first
     return if @conversation
 
     @conversation = ::Conversation.create!(conversation_params)

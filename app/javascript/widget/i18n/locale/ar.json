@@ -9,10 +9,17 @@
     }
   },
   "AGENT_AVAILABILITY": {
-    "IS_AVAILABLE": "is available",
-    "ARE_AVAILABLE": "are available",
+    "IS_AVAILABLE": "متاح",
+    "ARE_AVAILABLE": "متاح",
     "OTHERS_ARE_AVAILABLE": "others are available",
-    "AND": "and"
+    "AND": "و"
+  },
+  "UNREAD_VIEW": {
+    "VIEW_MESSAGES_BUTTON": "عرض الرسائل الجديدة",
+    "CLOSE_MESSAGES_BUTTON": "أغلق"
+  },
+  "BUBBLE": {
+    "LABEL": "Chat with us"
   },
   "POWERED_BY": "مدعوم بواسطة Chatwoot",
   "EMAIL_PLACEHOLDER": "الرجاء إدخال بريدك الإلكتروني",

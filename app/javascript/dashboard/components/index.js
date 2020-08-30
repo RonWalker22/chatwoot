@@ -2,10 +2,12 @@
 /* eslint-env browser */
 import AvatarUploader from './widgets/forms/AvatarUploader.vue';
 import Bar from './widgets/chart/BarChart';
+import Button from './widgets/Button';
 import Code from './Code';
 import ColorPicker from './widgets/ColorPicker';
 import DeleteModal from './widgets/modal/DeleteModal.vue';
 import Input from './widgets/forms/Input.vue';
+import Label from './widgets/Label.vue';
 import LoadingState from './widgets/LoadingState';
 import Modal from './Modal';
 import ModalHeader from './ModalHeader';
@@ -20,11 +22,13 @@ import Thumbnail from './widgets/Thumbnail.vue';
 const WootUIKit = {
   AvatarUploader,
   Bar,
+  Button,
   Code,
   ColorPicker,
   DeleteModal,
   Input,
   LoadingState,
+  Label,
   Modal,
   ModalHeader,
   ReportStatsCard,

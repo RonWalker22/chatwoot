@@ -44,9 +44,31 @@
         "LABEL": "Imagine de profil"
       },
       "NAME": {
-        "LABEL": "Numele tau",
+        "LABEL": "Numele tău complet",
+        "ERROR": "Te rugăm să introduci un nume valid",
+        "PLACEHOLDER": "Te rugăm să introduci un nume valid"
+      },
+      "DISPLAY_NAME": {
+        "LABEL": "Nume afişat",
         "ERROR": "Te rugăm să introduci un nume valid",
         "PLACEHOLDER": "Te rugăm să introduci numele tău, care va fi folosit în conversații"
+      },
+      "AVAILABILITY": {
+        "LABEL": "Disponibilitate",
+        "STATUSES_LIST": [
+          {
+            "value": "online",
+            "label": "Online"
+          },
+          {
+            "value": "busy",
+            "label": "Ocupat"
+          },
+          {
+            "value": "offline",
+            "label": "Deconectat"
+          }
+        ]
       },
       "EMAIL": {
         "LABEL": "Adresa ta de email",
@@ -102,8 +124,24 @@
     "AGENTS": "Agenți",
     "INBOXES": "Căsuțe",
     "CANNED_RESPONSES": "Răspunsuri predefinite",
-    "BILLING": "Facturare",
     "INTEGRATIONS": "Integrări",
-    "ACCOUNT_SETTINGS": "Setările contului"
+    "ACCOUNT_SETTINGS": "Setările contului",
+    "LABELS": "Etichete"
+  },
+  "CREATE_ACCOUNT": {
+    "NEW_ACCOUNT": "Cont Nou",
+    "SELECTOR_SUBTITLE": "Creează un cont nou",
+    "API": {
+      "SUCCESS_MESSAGE": "Agent actualizat cu succes",
+      "EXIST_MESSAGE": "Contul există deja",
+      "ERROR_MESSAGE": "Nu s-a putut conecta la Woot Server, încercați din nou mai târziu"
+    },
+    "FORM": {
+      "NAME": {
+        "LABEL": "Nume cont",
+        "PLACEHOLDER": "Wayne Enterprises"
+      },
+      "SUBMIT": "Trimite"
+    }
   }
 }

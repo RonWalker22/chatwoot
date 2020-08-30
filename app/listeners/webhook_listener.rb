@@ -38,6 +38,7 @@ class WebhookListener < BaseListener
     inbox = contact_inbox.inbox
 
     payload = contact_inbox.webhook_data.merge(event: __method__.to_s)
+    payload[:event_info] = event.data[:event_info]
     deliver_webhook_payloads(payload, inbox)
   end
 
@@ -49,9 +50,7 @@ class WebhookListener < BaseListener
       WebhookJob.perform_later(webhook.url, payload)
     end
 
-    # Inbox webhooks
-    inbox.webhooks.inbox.each do |webhook|
-      WebhookJob.perform_later(webhook.url, payload)
-    end
+    # Deliver for API Inbox
+    WebhookJob.perform_later(inbox.channel.webhook_url, payload) if inbox.channel_type == 'Channel::Api'
   end
 end
