@@ -1,22 +1,20 @@
 <template>
-  <div v-if="homeChoice === 'feedback'" class="feedback-home">
-    <FeedbackHome @decide="choose('chat')" />
-  </div>
-  <div v-else class="home">
+  <div class="home">
     <div class="header-wrap">
       <ChatHeaderExpanded
         v-if="isHeaderExpanded && !hideWelcomeHeader"
         :intro-heading="introHeading"
         :intro-body="introBody"
         :avatar-url="channelConfig.avatarUrl"
-        @decide="choose('feedback')"
       />
       <ChatHeader
         v-else
         :title="channelConfig.websiteName"
         :avatar-url="channelConfig.avatarUrl"
-        @decide="choose('feedback')"
       />
+      <router-link :to="{ name: 'Feedbacks' }">
+        Feedback
+      </router-link>
     </div>
     <AvailableAgents v-if="showAvailableAgents" :agents="availableAgents" />
     <ConversationWrap :grouped-messages="groupedMessages" />
@@ -31,7 +29,6 @@
 
 <script>
 import { mapGetters } from 'vuex';
-
 import Branding from 'widget/components/Branding.vue';
 import ChatFooter from 'widget/components/ChatFooter.vue';
 import ChatHeaderExpanded from 'widget/components/ChatHeaderExpanded.vue';
@@ -39,8 +36,6 @@ import ChatHeader from 'widget/components/ChatHeader.vue';
 import ConversationWrap from 'widget/components/ConversationWrap.vue';
 import AvailableAgents from 'widget/components/AvailableAgents.vue';
 import configMixin from '../mixins/configMixin';
-import FeedbackHome from 'widget/components/feedback/FeedbackHome.vue';
-
 export default {
   name: 'Home',
   components: {
@@ -50,14 +45,8 @@ export default {
     ChatHeader,
     Branding,
     AvailableAgents,
-    FeedbackHome,
   },
   mixins: [configMixin],
-  data() {
-    return {
-      homeChoice: 'feedback',
-    };
-  },
   computed: {
     ...mapGetters({
       groupedMessages: 'conversation/getGroupedConversation',
@@ -94,17 +83,11 @@ export default {
       return !(this.introHeading || this.introBody);
     },
   },
-  methods: {
-    choose(choice) {
-      this.homeChoice = choice;
-    },
-  },
 };
 </script>
 
 <style scoped lang="scss">
 @import '~widget/assets/scss/woot.scss';
-
 .home {
   width: 100%;
   height: 100%;
@@ -112,26 +95,22 @@ export default {
   flex-direction: column;
   flex-wrap: nowrap;
   background: $color-background;
-
   .header-wrap {
     flex-shrink: 0;
     border-radius: $space-normal $space-normal $space-small $space-small;
     background: white;
     z-index: 99;
     @include shadow-large;
-
     @media only screen and (min-device-width: 320px) and (max-device-width: 667px) {
       border-radius: 0;
     }
   }
-
   .footer-wrap {
     flex-shrink: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     position: relative;
-
     &:before {
       content: '';
       position: absolute;
@@ -147,15 +126,8 @@ export default {
       );
     }
   }
-
   .input-wrap {
     padding: 0 $space-normal;
   }
-}
-
-.feedback-home {
-  background: $color-background;
-  width: 100%;
-  height: 100%;
 }
 </style>

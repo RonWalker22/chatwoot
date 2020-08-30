@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
+import FeedbackHome from './views/FeedbackHome.vue';
+import Feedbacks from './components/feedback/Feedbacks.vue';
+import Feedback from './components/feedback/Feedback.vue';
 
 Vue.use(Router);
 
@@ -8,17 +11,29 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      redirect: '/home/feedbacks',
+    },
+    {
+      path: '/home',
+      name: 'FeedbackHome',
+      component: FeedbackHome,
+      children: [
+        {
+          path: 'feedbacks',
+          name: 'Feedbacks',
+          component: Feedbacks,
+        },
+        {
+          path: 'feedback/:id',
+          name: 'Feedback',
+          component: Feedback,
+        },
+      ],
+    },
+    {
+      path: '/chat',
+      name: 'Chat',
       component: Home,
     },
-    // {
-    //   path: '/about',
-    //   name: 'about',
-    //   // route level code-splitting
-    //   // this generates a separate chunk (about.[hash].js) for this route
-    //   // which is lazy-loaded when the route is visited.
-    //   component: () =>
-    //     import(/* webpackChunkName: "about" */ './views/About.vue'),
-    // },
   ],
 });

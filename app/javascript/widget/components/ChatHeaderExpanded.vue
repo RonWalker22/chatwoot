@@ -1,12 +1,5 @@
 <template>
   <header class="header-expanded">
-    <button
-      class="button"
-      :style="{ borderColor: widgetColor }"
-      @click="$emit('decide')"
-    >
-      Feedback
-    </button>
     <img v-if="avatarUrl" class="logo" :src="avatarUrl" />
     <span class="close close-button" @click="closeWindow"></span>
     <h2 class="title" v-html="introHeading"></h2>

@@ -36,6 +36,17 @@ class Contact < ApplicationRecord
   has_many :contact_inboxes, dependent: :destroy
   has_many :inboxes, through: :contact_inboxes
   has_many :messages, dependent: :destroy
+  has_many :feedback_contacts, dependent: :destroy
+  # rubocop:disable Rails/InverseOf
+  has_many :created_feedbacks,
+           class_name: 'Feedback',
+           foreign_key: 'requester_id',
+           dependent: :destroy
+  # rubocop:enable Rails/InverseOf
+  has_many :supported_feedbacks, through: :feedback_contacts, source: :feedback
+  has_many :problems, through: :feedback_contacts
+  has_many :solutions, through: :feedback_contacts
+  has_many :clarification_posts, dependent: :destroy
 
   before_validation :downcase_email
   after_create :dispatch_create_event

@@ -13,7 +13,6 @@
 ActiveRecord::Schema.define(version: 2020_05_22_115645) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -165,6 +164,23 @@ ActiveRecord::Schema.define(version: 2020_05_22_115645) do
     t.index ["website_token"], name: "index_channel_web_widgets_on_website_token", unique: true
   end
 
+  create_table "clarification_posts", force: :cascade do |t|
+    t.text "body"
+    t.bigint "feedback_contact_id", null: false
+    t.bigint "clarification_thread_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["clarification_thread_id"], name: "index_clarification_posts_on_clarification_thread_id"
+    t.index ["feedback_contact_id"], name: "index_clarification_posts_on_feedback_contact_id"
+  end
+
+  create_table "clarification_threads", force: :cascade do |t|
+    t.bigint "feedback_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_id"], name: "index_clarification_threads_on_feedback_id"
+  end
+
   create_table "contact_inboxes", force: :cascade do |t|
     t.bigint "contact_id"
     t.bigint "inbox_id"
@@ -227,6 +243,30 @@ ActiveRecord::Schema.define(version: 2020_05_22_115645) do
     t.index ["inbox_id"], name: "index_events_on_inbox_id"
     t.index ["name"], name: "index_events_on_name"
     t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "feedback_contacts", force: :cascade do |t|
+    t.bigint "feedback_id", null: false
+    t.bigint "contact_id", null: false
+    t.integer "prefund_level", default: -1, null: false
+    t.integer "support_level", default: -1, null: false
+    t.boolean "supporter", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["contact_id"], name: "index_feedback_contacts_on_contact_id"
+    t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
+  end
+
+  create_table "feedbacks", force: :cascade do |t|
+    t.string "title", null: false
+    t.bigint "requester_id", null: false
+    t.bigint "web_widget_id"
+    t.integer "funding_goal", default: 0
+    t.string "status", default: "review", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["requester_id"], name: "index_feedbacks_on_requester_id"
+    t.index ["web_widget_id"], name: "index_feedbacks_on_web_widget_id"
   end
 
   create_table "inbox_members", id: :serial, force: :cascade do |t|
@@ -317,6 +357,33 @@ ActiveRecord::Schema.define(version: 2020_05_22_115645) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "problem_solutions", force: :cascade do |t|
+    t.bigint "problem_id", null: false
+    t.bigint "solution_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["problem_id"], name: "index_problem_solutions_on_problem_id"
+    t.index ["solution_id"], name: "index_problem_solutions_on_solution_id"
+  end
+
+  create_table "problems", force: :cascade do |t|
+    t.bigint "feedback_contact_id", null: false
+    t.text "details", null: false
+    t.boolean "primary", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_contact_id"], name: "index_problems_on_feedback_contact_id"
+  end
+
+  create_table "solutions", force: :cascade do |t|
+    t.bigint "feedback_contact_id", null: false
+    t.text "details", null: false
+    t.boolean "primary", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_contact_id"], name: "index_solutions_on_feedback_contact_id"
+  end
+
   create_table "subscriptions", id: :serial, force: :cascade do |t|
     t.string "pricing_version"
     t.integer "account_id"
@@ -357,9 +424,11 @@ ActiveRecord::Schema.define(version: 2020_05_22_115645) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
     t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
     t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
     t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
     t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+    t.index ["tagger_type", "tagger_id"], name: "index_taggings_on_tagger_type_and_tagger_id"
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|
@@ -418,8 +487,16 @@ ActiveRecord::Schema.define(version: 2020_05_22_115645) do
   add_foreign_key "account_users", "accounts"
   add_foreign_key "account_users", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "clarification_posts", "clarification_threads"
+  add_foreign_key "clarification_posts", "feedback_contacts"
+  add_foreign_key "clarification_threads", "feedbacks"
   add_foreign_key "contact_inboxes", "contacts"
   add_foreign_key "contact_inboxes", "inboxes"
   add_foreign_key "conversations", "contact_inboxes"
+  add_foreign_key "feedback_contacts", "contacts"
+  add_foreign_key "feedback_contacts", "feedbacks"
+  add_foreign_key "feedbacks", "contacts", column: "requester_id"
   add_foreign_key "messages", "contacts"
+  add_foreign_key "problems", "feedback_contacts"
+  add_foreign_key "solutions", "feedback_contacts"
 end

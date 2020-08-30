@@ -17,6 +17,9 @@ export default {
       isMobile: false,
     };
   },
+  created() {
+    this.fetchOldFeedbacks(window.chatwootWebChannel.websiteToken);
+  },
   mounted() {
     const { websiteToken, locale } = window.chatwootWebChannel;
     this.setLocale(locale);
@@ -70,6 +73,7 @@ export default {
     ...mapActions('appConfig', ['setWidgetColor']),
     ...mapActions('conversation', ['fetchOldConversations']),
     ...mapActions('agent', ['fetchAvailableAgents']),
+    ...mapActions('feedback', ['fetchOldFeedbacks']),
     scrollConversationToBottom() {
       const container = this.$el.querySelector('.conversation-wrap');
       container.scrollTop = container.scrollHeight;
