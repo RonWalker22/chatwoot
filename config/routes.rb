@@ -105,6 +105,11 @@ Rails.application.routes.draw do
       namespace :integrations do
         resources :webhooks, only: [:create]
       end
+      resources :feedbacks, only: [:index, :show, :create]
+
+      resources :clarification_posts, only: [:show, :create]
+
+      resources :feedback_contacts, only: [:index, :create, :destroy]
 
       resource :profile, only: [:show, :update]
       resource :notification_subscriptions, only: [:create]

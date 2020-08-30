@@ -9,6 +9,7 @@ import conversationLabels from 'widget/store/modules/conversationLabels';
 import events from 'widget/store/modules/events';
 import globalConfig from 'shared/store/globalConfig';
 import message from 'widget/store/modules/message';
+import feedback from 'widget/store/modules/feedback';
 
 Vue.use(Vuex);
 
@@ -23,5 +24,6 @@ export default new Vuex.Store({
     events,
     globalConfig,
     message,
+    feedback,
   },
 });

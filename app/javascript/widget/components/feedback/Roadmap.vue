@@ -1,17 +1,80 @@
 <template>
   <div>
-    <h1 class="title">
-      Roadmap
-    </h1>
+    <div class="columns">
+      <div class="column black-column">
+        <h2 class="title">
+          Now
+        </h2>
+        <ul>
+          <li v-for="campaign of roadmap.Now" :key="campaign.id">
+            <nuxt-link :to="'/campaigns/' + campaign.id">
+              {{ campaign.title }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+      <div class="column">
+        <h2 class="title">
+          Next
+        </h2>
+        <ul>
+          <li v-for="campaign of roadmap.Next" :key="campaign.id">
+            <nuxt-link :to="'/campaigns/' + campaign.id">
+              {{ campaign.title }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+      <div class="column black-column">
+        <h2 class="title">
+          Later
+        </h2>
+        <ul>
+          <li v-for="campaign of roadmap.Later" :key="campaign.id">
+            <nuxt-link :to="'/campaigns/' + campaign.id">
+              {{ campaign.title }}
+            </nuxt-link>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Roadmap',
+  props: {
+    roadmap: {
+      type: Object,
+      required: false,
+      default: Object,
+    },
+  },
 };
 </script>
 
-<style scoped lang="scss">
-@import 'assets/main.scss';
+<style lang="scss" scoped>
+@import '~widget/assets/feedback/main.scss';
+
+.black-column {
+  color: white;
+  background: black;
+  a {
+    color: white;
+    :hover {
+      color: white;
+    }
+  }
+  h2 {
+    color: white;
+  }
+}
+
+ul {
+  list-style: inside;
+}
+
+.columns {
+  margin: 0;
+}
 </style>

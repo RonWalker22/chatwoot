@@ -4,13 +4,6 @@
       <img v-if="avatarUrl" :src="avatarUrl" alt="avatar" />
       <h2 class="title" v-html="title"></h2>
     </div>
-    <button
-      class="button feedback"
-      :style="{ backgroundColor: widgetColor }"
-      @click="$emit('decide')"
-    >
-      Feedback
-    </button>
     <span class="close-button" @click="closeWindow"></span>
   </header>
 </template>
@@ -18,7 +11,6 @@
 <script>
 import { mapGetters } from 'vuex';
 import { IFrameHelper } from 'widget/helpers/utils';
-
 export default {
   name: 'ChatHeader',
   props: {
@@ -51,7 +43,6 @@ export default {
 <style scoped lang="scss">
 @import '~widget/assets/scss/variables.scss';
 @import '~widget/assets/scss/mixins.scss';
-
 .header-collapsed {
   display: flex;
   justify-content: space-between;
@@ -59,34 +50,25 @@ export default {
   width: 100%;
   box-sizing: border-box;
   color: $color-white;
-
   .header-branding {
     display: flex;
     align-items: center;
-
     img {
       border-radius: 50%;
     }
   }
-
   .title {
     font-size: $font-size-large;
     font-weight: $font-weight-medium;
     color: $color-heading;
   }
-
   img {
     height: 24px;
     width: 24px;
     margin-right: $space-small;
   }
-
   .close-button {
     display: none;
   }
-}
-
-.feedback {
-  border: none;
 }
 </style>
