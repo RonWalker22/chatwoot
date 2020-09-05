@@ -278,8 +278,8 @@ ActiveRecord::Schema.define(version: 2020_08_19_190629) do
   create_table "feedback_contacts", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "contact_id", null: false
-    t.integer "prefund_level", default: -1, null: false
-    t.integer "support_level", default: -1, null: false
+    t.integer "prefund_level", default: 0, null: false
+    t.integer "support_level", default: 0, null: false
     t.boolean "supporter", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -440,18 +440,6 @@ ActiveRecord::Schema.define(version: 2020_08_19_190629) do
     t.index ["feedback_contact_id"], name: "index_solutions_on_feedback_contact_id"
   end
 
-  create_table "subscriptions", id: :serial, force: :cascade do |t|
-    t.string "pricing_version"
-    t.integer "account_id"
-    t.datetime "expiry"
-    t.string "billing_plan", default: "trial"
-    t.string "stripe_customer_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "state", default: 0
-    t.boolean "payment_source_added", default: false
-  end
-
   create_table "super_admins", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -553,7 +541,6 @@ ActiveRecord::Schema.define(version: 2020_08_19_190629) do
   add_foreign_key "feedback_contacts", "contacts"
   add_foreign_key "feedback_contacts", "feedbacks"
   add_foreign_key "feedbacks", "contacts", column: "requester_id"
-  add_foreign_key "messages", "contacts"
   add_foreign_key "problems", "feedback_contacts"
   add_foreign_key "solutions", "feedback_contacts"
 end

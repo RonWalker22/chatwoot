@@ -3,8 +3,8 @@
 # Table name: feedback_contacts
 #
 #  id            :bigint           not null, primary key
-#  prefund_level :integer          default(-1), not null
-#  support_level :integer          default(-1), not null
+#  prefund_level :integer          default(0), not null
+#  support_level :integer          default(0), not null
 #  supporter     :boolean          not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
