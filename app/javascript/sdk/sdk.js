@@ -77,6 +77,15 @@ export const SDK_CSS = `.woot-widget-holder {
   margin-left: 17px;
 }
 
+@media only screen and (min-width: 667px) {
+  .woot-widget-holder.woot-elements--left {
+    left: 20px;
+ }
+  .woot-widget-holder.woot-elements--right {
+    right: 20px;
+ }
+}
+
 .woot--close:hover {
   opacity: 1;
 }

@@ -1,17 +1,23 @@
 <template>
-  <router
-    :show-unread-view="showUnreadView"
-    :is-mobile="isMobile"
-    :grouped-messages="groupedMessages"
-    :unread-messages="unreadMessages"
-    :conversation-size="conversationSize"
-    :available-agents="availableAgents"
-    :has-fetched="hasFetched"
-    :conversation-attributes="conversationAttributes"
-    :unread-message-count="unreadMessageCount"
-    :is-left-aligned="isLeftAligned"
-    :hide-message-bubble="hideMessageBubble"
-  />
+  <div
+    id="app"
+    class="woot-widget-wrap"
+    :class="{ 'is-mobile': isMobile, 'is-widget-right': !isLeftAligned }"
+  >
+    <router-view
+      :show-unread-view="showUnreadView"
+      :is-mobile="isMobile"
+      :grouped-messages="groupedMessages"
+      :unread-messages="unreadMessages"
+      :conversation-size="conversationSize"
+      :available-agents="availableAgents"
+      :has-fetched="hasFetched"
+      :conversation-attributes="conversationAttributes"
+      :unread-message-count="unreadMessageCount"
+      :is-left-aligned="isLeftAligned"
+      :hide-message-bubble="hideMessageBubble"
+    />
+  </div>
 </template>
 
 <script>
@@ -20,13 +26,8 @@ import { mapGetters, mapActions } from 'vuex';
 import { setHeader } from 'widget/helpers/axios';
 import { IFrameHelper } from 'widget/helpers/utils';
 
-import Router from './views/Router';
-
 export default {
   name: 'App',
-  components: {
-    Router,
-  },
   data() {
     return {
       showUnreadView: false,

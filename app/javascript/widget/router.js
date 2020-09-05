@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
+import RouterTwo from './views/Router.vue';
 import FeedbackHome from './views/FeedbackHome.vue';
 import Feedbacks from './components/feedback/Feedbacks.vue';
 import Feedback from './components/feedback/Feedback.vue';
@@ -33,7 +33,7 @@ export default new Router({
     {
       path: '/chat',
       name: 'Chat',
-      component: Home,
+      component: RouterTwo,
     },
   ],
 });
