@@ -1,7 +1,7 @@
 <template>
   <div class="fb-container">
     <router-link
-      class="button is-small back-link is-black is-outlined"
+      class="button is-small back-link is-info is-outlined"
       :to="{ name: 'Feedbacks' }"
     >
       <i class="ion-android-arrow-back icon" aria-hidden="true" />

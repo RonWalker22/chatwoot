@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column black-column">
+      <div class="column color-column">
         <h2 class="title">
           Now
         </h2>
@@ -25,7 +25,7 @@
           </li>
         </ul>
       </div>
-      <div class="column black-column">
+      <div class="column color-column">
         <h2 class="title">
           Later
         </h2>
@@ -56,9 +56,9 @@ export default {
 <style lang="scss" scoped>
 @import '~widget/assets/feedback/main.scss';
 
-.black-column {
+.color-column {
   color: white;
-  background: black;
+  background: $ik4-color;
   a {
     color: white;
     :hover {

@@ -15,7 +15,7 @@
         <div class="level-left">
           <div class="level-item">
             <button
-              class="button is-black is-small is-outlined"
+              class="button is-info is-small is-outlined"
               @click="newComment()"
             >
               add comment
@@ -71,8 +71,8 @@ export default {
 
 .textarea:focus {
   outline: none !important;
-  border: 1px solid black;
-  box-shadow: 0 0 5px black;
+  border: 1px solid $ik4-color;
+  box-shadow: 0 0 5px $ik4-color;
 }
 
 .submit-container {

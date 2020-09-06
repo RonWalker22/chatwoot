@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      class="button is-rounded is-small new-feature-btn"
+      class="button is-rounded is-small new-feature-btn is-info is-outlined"
       @click="openModal()"
     >
       <i class="icon ion-android-add" />
@@ -104,12 +104,12 @@
 
           <div class="field is-grouped submit-container">
             <div class="control">
-              <button class="button is-black" @click="newFeedback()">
+              <button class="button is-info" @click="newFeedback()">
                 Submit
               </button>
             </div>
             <div class="control">
-              <button class="button is-black is-light" @click="closeModal()">
+              <button class="button is-info is-light" @click="closeModal()">
                 Cancel
               </button>
             </div>
@@ -175,14 +175,11 @@ export default {
 
 .icon {
   font-size: 130%;
-  color: $ik4-color;
 }
 
 .new-feature-btn {
-  border-color: $ik4-color;
   span {
     font-size: 130%;
-    color: $ik4-color;
   }
 }
 

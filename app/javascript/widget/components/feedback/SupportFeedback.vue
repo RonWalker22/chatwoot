@@ -6,7 +6,7 @@
     <div v-if="!isSupporter">
       <div class="has-text-centered">
         <button
-          class="button is-black is-small is-rounded is-outlined"
+          class="button is-info is-small is-rounded is-outlined"
           data-target="support-modal"
           aria-haspopup="true"
           @click="openModal()"
@@ -65,7 +65,7 @@
 
             <div class="field is-grouped submit-container">
               <div class="control">
-                <button class="button is-black" @click="newSupporter()">
+                <button class="button is-info" @click="newSupporter()">
                   Submit
                 </button>
               </div>
