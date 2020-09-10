@@ -1,6 +1,4 @@
 class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
-  before_action :set_web_widget
-  before_action :set_contact, only: [:index, :create]
   before_action :set_feedback, only: [:show]
 
   def index

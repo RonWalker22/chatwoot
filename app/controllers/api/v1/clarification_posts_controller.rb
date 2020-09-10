@@ -1,8 +1,7 @@
 class Api::V1::ClarificationPostsController < Api::V1::FeedbackBaseController
   include ActionView::Helpers::DateHelper
 
-  before_action :set_web_widget
-  before_action :set_contact, only: [:create]
+  skip_before_action :set_contact, only: [:show]
   before_action :set_feedback, only: [:create, :show]
 
   def show
