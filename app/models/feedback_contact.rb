@@ -24,6 +24,6 @@
 class FeedbackContact < ApplicationRecord
   belongs_to :feedback
   belongs_to :contact
-  has_many :solution, dependent: :destroy
+  has_many :solutions, dependent: :destroy
   has_many :problems, dependent: :destroy
 end
