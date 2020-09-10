@@ -32,6 +32,7 @@ class Feedback < ApplicationRecord
   validates :status, inclusion: { in: STATUS_OPTIONS }
   validates :title, presence: true, allow_blank: false
 
+  has_one :roadmap_item, dependent: :destroy
   belongs_to :requester, class_name: 'Contact'
   has_many :feedback_contacts, dependent: :destroy
   has_many :supporters, through: :feedback_contacts, source: :contact

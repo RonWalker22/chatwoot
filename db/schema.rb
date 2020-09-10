@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_08_19_190629) do
+ActiveRecord::Schema.define(version: 2020_09_07_201634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -431,6 +431,37 @@ ActiveRecord::Schema.define(version: 2020_08_19_190629) do
     t.index ["feedback_contact_id"], name: "index_problems_on_feedback_contact_id"
   end
 
+  create_table "roadmap_group_items", force: :cascade do |t|
+    t.bigint "roadmap_item_id", null: false
+    t.bigint "roadmap_group_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["roadmap_group_id"], name: "index_roadmap_group_items_on_roadmap_group_id"
+    t.index ["roadmap_item_id"], name: "index_roadmap_group_items_on_roadmap_item_id"
+  end
+
+  create_table "roadmap_groups", force: :cascade do |t|
+    t.string "title", null: false
+    t.bigint "web_widget_id"
+    t.text "body"
+    t.date "due_by"
+    t.string "status", default: "later", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["web_widget_id"], name: "index_roadmap_groups_on_web_widget_id"
+  end
+
+  create_table "roadmap_items", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.date "due_by"
+    t.string "status", default: "later", null: false
+    t.bigint "feedback_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id"
+  end
+
   create_table "solutions", force: :cascade do |t|
     t.bigint "feedback_contact_id", null: false
     t.text "details", null: false
@@ -542,5 +573,6 @@ ActiveRecord::Schema.define(version: 2020_08_19_190629) do
   add_foreign_key "feedback_contacts", "feedbacks"
   add_foreign_key "feedbacks", "contacts", column: "requester_id"
   add_foreign_key "problems", "feedback_contacts"
+  add_foreign_key "roadmap_items", "feedbacks"
   add_foreign_key "solutions", "feedback_contacts"
 end

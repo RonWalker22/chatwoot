@@ -53,6 +53,7 @@ export default {
   },
   created() {
     this.fetchOldFeedbacks(window.chatwootWebChannel.websiteToken);
+    this.fetchRoadmap(window.chatwootWebChannel.websiteToken);
   },
   mounted() {
     const { websiteToken, locale } = window.chatwootWebChannel;
@@ -128,6 +129,7 @@ export default {
     ...mapActions('conversation', ['fetchOldConversations', 'setUserLastSeen']),
     ...mapActions('agent', ['fetchAvailableAgents']),
     ...mapActions('feedback', ['fetchOldFeedbacks']),
+    ...mapActions('roadmap', ['fetchRoadmap']),
     scrollConversationToBottom() {
       const container = this.$el.querySelector('.conversation-wrap');
       container.scrollTop = container.scrollHeight;

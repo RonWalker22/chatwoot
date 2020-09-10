@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import Roadmap from '../components/feedback/Roadmap.vue';
+import Roadmap from '../components/roadmap/Roadmap.vue';
 import Changelog from '../components/feedback/Changelog.vue';
 import { mapGetters } from 'vuex';
 

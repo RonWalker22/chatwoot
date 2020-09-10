@@ -122,3 +122,38 @@ solution_three = Solution.create!(
 ProblemSolution.create! problem_id: problem_three.id, solution_id: solution_three.id
 
 # - + - feedback - + -
+
+# - + - roadmap - + -
+
+solo_now = RoadmapGroup.create!(title: 'solo now',
+                                status: 'now',
+                                web_widget_id: web_widget.id)
+
+solo_next = RoadmapGroup.create!(title: 'solo next',
+                                 status: 'next',
+                                 web_widget_id: web_widget.id)
+
+solo_later = RoadmapGroup.create!(title: 'solo later',
+                                  status: 'later',
+                                  web_widget_id: web_widget.id)
+
+intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
+                                       body: 'Intergate the social media network, Reddit')
+
+intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
+                                        body: 'Intergate cloud storage and file storage - Dropbox')
+
+intergate_slack = RoadmapItem.create!(title: 'Intergate Slack',
+                                      body: 'Intergate platform for team communication - Slack',
+                                      feedback: feedback_one)
+
+RoadmapGroupItem.create!(roadmap_group: solo_now,
+                         roadmap_item: intergate_reddit)
+
+RoadmapGroupItem.create!(roadmap_group: solo_next,
+                         roadmap_item: intergate_dropbox)
+
+RoadmapGroupItem.create!(roadmap_group: solo_later,
+                         roadmap_item: intergate_slack)
+
+# - + - roadmap - + -

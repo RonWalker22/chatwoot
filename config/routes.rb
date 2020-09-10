@@ -111,6 +111,8 @@ Rails.application.routes.draw do
 
       resources :feedback_contacts, only: [:index, :create, :destroy]
 
+      resources :roadmaps, only: [:index]
+
       resource :profile, only: [:show, :update]
       resource :notification_subscriptions, only: [:create]
 

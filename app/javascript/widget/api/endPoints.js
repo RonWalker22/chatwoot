@@ -91,6 +91,13 @@ const createSupporter = payload => ({
   },
 });
 
+const getRoadmap = token => ({
+  url: '/api/v1/roadmaps',
+  params: {
+    website_token: token,
+  },
+});
+
 export default {
   sendMessage,
   sendAttachment,
@@ -101,4 +108,5 @@ export default {
   createFeedback,
   createComment,
   createSupporter,
+  getRoadmap,
 };

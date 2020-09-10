@@ -28,6 +28,7 @@ class Channel::WebWidget < ApplicationRecord
 
   belongs_to :account
   has_many :feedbacks, dependent: :destroy
+  has_many :roadmap_groups, dependent: :destroy
   has_one :inbox, as: :channel, dependent: :destroy
   has_secure_token :website_token
   has_flags 1 => :attachments,
