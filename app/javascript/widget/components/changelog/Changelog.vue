@@ -3,7 +3,7 @@
     <div class="columns">
       <div class="column">
         <h1 class="title has-text-centered is-4">
-          What's new
+          What's New
         </h1>
         <div class="box">
           <Group
