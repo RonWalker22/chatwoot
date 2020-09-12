@@ -2,7 +2,7 @@
   <div>
     <div class="columns">
       <div class="column now-column">
-        <h2 class="title">
+        <h2 class="title is-4">
           Now
         </h2>
         <Group
@@ -13,7 +13,7 @@
         />
       </div>
       <div class="column next-column">
-        <h2 class="title">
+        <h2 class="title is-4">
           Next
         </h2>
         <Group
@@ -24,7 +24,7 @@
         />
       </div>
       <div class="column later-column">
-        <h2 class="title">
+        <h2 class="title is-4">
           Later
         </h2>
         <Group
@@ -61,10 +61,9 @@ export default {
 .now-column,
 .next-column,
 .later-column {
-  margin-top: 1em;
+  // margin-top: 1em;
   h2 {
     text-align: center;
-    color: $ik4-color;
   }
 }
 

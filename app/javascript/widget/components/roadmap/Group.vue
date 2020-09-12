@@ -1,8 +1,5 @@
 <template>
   <div>
-    <h3 class="title is-5">
-      {{ title }}
-    </h3>
     <ul>
       <Item
         v-for="item of items"
