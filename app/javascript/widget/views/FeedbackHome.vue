@@ -41,7 +41,7 @@
 
 <script>
 import Roadmap from '../components/roadmap/Roadmap.vue';
-import Changelog from '../components/feedback/Changelog.vue';
+import Changelog from '../components/changelog/Changelog.vue';
 import { mapGetters } from 'vuex';
 
 export default {

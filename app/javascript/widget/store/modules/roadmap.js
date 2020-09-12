@@ -4,27 +4,32 @@ import { getRoadmapAPI } from 'widget/api/roadmap';
 
 const state = {
   roadmap: {
-    now: {},
-    next: {},
-    later: {},
+    undone: {
+      now: {},
+      next: {},
+      later: {},
+    },
+    done: {},
   },
 };
 
 export const getters = {
-  getRoadmap: _state => _state.roadmap,
+  getRoadmap: _state => _state.roadmap.undone,
+  getChangelog: _state => _state.roadmap.done,
 };
 
 export const actions = {
   fetchRoadmap: async ({ commit }, token = {}) => {
     const { data } = await getRoadmapAPI(token);
-    commit('addRoadmap', data);
+    commit('addRoadmap', data.undone);
+    commit('addChangelog', data.done);
   },
 };
 
 export const mutations = {
   addRoadmap($state, payload) {
     payload.now.forEach(pair => {
-      Vue.set($state.roadmap.now, pair.group.id, {
+      Vue.set($state.roadmap.undone.now, pair.group.id, {
         id: pair.group.id,
         title: pair.group.title,
         body: pair.group.body,
@@ -34,7 +39,7 @@ export const mutations = {
       });
     });
     payload.next.forEach(pair => {
-      Vue.set($state.roadmap.next, pair.group.id, {
+      Vue.set($state.roadmap.undone.next, pair.group.id, {
         id: pair.group.id,
         title: pair.group.title,
         body: pair.group.body,
@@ -44,7 +49,19 @@ export const mutations = {
       });
     });
     payload.later.forEach(pair => {
-      Vue.set($state.roadmap.later, pair.group.id, {
+      Vue.set($state.roadmap.undone.later, pair.group.id, {
+        id: pair.group.id,
+        title: pair.group.title,
+        body: pair.group.body,
+        dueBy: pair.group.due_by,
+        items: pair.items,
+        status: pair.group.status,
+      });
+    });
+  },
+  addChangelog($state, payload) {
+    payload.forEach(pair => {
+      Vue.set($state.roadmap.done, pair.group.id, {
         id: pair.group.id,
         title: pair.group.title,
         body: pair.group.body,

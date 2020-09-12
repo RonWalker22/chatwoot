@@ -17,6 +17,7 @@ class Api::V1::RoadmapsController < Api::V1::Widget::BaseController
     @now_groups = []
     @next_groups = []
     @later_groups = []
+    @done_groups = []
 
     @groups.each do |group|
       case group.status
@@ -26,6 +27,8 @@ class Api::V1::RoadmapsController < Api::V1::Widget::BaseController
         @next_groups << { group: group, items: group.roadmap_items }
       when 'later'
         @later_groups << { group: group, items: group.roadmap_items }
+      when 'done'
+        @done_groups << { group: group, items: group.roadmap_items }
       end
     end
   end

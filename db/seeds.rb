@@ -127,25 +127,31 @@ ProblemSolution.create! problem_id: problem_three.id, solution_id: solution_thre
 
 solo_now = RoadmapGroup.create!(title: 'solo now',
                                 status: 'now',
-                                web_widget_id: web_widget.id)
+                                web_widget_id: web_widget.id,
+                                due_by: Date.new(2007, 5, 12))
 
 solo_next = RoadmapGroup.create!(title: 'solo next',
                                  status: 'next',
-                                 web_widget_id: web_widget.id)
+                                 web_widget_id: web_widget.id,
+                                 due_by: Date.new(2007, 5, 12))
 
 solo_later = RoadmapGroup.create!(title: 'solo later',
                                   status: 'later',
-                                  web_widget_id: web_widget.id)
+                                  web_widget_id: web_widget.id,
+                                  due_by: Date.new(2007, 5, 12))
 
 intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
-                                       body: 'Intergate the social media network, Reddit')
+                                       body: 'Intergate the social media network, Reddit',
+                                       due_by: Date.new(2007, 5, 12))
 
 intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
-                                        body: 'Intergate cloud storage and file storage - Dropbox')
+                                        body: 'Intergate cloud storage and file storage - Dropbox',
+                                        due_by: Date.new(2007, 5, 12))
 
 intergate_slack = RoadmapItem.create!(title: 'Intergate Slack',
                                       body: 'Intergate platform for team communication - Slack',
-                                      feedback: feedback_one)
+                                      feedback: feedback_one,
+                                      due_by: Date.new(2007, 5, 12))
 
 RoadmapGroupItem.create!(roadmap_group: solo_now,
                          roadmap_item: intergate_reddit)
@@ -157,3 +163,34 @@ RoadmapGroupItem.create!(roadmap_group: solo_later,
                          roadmap_item: intergate_slack)
 
 # - + - roadmap - + -
+
+# - + - changelog - + -
+
+solo_done = RoadmapGroup.create!(title: 'solo done',
+                                 status: 'done',
+                                 web_widget_id: web_widget.id,
+                                 due_by: Date.new(2007, 5, 12))
+
+drag_drop = RoadmapItem.create!(title: 'Drag and Drop',
+                                body: 'Enable drag and drop, copy & paste image/files in the agent input box.',
+                                due_by: Date.new(2007, 5, 12))
+
+brand_icon = RoadmapItem.create!(title: 'Brand Icon',
+                                 body: 'Ability to set brand icon as staff/agent avatar',
+                                 due_by: Date.new(2007, 5, 12))
+
+dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
+                                             body: 'Intergate Dialogflow platform,',
+                                             feedback: feedback_one,
+                                             due_by: Date.new(2007, 5, 12))
+
+RoadmapGroupItem.create!(roadmap_group: solo_done,
+                         roadmap_item: drag_drop)
+
+RoadmapGroupItem.create!(roadmap_group: solo_done,
+                         roadmap_item: brand_icon)
+
+RoadmapGroupItem.create!(roadmap_group: solo_done,
+                         roadmap_item: dialogflow_integration)
+
+# - + - changelog - + -
