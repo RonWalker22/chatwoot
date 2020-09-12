@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column later-column">
+      <div class="column">
         <h1 class="title has-text-centered is-4">
-          Changelog
+          What's new
         </h1>
         <div class="box">
           <Group
@@ -37,16 +37,6 @@ export default {
 
 <style lang="scss" scoped>
 @import '~widget/assets/feedback/main.scss';
-
-.now-column,
-.next-column,
-.later-column {
-  margin-top: 1em;
-  h2 {
-    text-align: center;
-    color: $ik4-color;
-  }
-}
 
 ul {
   list-style: inside;
