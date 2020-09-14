@@ -16,6 +16,7 @@
       :unread-message-count="unreadMessageCount"
       :is-left-aligned="isLeftAligned"
       :hide-message-bubble="hideMessageBubble"
+      :show-popout-button="showPopoutButton"
     />
   </div>
 </template>
@@ -26,6 +27,8 @@ import { mapGetters, mapActions } from 'vuex';
 import { setHeader } from 'widget/helpers/axios';
 import { IFrameHelper } from 'widget/helpers/utils';
 
+import { getLocale } from './helpers/urlParamsHelper';
+
 export default {
   name: 'App',
   data() {
@@ -34,6 +37,7 @@ export default {
       isMobile: false,
       hideMessageBubble: false,
       widgetPosition: 'right',
+      showPopoutButton: false,
     };
   },
   computed: {
@@ -50,6 +54,9 @@ export default {
       const isLeft = this.widgetPosition === 'left';
       return isLeft;
     },
+    isIFrame() {
+      return IFrameHelper.isIFrame();
+    },
   },
   created() {
     this.fetchOldFeedbacks(window.chatwootWebChannel.websiteToken);
@@ -58,70 +65,18 @@ export default {
   mounted() {
     const { websiteToken, locale } = window.chatwootWebChannel;
     this.setLocale(locale);
-
-    if (IFrameHelper.isIFrame()) {
-      IFrameHelper.sendMessage({
-        event: 'loaded',
-        config: {
-          authToken: window.authToken,
-          channelConfig: window.chatwootWebChannel,
-        },
-      });
+    if (this.isIFrame) {
+      this.registerListeners();
+      this.sendLoadedEvent();
       setHeader('X-Auth-Token', window.authToken);
+    } else {
+      setHeader('X-Auth-Token', window.authToken);
+      this.fetchOldConversations();
+      this.fetchAvailableAgents(websiteToken);
+      this.setLocale(getLocale(window.location.search));
     }
-    this.setWidgetColor(window.chatwootWebChannel);
-
-    window.addEventListener('message', e => {
-      const wootPrefix = 'chatwoot-widget:';
-      const isDataNotString = typeof e.data !== 'string';
-      const isNotFromWoot = isDataNotString || e.data.indexOf(wootPrefix) !== 0;
-
-      if (isNotFromWoot) return;
-
-      const message = JSON.parse(e.data.replace(wootPrefix, ''));
-      if (message.event === 'config-set') {
-        this.setLocale(message.locale);
-        this.setBubbleLabel();
-        this.setPosition(message.position);
-        this.fetchOldConversations().then(() => {
-          this.setUnreadView();
-        });
-        this.fetchAvailableAgents(websiteToken);
-        this.setHideMessageBubble(message.hideMessageBubble);
-      } else if (message.event === 'widget-visible') {
-        this.scrollConversationToBottom();
-      } else if (message.event === 'set-current-url') {
-        window.refererURL = message.refererURL;
-      } else if (message.event === 'toggle-close-button') {
-        this.isMobile = message.showClose;
-      } else if (message.event === 'push-event') {
-        this.createWidgetEvents(message);
-      } else if (message.event === 'set-label') {
-        this.$store.dispatch('conversationLabels/create', message.label);
-      } else if (message.event === 'remove-label') {
-        this.$store.dispatch('conversationLabels/destroy', message.label);
-      } else if (message.event === 'set-user') {
-        this.$store.dispatch('contacts/update', message);
-      } else if (message.event === 'set-custom-attributes') {
-        this.$store.dispatch(
-          'contacts/setCustomAttributes',
-          message.customAttributes
-        );
-      } else if (message.event === 'delete-custom-attribute') {
-        this.$store.dispatch('contacts/setCustomAttributes', {
-          [message.customAttribute]: null,
-        });
-      } else if (message.event === 'set-locale') {
-        this.setLocale(message.locale);
-        this.setBubbleLabel();
-      } else if (message.event === 'set-unread-view') {
-        this.showUnreadView = true;
-      } else if (message.event === 'unset-unread-view') {
-        this.showUnreadView = false;
-      }
-    });
-
     this.$store.dispatch('conversationAttributes/get');
+    this.setWidgetColor(window.chatwootWebChannel);
     this.registerUnreadEvents();
   },
   methods: {
@@ -154,15 +109,23 @@ export default {
       this.hideMessageBubble = !!hideBubble;
     },
     registerUnreadEvents() {
-      bus.$on('on-agent-message-recieved', () => this.setUnreadView());
+      bus.$on('on-agent-message-recieved', () => {
+        if (!this.isIFrame) {
+          this.setUserLastSeen();
+        }
+        this.setUnreadView();
+      });
       bus.$on('on-unread-view-clicked', () => {
         this.unsetUnreadView();
         this.setUserLastSeen();
       });
     },
+    setPopoutDisplay(showPopoutButton) {
+      this.showPopoutButton = showPopoutButton;
+    },
     setUnreadView() {
       const { unreadMessageCount } = this;
-      if (IFrameHelper.isIFrame() && unreadMessageCount > 0) {
+      if (this.isIFrame && unreadMessageCount > 0) {
         IFrameHelper.sendMessage({
           event: 'setUnreadMode',
           unreadMessageCount,
@@ -170,7 +133,7 @@ export default {
       }
     },
     unsetUnreadView() {
-      if (IFrameHelper.isIFrame()) {
+      if (this.isIFrame) {
         IFrameHelper.sendMessage({ event: 'resetUnreadMode' });
       }
     },
@@ -182,6 +145,63 @@ export default {
       }
       this.setUserLastSeen();
       this.$store.dispatch('events/create', { name: eventName });
+    },
+    registerListeners() {
+      const { websiteToken } = window.chatwootWebChannel;
+      window.addEventListener('message', e => {
+        if (!IFrameHelper.isAValidEvent(e)) {
+          return;
+        }
+        const message = IFrameHelper.getMessage(e);
+        if (message.event === 'config-set') {
+          this.setLocale(message.locale);
+          this.setBubbleLabel();
+          this.setPosition(message.position);
+          this.fetchOldConversations().then(() => this.setUnreadView());
+          this.setPopoutDisplay(message.showPopoutButton);
+          this.fetchAvailableAgents(websiteToken);
+          this.setHideMessageBubble(message.hideMessageBubble);
+        } else if (message.event === 'widget-visible') {
+          this.scrollConversationToBottom();
+        } else if (message.event === 'set-current-url') {
+          window.refererURL = message.refererURL;
+        } else if (message.event === 'toggle-close-button') {
+          this.isMobile = message.showClose;
+        } else if (message.event === 'push-event') {
+          this.createWidgetEvents(message);
+        } else if (message.event === 'set-label') {
+          this.$store.dispatch('conversationLabels/create', message.label);
+        } else if (message.event === 'remove-label') {
+          this.$store.dispatch('conversationLabels/destroy', message.label);
+        } else if (message.event === 'set-user') {
+          this.$store.dispatch('contacts/update', message);
+        } else if (message.event === 'set-custom-attributes') {
+          this.$store.dispatch(
+            'contacts/setCustomAttributes',
+            message.customAttributes
+          );
+        } else if (message.event === 'delete-custom-attribute') {
+          this.$store.dispatch('contacts/setCustomAttributes', {
+            [message.customAttribute]: null,
+          });
+        } else if (message.event === 'set-locale') {
+          this.setLocale(message.locale);
+          this.setBubbleLabel();
+        } else if (message.event === 'set-unread-view') {
+          this.showUnreadView = true;
+        } else if (message.event === 'unset-unread-view') {
+          this.showUnreadView = false;
+        }
+      });
+    },
+    sendLoadedEvent() {
+      IFrameHelper.sendMessage({
+        event: 'loaded',
+        config: {
+          authToken: window.authToken,
+          channelConfig: window.chatwootWebChannel,
+        },
+      });
     },
   },
 };

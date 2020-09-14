@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_07_201634) do
+ActiveRecord::Schema.define(version: 2020_09_07_094912) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -236,7 +236,7 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.datetime "updated_at", null: false
     t.bigint "contact_id"
     t.integer "display_id", null: false
-    t.datetime "user_last_seen_at"
+    t.datetime "contact_last_seen_at"
     t.datetime "agent_last_seen_at"
     t.boolean "locked", default: false
     t.jsonb "additional_attributes"
@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.json "content_attributes", default: {}
     t.string "sender_type"
     t.bigint "sender_id"
+    t.jsonb "external_source_ids", default: {}
     t.index ["account_id"], name: "index_messages_on_account_id"
     t.index ["conversation_id"], name: "index_messages_on_conversation_id"
     t.index ["inbox_id"], name: "index_messages_on_inbox_id"

@@ -8,6 +8,7 @@
       :has-fetched="hasFetched"
       :conversation-attributes="conversationAttributes"
       :unread-message-count="unreadMessageCount"
+      :show-popout-button="showPopoutButton"
     />
     <unread
       v-else
@@ -76,6 +77,10 @@ export default {
     unreadMessageCount: {
       type: Number,
       default: 0,
+    },
+    showPopoutButton: {
+      type: Boolean,
+      default: false,
     },
   },
 };
