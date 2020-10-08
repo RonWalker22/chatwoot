@@ -291,10 +291,12 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.string "title", null: false
     t.bigint "requester_id", null: false
     t.bigint "web_widget_id"
+    t.bigint "account_id", null: false
     t.integer "funding_goal", default: 0
     t.string "status", default: "review", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["requester_id"], name: "index_feedbacks_on_requester_id"
     t.index ["web_widget_id"], name: "index_feedbacks_on_web_widget_id"
   end
@@ -444,11 +446,13 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
   create_table "roadmap_groups", force: :cascade do |t|
     t.string "title", null: false
     t.bigint "web_widget_id"
+    t.bigint "account_id", null: false
     t.text "body"
     t.date "due_by"
     t.string "status", default: "later", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_roadmap_groups_on_account_id"
     t.index ["web_widget_id"], name: "index_roadmap_groups_on_web_widget_id"
   end
 

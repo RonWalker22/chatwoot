@@ -8,11 +8,13 @@
 #  title         :string           not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  account_id    :bigint           not null
 #  requester_id  :bigint           not null
 #  web_widget_id :bigint
 #
 # Indexes
 #
+#  index_feedbacks_on_account_id     (account_id)
 #  index_feedbacks_on_requester_id   (requester_id)
 #  index_feedbacks_on_web_widget_id  (web_widget_id)
 #
@@ -37,6 +39,7 @@ class Feedback < ApplicationRecord
   has_many :feedback_contacts, dependent: :destroy
   has_many :supporters, through: :feedback_contacts, source: :contact
   belongs_to :web_widget, class_name: '::Channel::WebWidget'
+  belongs_to :account
   has_many :problems, through: :feedback_contacts
   has_many :solutions, through: :feedback_contacts
   has_one :clarification_thread, dependent: :destroy

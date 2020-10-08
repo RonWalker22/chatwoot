@@ -44,6 +44,7 @@ feedback_one = Feedback.create!(
   funding_goal: 1000,
   requester_id: contact.id,
   web_widget_id: web_widget.id,
+  account_id: web_widget.account.id,
   status: 'active'
 )
 feedback_two = Feedback.create!(
@@ -51,6 +52,7 @@ feedback_two = Feedback.create!(
   funding_goal: 1000,
   requester_id: contact.id,
   web_widget_id: web_widget.id,
+  account_id: web_widget.account.id,
   status: 'active'
 )
 feedback_three = Feedback.create!(
@@ -58,6 +60,7 @@ feedback_three = Feedback.create!(
   funding_goal: 1000,
   requester_id: contact.id,
   web_widget_id: web_widget.id,
+  account_id: web_widget.account.id,
   status: 'active'
 )
 
@@ -128,16 +131,19 @@ ProblemSolution.create! problem_id: problem_three.id, solution_id: solution_thre
 solo_now = RoadmapGroup.create!(title: 'solo now',
                                 status: 'now',
                                 web_widget_id: web_widget.id,
+                                account: web_widget.account,
                                 due_by: Date.new(2007, 5, 12))
 
 solo_next = RoadmapGroup.create!(title: 'solo next',
                                  status: 'next',
                                  web_widget_id: web_widget.id,
+                                 account: web_widget.account,
                                  due_by: Date.new(2007, 5, 12))
 
 solo_later = RoadmapGroup.create!(title: 'solo later',
                                   status: 'later',
                                   web_widget_id: web_widget.id,
+                                  account: web_widget.account,
                                   due_by: Date.new(2007, 5, 12))
 
 intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
@@ -169,6 +175,7 @@ RoadmapGroupItem.create!(roadmap_group: solo_later,
 solo_done = RoadmapGroup.create!(title: 'solo done',
                                  status: 'done',
                                  web_widget_id: web_widget.id,
+                                 account: web_widget.account,
                                  due_by: Date.new(2007, 5, 12))
 
 drag_drop = RoadmapItem.create!(title: 'Drag and Drop',

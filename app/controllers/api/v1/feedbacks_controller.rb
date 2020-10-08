@@ -22,6 +22,7 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
     @feedback = Feedback.new(feedback_params)
     @feedback.requester = @contact
     @feedback.web_widget = @web_widget
+    @feedback.account = @web_widget.account
     respond_to do |format|
       if @feedback.save
         create_feedback_contact
