@@ -43,7 +43,7 @@ feedback_one = Feedback.create!(
   title: 'Patreon integration - Give IK4 credit for patreon pledges',
   funding_goal: 1000,
   requester_id: contact.id,
-  web_widget_id: web_widget.id,
+  inbox_id: inbox.id,
   account_id: web_widget.account.id,
   status: 'active'
 )
@@ -51,7 +51,7 @@ feedback_two = Feedback.create!(
   title: 'Import feature requests from other platforms',
   funding_goal: 1000,
   requester_id: contact.id,
-  web_widget_id: web_widget.id,
+  inbox_id: inbox.id,
   account_id: web_widget.account.id,
   status: 'active'
 )
@@ -59,7 +59,7 @@ feedback_three = Feedback.create!(
   title: 'Support organizations with multiple products',
   funding_goal: 1000,
   requester_id: contact.id,
-  web_widget_id: web_widget.id,
+  inbox_id: inbox.id,
   account_id: web_widget.account.id,
   status: 'active'
 )
@@ -130,19 +130,19 @@ ProblemSolution.create! problem_id: problem_three.id, solution_id: solution_thre
 
 solo_now = RoadmapGroup.create!(title: 'solo now',
                                 status: 'now',
-                                web_widget_id: web_widget.id,
+                                inbox: inbox,
                                 account: web_widget.account,
                                 due_by: Date.new(2007, 5, 12))
 
 solo_next = RoadmapGroup.create!(title: 'solo next',
                                  status: 'next',
-                                 web_widget_id: web_widget.id,
+                                 inbox: inbox,
                                  account: web_widget.account,
                                  due_by: Date.new(2007, 5, 12))
 
 solo_later = RoadmapGroup.create!(title: 'solo later',
                                   status: 'later',
-                                  web_widget_id: web_widget.id,
+                                  inbox: inbox,
                                   account: web_widget.account,
                                   due_by: Date.new(2007, 5, 12))
 
@@ -174,7 +174,7 @@ RoadmapGroupItem.create!(roadmap_group: solo_later,
 
 solo_done = RoadmapGroup.create!(title: 'solo done',
                                  status: 'done',
-                                 web_widget_id: web_widget.id,
+                                 inbox: inbox,
                                  account: web_widget.account,
                                  due_by: Date.new(2007, 5, 12))
 

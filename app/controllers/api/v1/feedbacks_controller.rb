@@ -2,7 +2,7 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
   before_action :set_feedback, only: [:show]
 
   def index
-    @feedbacks = @web_widget.feedbacks.includes(
+    @feedbacks = inbox.feedbacks.includes(
       :feedback_contacts,
       :clarification_posts,
       solutions: [:contact, :problems],
@@ -21,7 +21,7 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
   def create
     @feedback = Feedback.new(feedback_params)
     @feedback.requester = @contact
-    @feedback.web_widget = @web_widget
+    @feedback.inbox = inbox
     @feedback.account = @web_widget.account
     respond_to do |format|
       if @feedback.save
@@ -91,5 +91,9 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
       ids = feedback.feedback_contacts.where(supporter: true).pluck(:contact_id)
       @my_feedback_ids.push(feedback.id) if ids.include?(@contact.id)
     end
+  end
+
+  def inbox
+    @inbox ||= ::Inbox.find_by(id: auth_token_params[:inbox_id])
   end
 end

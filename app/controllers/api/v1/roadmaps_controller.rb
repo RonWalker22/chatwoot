@@ -2,7 +2,7 @@ class Api::V1::RoadmapsController < Api::V1::Widget::BaseController
   skip_before_action :set_contact
 
   def index
-    @groups = @web_widget.roadmap_groups.includes(:roadmap_items).where.not(status: 'complete')
+    @groups = inbox.roadmap_groups.includes(:roadmap_items).where.not(status: 'complete')
 
     set_group_items
   end
@@ -31,5 +31,9 @@ class Api::V1::RoadmapsController < Api::V1::Widget::BaseController
         @done_groups << { group: group, items: group.roadmap_items }
       end
     end
+  end
+
+  def inbox
+    @inbox ||= ::Inbox.find_by(id: auth_token_params[:inbox_id])
   end
 end

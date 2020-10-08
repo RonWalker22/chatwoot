@@ -44,6 +44,9 @@ class Inbox < ApplicationRecord
   has_many :webhooks, dependent: :destroy
   has_many :hooks, dependent: :destroy, class_name: 'Integrations::Hook'
 
+  has_many :feedbacks, dependent: :destroy
+  has_many :roadmap_groups, dependent: :destroy
+
   after_destroy :delete_round_robin_agents
 
   scope :order_by_name, -> { order('lower(name) ASC') }
