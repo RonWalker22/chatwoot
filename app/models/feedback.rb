@@ -4,6 +4,7 @@
 #
 #  id           :bigint           not null, primary key
 #  funding_goal :integer          default(0)
+#  kind         :string           default("request"), not null
 #  status       :string           default("review"), not null
 #  title        :string           not null
 #  created_at   :datetime         not null

@@ -58,6 +58,7 @@ const createFeedback = payload => ({
   params: {
     feedback: {
       title: payload.title,
+      kind: payload.kind,
     },
     support_level: payload.supportLevel,
     problem: payload.problem,

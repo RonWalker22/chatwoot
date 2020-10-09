@@ -7,6 +7,7 @@ class CreateFeedbacks < ActiveRecord::Migration[6.0]
       t.references :account, null: false
       t.integer :funding_goal, default: 0
       t.string :status, null: false, default: 'review'
+      t.string :kind, null: false, default: 'request'
 
       t.timestamps
     end

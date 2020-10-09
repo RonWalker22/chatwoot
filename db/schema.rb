@@ -294,6 +294,7 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.bigint "account_id", null: false
     t.integer "funding_goal", default: 0
     t.string "status", default: "review", null: false
+    t.string "kind", default: "request", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_feedbacks_on_account_id"

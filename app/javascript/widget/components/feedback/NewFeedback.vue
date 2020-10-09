@@ -29,10 +29,16 @@
             <label class="label">Feedback Type</label>
             <div class="control">
               <div class="select">
-                <select v-model="feedbackType">
-                  <option>Feature Request</option>
-                  <option>General</option>
-                  <option>Bug Report</option>
+                <select v-model="payload.kind">
+                  <option value="request">
+                    Feature Request
+                  </option>
+                  <option value="general">
+                    General
+                  </option>
+                  <option value="bug">
+                    Bug Report
+                  </option>
                 </select>
               </div>
             </div>
@@ -134,6 +140,7 @@ export default {
         details: '',
         supportLevel: 0,
         websiteToken: window.chatwootWebChannel.websiteToken,
+        kind: '',
       },
       modalOpen: false,
       feedbackType: 'Feature Request',
@@ -144,13 +151,13 @@ export default {
       return this.modalOpen;
     },
     formatFeedbackType() {
-      if (this.feedbackType === 'General') {
+      if (this.payload.kind === 'General') {
         return 'feedback';
       }
-      return this.feedbackType.toLowerCase();
+      return this.payload.kind.toLowerCase();
     },
     requestFeedback() {
-      return this.feedbackType === 'Feature Request';
+      return this.payload.kind === 'Feature Request';
     },
   },
   methods: {
