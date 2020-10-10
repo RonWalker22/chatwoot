@@ -30,6 +30,9 @@
             <div class="control">
               <div class="select">
                 <select v-model="payload.kind">
+                  <option value="" selected disabled hidden>
+                    Choose here
+                  </option>
                   <option value="request">
                     Feature Request
                   </option>
@@ -110,7 +113,11 @@
 
           <div class="field is-grouped submit-container">
             <div class="control">
-              <button class="button is-info" @click="newFeedback()">
+              <button
+                class="button is-info"
+                :disabled="payload.kind === ''"
+                @click="newFeedback()"
+              >
                 Submit
               </button>
             </div>
@@ -157,7 +164,7 @@ export default {
       return this.payload.kind.toLowerCase();
     },
     requestFeedback() {
-      return this.payload.kind === 'Feature Request';
+      return this.payload.kind === 'request';
     },
   },
   methods: {
