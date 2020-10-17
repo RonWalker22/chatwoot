@@ -119,7 +119,7 @@
     }
   },
   "SIDEBAR": {
-    "CONVERSATIONS": "Conversations",
+    "CONVERSATIONS": "Support",
     "REPORTS": "Reports",
     "SETTINGS": "Settings",
     "HOME": "Home",
@@ -128,7 +128,8 @@
     "CANNED_RESPONSES": "Canned Responses",
     "INTEGRATIONS": "Integrations",
     "ACCOUNT_SETTINGS": "Account Settings",
-    "LABELS": "Labels"
+    "LABELS": "Labels",
+    "FEEDBACK": "Feedback"
   },
   "CREATE_ACCOUNT": {
     "NEW_ACCOUNT": "New Account",

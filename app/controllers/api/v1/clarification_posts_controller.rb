@@ -10,16 +10,16 @@ class Api::V1::ClarificationPostsController < Api::V1::FeedbackBaseController
 
   def create
     find_feedback_contact || create_feedback_contact
-    post = ClarificationPost.new(feedback_contact: @feedback_contact,
+    post = ClarificationPost.new(author: @feedback_contact,
                                  body: permitted_params['body'],
                                  clarification_thread: @feedback.clarification_thread)
     if post.save
       render json: {
-        feedback_id: post.feedback_contact.feedback_id,
-        feedback_status: post.feedback_contact.feedback.status,
+        feedback_id: post.author.feedback_id,
+        feedback_status: post.author.feedback.status,
         post: {
           body: post.body,
-          contact: post.feedback_contact.contact.name,
+          author: post.author.contact.name,
           id: post.id,
           datetime: time_ago_in_words(post.created_at)
         }

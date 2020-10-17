@@ -8,6 +8,10 @@ export const getSidebarItems = accountId => ({
       'inbox_conversation',
       'conversation_through_inbox',
       'settings_account_reports',
+      'feedback_home',
+      'feedback_item',
+      'label_feedback',
+      'feedback_through_label',
       'profile_settings',
       'profile_settings_index',
       'label_conversations',
@@ -15,13 +19,21 @@ export const getSidebarItems = accountId => ({
     ],
     menuItems: {
       assignedToMe: {
-        icon: 'ion-chatbox-working',
+        icon: 'ion-help-buoy',
         label: 'CONVERSATIONS',
         hasSubMenu: false,
         key: '',
         toState: frontendURL(`accounts/${accountId}/dashboard`),
         toolTip: 'Conversation from all subscribed inboxes',
         toStateName: 'home',
+      },
+      feedback: {
+        icon: 'ion-loop',
+        label: 'FEEDBACK',
+        hasSubMenu: false,
+        toState: frontendURL(`accounts/${accountId}/feedback`),
+        toolTip: 'General feedback, feature requests, and bug reports',
+        toStateName: 'feedback_home',
       },
       report: {
         icon: 'ion-arrow-graph-up-right',

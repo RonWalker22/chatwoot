@@ -46,7 +46,8 @@ class Contact < ApplicationRecord
   has_many :supported_feedbacks, through: :feedback_contacts, source: :feedback
   has_many :problems, through: :feedback_contacts
   has_many :solutions, through: :feedback_contacts
-  has_many :clarification_posts, dependent: :destroy
+  has_many :clarification_posts, through: :feedback_contacts, dependent: :destroy
+  has_many :feedback_requests, through: :feedback_contacts, class_name: 'Feedback', as: :requester, dependent: :destroy
 
   before_validation :prepare_email_attribute
   after_create_commit :dispatch_create_event

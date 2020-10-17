@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_07_201634) do
+ActiveRecord::Schema.define(version: 2020_10_11_235220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -182,13 +182,14 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
   end
 
   create_table "clarification_posts", force: :cascade do |t|
-    t.text "body"
-    t.bigint "feedback_contact_id", null: false
+    t.text "body", null: false
+    t.string "author_type", null: false
+    t.bigint "author_id", null: false
     t.bigint "clarification_thread_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["author_type", "author_id"], name: "index_clarification_posts_on_author_type_and_author_id"
     t.index ["clarification_thread_id"], name: "index_clarification_posts_on_clarification_thread_id"
-    t.index ["feedback_contact_id"], name: "index_clarification_posts_on_feedback_contact_id"
   end
 
   create_table "clarification_threads", force: :cascade do |t|
@@ -287,9 +288,19 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
   end
 
+  create_table "feedback_users", force: :cascade do |t|
+    t.bigint "feedback_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_id"], name: "index_feedback_users_on_feedback_id"
+    t.index ["user_id"], name: "index_feedback_users_on_user_id"
+  end
+
   create_table "feedbacks", force: :cascade do |t|
     t.string "title", null: false
-    t.bigint "requester_id", null: false
+    t.string "requester_type"
+    t.bigint "requester_id"
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
     t.integer "funding_goal", default: 0
@@ -299,7 +310,7 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["inbox_id"], name: "index_feedbacks_on_inbox_id"
-    t.index ["requester_id"], name: "index_feedbacks_on_requester_id"
+    t.index ["requester_type", "requester_id"], name: "index_feedbacks_on_requester_type_and_requester_id"
   end
 
   create_table "inbox_members", id: :serial, force: :cascade do |t|
@@ -427,12 +438,15 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
   end
 
   create_table "problems", force: :cascade do |t|
-    t.bigint "feedback_contact_id", null: false
+    t.string "proposer_type", null: false
+    t.bigint "proposer_id", null: false
+    t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_contact_id"], name: "index_problems_on_feedback_contact_id"
+    t.index ["feedback_id"], name: "index_problems_on_feedback_id"
+    t.index ["proposer_type", "proposer_id"], name: "index_problems_on_proposer_type_and_proposer_id"
   end
 
   create_table "roadmap_group_items", force: :cascade do |t|
@@ -469,12 +483,15 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
   end
 
   create_table "solutions", force: :cascade do |t|
-    t.bigint "feedback_contact_id", null: false
+    t.string "proposer_type", null: false
+    t.bigint "proposer_id", null: false
+    t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_contact_id"], name: "index_solutions_on_feedback_contact_id"
+    t.index ["feedback_id"], name: "index_solutions_on_feedback_id"
+    t.index ["proposer_type", "proposer_id"], name: "index_solutions_on_proposer_type_and_proposer_id"
   end
 
   create_table "super_admins", force: :cascade do |t|
@@ -570,15 +587,13 @@ ActiveRecord::Schema.define(version: 2020_09_07_201634) do
   add_foreign_key "account_users", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clarification_posts", "clarification_threads"
-  add_foreign_key "clarification_posts", "feedback_contacts"
   add_foreign_key "clarification_threads", "feedbacks"
   add_foreign_key "contact_inboxes", "contacts"
   add_foreign_key "contact_inboxes", "inboxes"
   add_foreign_key "conversations", "contact_inboxes"
   add_foreign_key "feedback_contacts", "contacts"
   add_foreign_key "feedback_contacts", "feedbacks"
-  add_foreign_key "feedbacks", "contacts", column: "requester_id"
-  add_foreign_key "problems", "feedback_contacts"
+  add_foreign_key "feedback_users", "feedbacks"
+  add_foreign_key "feedback_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"
-  add_foreign_key "solutions", "feedback_contacts"
 end

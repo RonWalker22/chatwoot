@@ -147,10 +147,9 @@ export default {
         details: '',
         supportLevel: 0,
         websiteToken: window.chatwootWebChannel.websiteToken,
-        kind: '',
+        kind: 'request',
       },
       modalOpen: false,
-      feedbackType: 'Feature Request',
     };
   },
   computed: {

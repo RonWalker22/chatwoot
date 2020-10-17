@@ -33,7 +33,7 @@
     <Comment
       v-for="post in feedbacks[$route.params.id].posts"
       :key="post.id"
-      :name="post.contact"
+      :name="post.author"
       :body="post.body"
       :date="post.datetime"
     >

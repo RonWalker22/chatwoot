@@ -75,6 +75,13 @@ class User < ApplicationRecord
   has_many :notification_settings, dependent: :destroy
   has_many :notification_subscriptions, dependent: :destroy
 
+  has_many :feedback_users, dependent: :destroy
+
+  has_many :clarification_posts, through: :feedback_users, dependent: :destroy
+  has_many :problems, through: :feedback_users
+  has_many :solutions, through: :feedback_users
+  has_many :feedback_requests, through: :feedback_contacts, class_name: 'Feedback', as: :requester, dependent: :destroy
+
   before_validation :set_password_and_uid, on: :create
 
   after_create_commit :create_access_token

@@ -32,6 +32,8 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
+          resources :feedbacks, only: [:create, :index, :update, :show]
+          resources :clarification_posts, only: [:create, :destroy]
           resources :agents, except: [:show, :edit, :new]
           resources :callbacks, only: [] do
             collection do
@@ -105,7 +107,7 @@ Rails.application.routes.draw do
       namespace :integrations do
         resources :webhooks, only: [:create]
       end
-      resources :feedbacks, only: [:index, :show, :create]
+      resources :feedbacks, only: [:index, :create]
 
       resources :clarification_posts, only: [:show, :create]
 

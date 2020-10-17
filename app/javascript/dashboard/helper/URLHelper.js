@@ -15,6 +15,13 @@ export const conversationUrl = ({ accountId, activeInbox, id, label }) => {
   return `accounts/${accountId}/conversations/${id}`;
 };
 
+export const feedbackUrl = ({ accountId, id, label }) => {
+  if (label) {
+    return `accounts/${accountId}/label/${label}/feedback/${id}`;
+  }
+  return `accounts/${accountId}/feedback/${id}`;
+};
+
 export const accountIdFromPathname = pathname => {
   const isInsideAccountScopedURLs = pathname.includes('/app/accounts');
   const urlParam = pathname.split('/')[3];

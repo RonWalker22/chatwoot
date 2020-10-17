@@ -21,6 +21,7 @@ import labels from './modules/labels';
 import reports from './modules/reports';
 import userNotificationSettings from './modules/userNotificationSettings';
 import webhooks from './modules/webhooks';
+import feedback from './modules/feedback';
 
 Vue.use(Vuex);
 export default new Vuex.Store({
@@ -45,5 +46,6 @@ export default new Vuex.Store({
     reports,
     userNotificationSettings,
     webhooks,
+    feedback,
   },
 });
