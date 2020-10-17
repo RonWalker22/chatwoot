@@ -47,7 +47,7 @@ export default {
 
 .feedback-list {
   background: white;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .feedback-item {
