@@ -285,6 +285,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["contact_id"], name: "index_feedback_contacts_on_contact_id"
+    t.index ["feedback_id", "contact_id"], name: "index_feedback_contacts_on_feedback_id_and_contact_id", unique: true
     t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
   end
 
@@ -293,6 +294,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_id", "user_id"], name: "index_feedback_users_on_feedback_id_and_user_id", unique: true
     t.index ["feedback_id"], name: "index_feedback_users_on_feedback_id"
     t.index ["user_id"], name: "index_feedback_users_on_user_id"
   end
@@ -433,6 +435,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.bigint "solution_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["problem_id", "solution_id"], name: "index_problem_solutions_on_problem_id_and_solution_id", unique: true
     t.index ["problem_id"], name: "index_problem_solutions_on_problem_id"
     t.index ["solution_id"], name: "index_problem_solutions_on_solution_id"
   end
@@ -455,6 +458,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["roadmap_group_id"], name: "index_roadmap_group_items_on_roadmap_group_id"
+    t.index ["roadmap_item_id", "roadmap_group_id"], name: "roadmap_item_roadmap_group_index", unique: true
     t.index ["roadmap_item_id"], name: "index_roadmap_group_items_on_roadmap_item_id"
   end
 

@@ -6,5 +6,9 @@ class CreateRoadmapGroupItems < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+    add_index :roadmap_group_items,
+              [:roadmap_item_id, :roadmap_group_id],
+              unique: true,
+              name: 'roadmap_item_roadmap_group_index'
   end
 end

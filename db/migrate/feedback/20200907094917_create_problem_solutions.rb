@@ -5,5 +5,6 @@ class CreateProblemSolutions < ActiveRecord::Migration[6.0]
       t.references :solution, null: false
       t.timestamps
     end
+    add_index :problem_solutions, [:problem_id, :solution_id], unique: true
   end
 end
