@@ -5,7 +5,7 @@ module Api::V1::FeedbacksHelper
         name = post.author.contact.name
       else
         user = post.author.user
-        name = user.display_name.presence ? user.name : user.display_name
+        name = user.display_name.presence ? user.display_name : user.name
       end
       { body: post.body,
         author: name,

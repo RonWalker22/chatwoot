@@ -80,7 +80,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
         name = post.author.contact.name
       else
         user = post.author.user
-        name = user.display_name.presence ? user.name : user.display_name
+        name = user.display_name.presence ? user.display_name : user.name
       end
       { body: post.body,
         author: name,

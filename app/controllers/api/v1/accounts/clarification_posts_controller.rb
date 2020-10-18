@@ -13,7 +13,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
     if post.save
       user = post.author.user
-      name = user.display_name.presence ? user.name : user.display_name
+      name = user.display_name.presence ? user.display_name : user.name
 
       render json: {
         feedback_id: post.author.feedback_id,
