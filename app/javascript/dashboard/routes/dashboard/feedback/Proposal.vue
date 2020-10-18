@@ -2,7 +2,7 @@
   <div
     v-show="proposalIsSelected"
     class="card"
-    :class="{ 'primary-card': isPrimarySolution }"
+    :class="{ 'primary-card': isPrimarySolution, 'problem-card': isProblem }"
   >
     <div class="row align-middle">
       <div class="columns shrink">
@@ -10,12 +10,15 @@
           v-if="proposal.primary"
           class="ion-star"
           :title="'Primary ' + proposalType"
-          :class="{ problem: isProblem }"
+          :class="{ 'primary-text-color': isPrimarySolution }"
         >
         </i>
       </div>
       <div class="columns">
-        <h6 class="text-center" :class="{ problem: isProblem }">
+        <h6
+          class="text-center"
+          :class="{ 'primary-text-color': isPrimarySolution }"
+        >
           {{ proposalTitle }}
         </h6>
       </div>
@@ -136,10 +139,14 @@ export default {
 }
 
 .primary-card {
-  box-shadow: 1px 2px 3px;
+  border: 3px solid $color-woot;
 }
 
-.problem {
+.primary-text-color {
   color: $color-woot;
+}
+
+.problem-card {
+  border-radius: 0px;
 }
 </style>
