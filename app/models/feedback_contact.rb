@@ -13,8 +13,9 @@
 #
 # Indexes
 #
-#  index_feedback_contacts_on_contact_id   (contact_id)
-#  index_feedback_contacts_on_feedback_id  (feedback_id)
+#  index_feedback_contacts_on_contact_id                  (contact_id)
+#  index_feedback_contacts_on_feedback_id                 (feedback_id)
+#  index_feedback_contacts_on_feedback_id_and_contact_id  (feedback_id,contact_id) UNIQUE
 #
 # Foreign Keys
 #

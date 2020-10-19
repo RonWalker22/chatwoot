@@ -8,7 +8,11 @@
       <Comments :posts="feedback.posts" />
       <div class="row align-center">
         <div class="columns shrink">
-          <Toolbar />
+          <Toolbar
+            :feedback-user-id="feedback.feedback_user_id"
+            :evaluation="feedback.evaluation"
+            :feedback-id="feedback.id"
+          />
         </div>
       </div>
     </div>

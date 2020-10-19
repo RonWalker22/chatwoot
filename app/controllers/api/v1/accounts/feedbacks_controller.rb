@@ -9,6 +9,8 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
     format_solutions
     format_problems
     set_posts
+    set_feedback_user
+    format_feedback_user
   end
 
   def create
@@ -87,6 +89,20 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
         id: post.id,
         date: post.created_at.to_date }
     end
+  end
+
+  def set_feedback_user
+    @feedback_user = FeedbackUser.find_by(
+      feedback: @feedback,
+      user: Current.user
+    )
+  end
+
+  def format_feedback_user
+    return unless @feedback_user
+
+    @evaluation = @feedback_user.evaluation
+    @feedback_user_id = @feedback_user.id
   end
 
   def create_feedback_user

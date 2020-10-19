@@ -2,7 +2,7 @@
   <div
     v-show="proposalIsSelected"
     class="card"
-    :class="{ 'primary-card': isPrimarySolution, 'problem-card': isProblem }"
+    :class="{ 'problem-card': isProblem }"
   >
     <div class="row align-middle">
       <div class="columns shrink">

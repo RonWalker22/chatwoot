@@ -292,6 +292,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
   create_table "feedback_users", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "user_id", null: false
+    t.string "evaluation", default: "undecided", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feedback_id", "user_id"], name: "index_feedback_users_on_feedback_id_and_user_id", unique: true

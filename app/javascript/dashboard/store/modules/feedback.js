@@ -2,6 +2,7 @@ import * as MutationHelpers from 'shared/helpers/vuex/mutationHelpers';
 import * as types from '../mutation-types';
 import FeedbackAPI from '../../api/feedbacks';
 import ClarificationPostsAPI from '../../api/clarificationPosts';
+import FeedbackUsersAPI from '../../api/feedbackUsers';
 import Vue from 'vue';
 
 export const state = {
@@ -103,6 +104,21 @@ export const actions = {
   setFeedbackFilter({ commit }, data) {
     commit(types.default.CHANGE_FEEDBACK_STATUS_FILTER, data);
   },
+  setFeedbackEvaluation: async ({ commit }, data) => {
+    try {
+      if (!data.feedbackUser) {
+        const createResponse = await FeedbackUsersAPI.create(data);
+        data.id = createResponse.data.id;
+      }
+      const updateResponse = await FeedbackUsersAPI.update(
+        data.id,
+        data.payload
+      );
+      commit(types.default.SET_FEEDBACK_EVALUATION, updateResponse.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 };
 
 export const mutations = {
@@ -149,6 +165,19 @@ export const mutations = {
   },
   [types.default.CHANGE_FEEDBACK_STATUS_FILTER](_state, data) {
     _state.feedbackStatusFilter = data;
+  },
+  [types.default.SET_FEEDBACK_EVALUATION](_state, data) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === data.feedback_id
+    );
+    let feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+    newFeedback.feedback_user_id = data.id;
+    newFeedback.evaluation = data.evaluation;
+
+    Vue.set(_state.records, index, newFeedback);
   },
 };
 

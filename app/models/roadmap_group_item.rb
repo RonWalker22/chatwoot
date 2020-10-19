@@ -12,6 +12,7 @@
 #
 #  index_roadmap_group_items_on_roadmap_group_id  (roadmap_group_id)
 #  index_roadmap_group_items_on_roadmap_item_id   (roadmap_item_id)
+#  roadmap_item_roadmap_group_index               (roadmap_item_id,roadmap_group_id) UNIQUE
 #
 class RoadmapGroupItem < ApplicationRecord
   belongs_to :roadmap_group
