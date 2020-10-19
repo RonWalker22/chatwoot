@@ -31,15 +31,24 @@ export default {
   methods: {
     ...mapActions('feedback', ['createComment']),
     newComment() {
-      let payload = {
-        clarification_post: {
-          body: this.details,
-        },
-        feedback_id: this.$route.params.feedback_id,
-      };
-      this.createComment({ ...payload });
-      this.details = '';
+      if (this.details.length > 0) {
+        let payload = {
+          clarification_post: {
+            body: this.details,
+          },
+          feedback_id: this.$route.params.feedback_id,
+        };
+        this.createComment({ ...payload });
+        this.details = '';
+      }
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import '~dashboard/assets/scss/variables';
+textarea:focus {
+  border: 2px solid $color-woot;
+}
+</style>
