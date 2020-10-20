@@ -1,11 +1,10 @@
 <template>
   <div class="feedback-item">
     <div v-if="!uiFlags.fetchingItem">
-      <h1 class="feedback-title">
+      <h1 class="feedback-title text-center">
         {{ feedback.title }}
       </h1>
       <Proposals :feedback="feedback" />
-      <Comments :posts="feedback.posts" />
       <div class="row align-center">
         <div class="columns shrink">
           <Toolbar
@@ -15,6 +14,7 @@
           />
         </div>
       </div>
+      <Comments :posts="feedback.posts" />
     </div>
     <div v-else class="text-center">
       <spinner :size="'large'"></spinner>
