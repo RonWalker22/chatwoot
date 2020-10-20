@@ -37,7 +37,16 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
 
   def update
     @feedback.update!(feedback_params)
-    render json: @feedback
+    render json: {
+      status: @feedback.status,
+      title: @feedback.title,
+      kind: @feedback.kind,
+      id: @feedback.id
+    }
+  rescue ActiveRecord::RecordInvalid => e
+    render json: {
+      message: e.record.errors.full_messages.join(', ')
+    }, status: :unprocessable_entity
   end
 
   private

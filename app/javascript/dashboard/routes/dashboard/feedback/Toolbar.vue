@@ -1,5 +1,43 @@
 <template>
   <div>
+    <div class="bottom-nav">
+      <transition name="menu-slide">
+        <div
+          v-if="showMoreOptionsMenu"
+          v-on-clickaway="showMoreOptions"
+          class="dropdown-pane top"
+        >
+          <ul class="vertical dropdown menu">
+            <li>
+              <button class="button large expanded">
+                <i class="ion-edit" aria-hidden="true"> </i>
+                <span class="action-text">Edit</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </transition>
+      <transition name="menu-slide">
+        <div
+          v-if="showMoveOptionsMenu"
+          v-on-clickaway="showMoveOptions"
+          class="dropdown-pane top"
+        >
+          <ul class="vertical dropdown menu">
+            <li
+              v-for="(move, index) in getMoves"
+              :key="index"
+              @click="updateStatus(move.name)"
+            >
+              <button class="button large expanded">
+                <i :class="move.icon" aria-hidden="true"> </i>
+                <span class="action-text">to {{ move.name }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </transition>
+    </div>
     <div class="card toolbar-card">
       <div class="row align-center">
         <div class="columns shrink">
@@ -23,13 +61,13 @@
           </button>
         </div>
         <div class="columns shrink">
-          <button class="button large">
+          <button class="button large" @click.prevent="showMoveOptions()">
             <i class="ion-paper-airplane" aria-hidden="true"> </i>
             <span class="action-text">Move</span>
           </button>
         </div>
         <div class="columns shrink">
-          <button class="button large">
+          <button class="button large" @click.prevent="showMoreOptions()">
             <i class="ion-more" aria-hidden="true"> </i>
             <span class="action-text">More</span>
           </button>
@@ -41,8 +79,10 @@
 
 <script>
 import { mapActions } from 'vuex';
+import { mixin as clickaway } from 'vue-clickaway';
 
 export default {
+  mixins: [clickaway],
   props: {
     feedbackUserId: {
       type: [String, Number],
@@ -56,6 +96,21 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    feedbackStatus: {
+      type: String,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      showMoreOptionsMenu: false,
+      showMoveOptionsMenu: false,
+      moves: [
+        { name: 'review', icon: 'ion-paper-airplane' },
+        { name: 'active', icon: 'ion-paper-airplane' },
+        { name: 'resolved', icon: 'ion-paper-airplane' },
+      ],
+    };
   },
   computed: {
     isSupported() {
@@ -64,9 +119,18 @@ export default {
     isRejected() {
       return this.evaluation === 'reject';
     },
+    getMoves() {
+      return this.moves.filter(move => {
+        return move.name !== this.feedbackStatus;
+      });
+    },
   },
   methods: {
-    ...mapActions('feedback', ['setFeedbackEvaluation', 'createFeedbackUser']),
+    ...mapActions('feedback', [
+      'setFeedbackEvaluation',
+      'createFeedbackUser',
+      'updateFeedbackStatus',
+    ]),
     supportFeedback() {
       this.sendEvaluation('support', this.checkFeedbackUser());
     },
@@ -75,6 +139,9 @@ export default {
     },
     resetFeedbackEvaluation() {
       this.sendEvaluation('undecided', this.checkFeedbackUser());
+    },
+    updateStatus(status) {
+      this.sendStatus(status);
     },
     sendEvaluation(kind, feedbackUserExist) {
       if (this.evaluation !== kind) {
@@ -90,8 +157,27 @@ export default {
         });
       }
     },
+    sendStatus(status) {
+      if (this.status !== status) {
+        this.updateFeedbackStatus({
+          payload: {
+            feedback: {
+              status: status,
+            },
+          },
+          id: this.feedbackId,
+        });
+        this.showMoveOptions();
+      }
+    },
     checkFeedbackUser() {
       return this.feedbackUserId !== 0;
+    },
+    showMoveOptions() {
+      this.showMoveOptionsMenu = !this.showMoveOptionsMenu;
+    },
+    showMoreOptions() {
+      this.showMoreOptionsMenu = !this.showMoreOptionsMenu;
     },
   },
 };
@@ -102,7 +188,7 @@ export default {
 
 .toolbar-card {
   border-radius: 25px;
-  background: whitesmoke;
+  background: white;
   display: inline-block;
   border-color: transparent;
 }
@@ -114,11 +200,19 @@ export default {
 
 .button {
   background-color: transparent;
-  color: black;
+  color: $color-woot;
 }
 
 .evaluated {
   background-color: $color-woot;
   color: white;
+}
+.dropdown-pane {
+  bottom: 30px;
+  top: unset;
+}
+
+.bottom-nav {
+  border-top: none;
 }
 </style>

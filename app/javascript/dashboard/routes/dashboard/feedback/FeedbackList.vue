@@ -72,8 +72,8 @@ export default {
           name: 'Active',
         },
         {
-          key: 'done',
-          name: 'Done',
+          key: 'resolved',
+          name: 'Resolved',
         },
       ],
       selectedTabIndex: 0,

@@ -28,7 +28,8 @@ class Feedback < ApplicationRecord
                       now
                       next
                       later
-                      completed].freeze
+                      completed
+                      resolved].freeze
   validates :status, inclusion: { in: STATUS_OPTIONS }
   validates :title, presence: true, allow_blank: false
 

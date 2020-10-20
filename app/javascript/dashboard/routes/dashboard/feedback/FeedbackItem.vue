@@ -1,6 +1,7 @@
 <template>
   <div class="feedback-item">
     <div v-if="!uiFlags.fetchingItem">
+      <p>Status: {{ feedback.status.toUpperCase() }}</p>
       <h1 class="feedback-title text-center">
         {{ feedback.title }}
       </h1>
@@ -11,6 +12,7 @@
             :feedback-user-id="feedback.feedback_user_id"
             :evaluation="feedback.evaluation"
             :feedback-id="feedback.id"
+            :feedback-status="feedback.status"
           />
         </div>
       </div>
