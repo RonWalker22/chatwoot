@@ -14,10 +14,7 @@
       <nav class="level submit-container">
         <div class="level-left">
           <div class="level-item">
-            <button
-              class="button is-info is-small is-outlined"
-              @click="newComment()"
-            >
+            <button class="button is-info  is-outlined" @click="newComment()">
               add comment
             </button>
           </div>

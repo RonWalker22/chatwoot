@@ -1,35 +1,30 @@
-@function calculate-rem($size) {
-  $rem-size: $size * (10 / 16);
-  @return $rem-size;
-}
-
 // Font sizes
-$font-size-micro: calculate-rem(0.5rem);
-$font-size-mini: calculate-rem(0.625rem);
-$font-size-small: calculate-rem(0.75rem);
-$font-size-default: calculate-rem(0.875rem);
-$font-size-medium: calculate-rem(1rem);
-$font-size-large: calculate-rem(1.25rem);
-$font-size-big: calculate-rem(1.5rem);
-$font-size-bigger: calculate-rem(2rem);
-$font-size-mega: calculate-rem(2.5rem);
-$font-size-giga: calculate-rem(3.5rem);
+$font-size-micro: 0.5rem;
+$font-size-mini: 0.625rem;
+$font-size-small: 0.75rem;
+$font-size-default: 0.875rem;
+$font-size-medium: 1rem;
+$font-size-large: 1.25rem;
+$font-size-big: 1.5rem;
+$font-size-bigger: 2rem;
+$font-size-mega: 2.5rem;
+$font-size-giga: 3.5rem;
 
 // spaces
 $zero: 0;
-$space-micro: calculate-rem(0.125rem);
-$space-smaller: calculate-rem(0.25rem);
-$space-small: calculate-rem(0.5rem);
-$space-one: calculate-rem(0.625rem);
-$space-slab: calculate-rem(0.75rem);
-$space-normal: calculate-rem(1rem);
-$space-two: calculate-rem(1.25rem);
-$space-medium: calculate-rem(1.5rem);
-$space-large: calculate-rem(2rem);
-$space-larger: calculate-rem(3rem);
-$space-big: calculate-rem(4rem);
-$space-jumbo: calculate-rem(5rem);
-$space-mega: calculate-rem(6.25rem);
+$space-micro: 0.125rem;
+$space-smaller: 0.25rem;
+$space-small: 0.5rem;
+$space-one: 0.625rem;
+$space-slab: 0.75rem;
+$space-normal: 1rem;
+$space-two: 1.25rem;
+$space-medium: 1.5rem;
+$space-large: 2rem;
+$space-larger: 3rem;
+$space-big: 4rem;
+$space-jumbo: 5rem;
+$space-mega: 6.25rem;
 
 // font-weight
 $font-weight-feather: 100;
@@ -62,8 +57,8 @@ $color-primary-dark: darken($color-woot, 20%);
 
 // Spinner
 $spinkit-spinner-color: $color-white !default;
-$spinkit-spinner-margin: 0 0 0 calculate-rem(1.6rem) !default;
-$spinkit-size: calculate-rem(1.6rem) !default;
+$spinkit-spinner-margin: 0 0 0 1.6rem !default;
+$spinkit-size: 1.6rem !default;
 
 // Snackbar default
 $woot-snackbar-bg: #323232;
@@ -75,7 +70,7 @@ $swift-ease-out: all $swift-ease-out-duration $swift-ease-out-timing-function !d
 
 $border-radius: 0.1875px;
 $line-height: 1;
-$footer-height: calculate-rem(11.2rem);
+$footer-height: 11.2rem;
 $header-expanded-height: $space-medium * 10;
 
 $font-family: 'Inter',

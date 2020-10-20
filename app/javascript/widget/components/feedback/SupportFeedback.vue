@@ -6,7 +6,7 @@
     <div v-if="!isSupporter">
       <div class="has-text-centered">
         <button
-          class="button is-info is-small is-rounded is-outlined"
+          class="button is-info  is-rounded is-outlined"
           data-target="support-modal"
           aria-haspopup="true"
           @click="openModal()"

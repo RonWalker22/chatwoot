@@ -1,7 +1,7 @@
 <template>
   <div>
     <button
-      class="button is-rounded is-small new-feature-btn is-info is-outlined"
+      class="button is-rounded  new-feature-btn is-info is-outlined"
       @click="openModal()"
     >
       <i class="icon ion-android-add" />
