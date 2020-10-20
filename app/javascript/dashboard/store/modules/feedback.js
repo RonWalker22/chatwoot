@@ -56,6 +56,16 @@ export const actions = {
       commit(types.default.SET_FEEDBACK_UI_FLAG, { fetchingItem: false });
     }
   },
+  updateFeedback: async ({ commit }, feedback) => {
+    commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: true });
+    try {
+      const response = await FeedbackAPI.update(feedback.id, feedback.payload);
+      commit(types.default.UPDATE_FEEDBACK, response.data);
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    } catch (error) {
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    }
+  },
   updateFeedbackStatus: async ({ commit }, feedback) => {
     commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: true });
     try {
@@ -118,6 +128,7 @@ export const mutations = {
   [types.default.SET_FEEDBACK_ITEM]: MutationHelpers.setSingleRecord,
   [types.default.ADD_FEEDBACK]: MutationHelpers.create,
   [types.default.EDIT_FEEDBACK]: MutationHelpers.update,
+  [types.default.UPDATE_FEEDBACK]: MutationHelpers.updateAttributes,
   [types.default.DELETE_FEEDBACK]: MutationHelpers.destroy,
 
   [types.default.DELETE_COMMENT](_state, payload) {

@@ -9,10 +9,7 @@
         >
           <ul class="vertical dropdown menu">
             <li>
-              <button class="button large expanded">
-                <i class="ion-edit" aria-hidden="true"> </i>
-                <span class="action-text">Edit</span>
-              </button>
+              <EditFeedback :feedback-id="feedbackId" />
             </li>
           </ul>
         </div>
@@ -80,8 +77,12 @@
 <script>
 import { mapActions } from 'vuex';
 import { mixin as clickaway } from 'vue-clickaway';
+import EditFeedback from './EditFeedback.vue';
 
 export default {
+  components: {
+    EditFeedback,
+  },
   mixins: [clickaway],
   props: {
     feedbackUserId: {
