@@ -74,10 +74,10 @@
                     type="submit"
                     @click.prevent="submitFeedback"
                   >
-                    {{ $t('EDIT_CONTACT.FORM.SUBMIT') }}
+                    Submit
                   </button>
                   <button class="button clear" @click.prevent="CancelModal">
-                    {{ $t('EDIT_CONTACT.FORM.CANCEL') }}
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -123,11 +123,6 @@ export default {
       inboxList: 'inboxes/getInboxes',
     }),
   },
-  watch: {
-    contact() {
-      this.setContactObject();
-    },
-  },
   methods: {
     ...mapActions('feedback', ['createFeedback']),
     CancelModal() {
@@ -149,26 +144,6 @@ export default {
     },
     openModal() {
       this.show = true;
-    },
-    setContactObject() {
-      const { email: email, phone_number: phoneNumber, name } = this.contact;
-      const additionalAttributes = this.contact.additional_attributes || {};
-
-      this.name = name || '';
-      this.email = email || '';
-      this.phoneNumber = phoneNumber || '';
-      this.location = additionalAttributes.location || '';
-      this.companyName = additionalAttributes.company_name || '';
-      this.description = additionalAttributes.description || '';
-      const {
-        social_profiles: socialProfiles = {},
-        screen_name: twitterScreenName,
-      } = additionalAttributes;
-      this.socialProfileUserNames = {
-        twitter: socialProfiles.twitter || twitterScreenName || '',
-        facebook: socialProfiles.facebook || '',
-        linkedin: socialProfiles.linkedin || '',
-      };
     },
     getFeedbackObject() {
       return {
