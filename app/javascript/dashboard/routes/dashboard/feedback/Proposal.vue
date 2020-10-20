@@ -1,9 +1,5 @@
 <template>
-  <div
-    v-show="proposalIsSelected"
-    class="card"
-    :class="{ 'problem-card': isProblem }"
-  >
+  <div class="card" :class="{ 'problem-card': isProblem }">
     <div class="row align-middle">
       <div class="columns shrink">
         <i
@@ -31,8 +27,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
 export default {
   props: {
     index: {
@@ -50,24 +44,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters({
-      selectedSolutions: 'feedback/getAllSelectedSolutions',
-      selectedProblems: 'feedback/getAllSelectedProblems',
-    }),
     isProblem() {
       return this.proposalType === 'Problem';
-    },
-    proposalIsSelected() {
-      if (this.isSolution) {
-        return (
-          this.selectedSolutions.length === 0 ||
-          this.selectedSolutions.includes(this.proposal.id)
-        );
-      }
-      return (
-        this.selectedProblems.length === 0 ||
-        this.selectedProblems.includes(this.proposal.id)
-      );
     },
     isPrimarySolution() {
       return this.isSolution && this.isPrimaryProposal;
@@ -86,49 +64,12 @@ export default {
       return `${messageStart} ${messageMiddle} ${messageEnd}`;
     },
   },
-  methods: {
-    scrollToTop() {
-      window.scrollTo({ top: 0, left: 0 });
-    },
-    proposalFocus() {
-      if (this.isSolution) {
-        this.updateSelectedProposals({
-          problems: this.proposal.problems,
-          solutions: [this.proposal.id],
-        });
-      } else {
-        this.updateSelectedProposals({
-          problems: [this.proposal.id],
-          solutions: this.proposal.solutions,
-        });
-      }
-    },
-    updateSelectedProposals(ids) {
-      this.$store.dispatch('feedback/selectProposal', {
-        problems: ids.problems,
-        solutions: ids.solutions,
-      });
-    },
-    linkToMessage() {
-      if (this.isSolution) {
-        return 'this solution sloves these problems: ';
-      }
-      return 'this problem is solved by these solutions: ';
-    },
-  },
 };
 </script>
 
 <style lang="scss" scoped>
 @import '~dashboard/assets/scss/variables';
 
-.ion-pin,
-.ion-pinpoint {
-  font-size: 20px;
-}
-.ion-pinpoint {
-  cursor: pointer;
-}
 .ion-star {
   font-size: 30px;
 }

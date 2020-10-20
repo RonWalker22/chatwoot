@@ -14,10 +14,6 @@ export const state = {
     updatingItem: false,
     deletingItem: false,
   },
-  proposals: {
-    selectedProblems: [],
-    selectedSolutions: [],
-  },
   feedbackStatusFilter: 'review',
 };
 
@@ -33,12 +29,6 @@ export const getters = {
       record => record.id === Number(feedbackId)
     );
     return feedback || {};
-  },
-  getAllSelectedProblems($state) {
-    return $state.proposals.selectedProblems;
-  },
-  getAllSelectedSolutions($state) {
-    return $state.proposals.selectedSolutions;
   },
   getUIFlags($state) {
     return $state.uiFlags;
@@ -60,10 +50,6 @@ export const actions = {
     commit(types.default.SET_FEEDBACK_UI_FLAG, { fetchingItem: true });
     try {
       const response = await FeedbackAPI.show(id);
-      commit(types.default.SET_SELECTED_PROPOSAL, {
-        problems: [],
-        solutions: [],
-      });
       commit(types.default.EDIT_FEEDBACK, response.data);
       commit(types.default.SET_FEEDBACK_UI_FLAG, { fetchingItem: false });
     } catch (error) {
@@ -78,13 +64,6 @@ export const actions = {
       commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
     } catch (error) {
       commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
-    }
-  },
-  selectProposal: async ({ commit }, ids) => {
-    try {
-      commit(types.default.SET_SELECTED_PROPOSAL, ids);
-    } catch (error) {
-      // ignore
     }
   },
   createFeedback: async ({ commit }, newFeedback) => {
@@ -168,10 +147,6 @@ export const mutations = {
     newFeedback.posts.push(payload.post);
 
     Vue.set(_state.records, index, newFeedback);
-  },
-  [types.default.SET_SELECTED_PROPOSAL](_state, ids) {
-    Vue.set(_state.proposals, 'selectedProblems', ids.problems);
-    Vue.set(_state.proposals, 'selectedSolutions', ids.solutions);
   },
   [types.default.CHANGE_FEEDBACK_STATUS_FILTER](_state, data) {
     _state.feedbackStatusFilter = data;

@@ -68,19 +68,17 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def format_solutions
-    @solutions = @feedback.solutions.includes(:problems, proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
+    @solutions = @feedback.solutions.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
     @solutions = @solutions.map do |solution|
-      extra_details = { proposer: solution.proposer_name,
-                        problems: solution.problems.ids }
+      extra_details = { proposer: solution.proposer_name }
       solution.as_json.merge(extra_details)
     end
   end
 
   def format_problems
-    @problems = @feedback.problems.includes(:solutions, proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
+    @problems = @feedback.problems.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
     @problems = @problems.map do |problem|
-      extra_details = { proposer: problem.proposer_name,
-                        solutions: problem.solutions.ids }
+      extra_details = { proposer: problem.proposer_name }
       problem.as_json.merge(extra_details)
     end
   end
