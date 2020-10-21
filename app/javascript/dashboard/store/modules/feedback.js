@@ -66,16 +66,6 @@ export const actions = {
       commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
     }
   },
-  updateFeedbackStatus: async ({ commit }, feedback) => {
-    commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: true });
-    try {
-      const response = await FeedbackAPI.update(feedback.id, feedback.payload);
-      commit(types.default.SET_FEEDBACK_STATUS, response.data);
-      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
-    } catch (error) {
-      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
-    }
-  },
   createFeedback: async ({ commit }, newFeedback) => {
     try {
       const response = await FeedbackAPI.create(newFeedback);
@@ -113,7 +103,7 @@ export const actions = {
         data.id,
         data.payload
       );
-      commit(types.default.SET_FEEDBACK_EVALUATION, updateResponse.data);
+      commit(types.default.UPDATE_FEEDBACK, updateResponse.data);
     } catch (error) {
       throw new Error(error);
     }
@@ -161,29 +151,6 @@ export const mutations = {
   },
   [types.default.CHANGE_FEEDBACK_STATUS_FILTER](_state, data) {
     _state.feedbackStatusFilter = data;
-  },
-  [types.default.SET_FEEDBACK_EVALUATION](_state, data) {
-    let newFeedback = {};
-    const index = state.records.findIndex(
-      record => record.id === data.feedback_id
-    );
-    let feedback = _state.records[index];
-
-    Object.assign(newFeedback, feedback);
-    newFeedback.feedback_user_id = data.id;
-    newFeedback.evaluation = data.evaluation;
-
-    Vue.set(_state.records, index, newFeedback);
-  },
-  [types.default.SET_FEEDBACK_STATUS](_state, data) {
-    let newFeedback = {};
-    const index = state.records.findIndex(record => record.id === data.id);
-    let feedback = _state.records[index];
-
-    Object.assign(newFeedback, feedback);
-    newFeedback.status = data.status;
-
-    Vue.set(_state.records, index, newFeedback);
   },
 };
 

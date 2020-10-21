@@ -130,7 +130,7 @@ export default {
     ...mapActions('feedback', [
       'setFeedbackEvaluation',
       'createFeedbackUser',
-      'updateFeedbackStatus',
+      'updateFeedback',
     ]),
     supportFeedback() {
       this.sendEvaluation('support', this.checkFeedbackUser());
@@ -160,7 +160,7 @@ export default {
     },
     sendStatus(status) {
       if (this.status !== status) {
-        this.updateFeedbackStatus({
+        this.updateFeedback({
           payload: {
             feedback: {
               status: status,

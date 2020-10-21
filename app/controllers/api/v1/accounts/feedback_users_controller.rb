@@ -19,7 +19,8 @@ class Api::V1::Accounts::FeedbackUsersController < Api::V1::Accounts::BaseContro
     render json: {
       evaluation: @feedback_user.evaluation,
       feedback_id: @feedback_user.feedback.id,
-      id: @feedback_user.id
+      feedback_user_id: @feedback_user.id,
+      id: @feedback_user.feedback_id
     }
   rescue ActiveRecord::RecordInvalid => e
     render json: {
