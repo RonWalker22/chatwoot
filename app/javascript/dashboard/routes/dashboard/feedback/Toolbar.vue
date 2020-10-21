@@ -133,30 +133,36 @@ export default {
       'updateFeedback',
     ]),
     supportFeedback() {
-      this.sendEvaluation('support', this.checkFeedbackUser());
+      if (this.evaluation === 'support') {
+        this.resetFeedbackEvaluation();
+      } else {
+        this.sendEvaluation('support');
+      }
     },
     rejectFeedback() {
-      this.sendEvaluation('reject', this.checkFeedbackUser());
+      if (this.evaluation === 'reject') {
+        this.resetFeedbackEvaluation();
+      } else {
+        this.sendEvaluation('reject');
+      }
     },
     resetFeedbackEvaluation() {
-      this.sendEvaluation('undecided', this.checkFeedbackUser());
+      this.sendEvaluation('undecided');
     },
     updateStatus(status) {
       this.sendStatus(status);
     },
-    sendEvaluation(kind, feedbackUserExist) {
-      if (this.evaluation !== kind) {
-        this.setFeedbackEvaluation({
-          payload: {
-            feedback_user: {
-              evaluation: kind,
-            },
+    sendEvaluation(kind) {
+      this.setFeedbackEvaluation({
+        payload: {
+          feedback_user: {
+            evaluation: kind,
           },
-          id: this.feedbackUserId,
-          feedbackUser: feedbackUserExist,
-          feedback_id: this.feedbackId,
-        });
-      }
+        },
+        id: this.feedbackUserId,
+        feedbackUser: this.checkFeedbackUser(),
+        feedback_id: this.feedbackId,
+      });
     },
     sendStatus(status) {
       if (this.status !== status) {
