@@ -34,7 +34,7 @@
       >
         <div class="card">
           <div class="card-section">
-            <p class="h6">
+            <p class="h6" :class="'kind-' + feedback.kind">
               {{ formatKind(feedback.kind) }}
             </p>
             <p>{{ feedback.title }}</p>
@@ -100,11 +100,11 @@ export default {
     formatKind(kind) {
       switch (kind) {
         case 'request':
-          return 'Feature Request';
+          return 'Request';
         case 'bug':
-          return 'Bug Report';
+          return 'Bug';
         default:
-          return 'General Feedback';
+          return 'General';
       }
     },
     cardClick(feedbackId, accountId) {
@@ -156,6 +156,14 @@ $xy-grid: true;
     text-transform: capitalize;
     background: none;
     color: $color-woot;
+  }
+
+  .kind-bug {
+    color: firebrick;
+  }
+
+  .kind-general {
+    color: black;
   }
 }
 
