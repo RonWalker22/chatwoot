@@ -67,7 +67,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def format_proposals
-    @proposals = @feedback.proposals.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).where(primary: true).order(:created_at)
+    @proposals = @feedback.proposals.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
     @proposals = @proposals.map do |proposal|
       extra_details = { proposer: proposal.proposer_name }
       proposal.as_json.merge(extra_details)
