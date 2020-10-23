@@ -27,6 +27,5 @@ class FeedbackContact < ApplicationRecord
   belongs_to :contact
   has_many :clarification_posts, as: :author, dependent: :destroy
   has_many :feedbacks, as: :requester, dependent: :destroy
-  has_many :problems, as: :proposer, dependent: :destroy
-  has_many :solutions, as: :proposer, dependent: :destroy
+  has_many :proposals, as: :proposer, dependent: :destroy
 end

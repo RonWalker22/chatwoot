@@ -6,8 +6,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def show
-    format_solutions
-    format_problems
+    format_proposals
     set_posts
     set_feedback_user
     format_feedback_user
@@ -67,19 +66,11 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
     Current.account.feedbacks
   end
 
-  def format_solutions
-    @solutions = @feedback.solutions.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
-    @solutions = @solutions.map do |solution|
-      extra_details = { proposer: solution.proposer_name }
-      solution.as_json.merge(extra_details)
-    end
-  end
-
-  def format_problems
-    @problems = @feedback.problems.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
-    @problems = @problems.map do |problem|
-      extra_details = { proposer: problem.proposer_name }
-      problem.as_json.merge(extra_details)
+  def format_proposals
+    @proposals = @feedback.proposals.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).where(primary: true).order(:created_at)
+    @proposals = @proposals.map do |proposal|
+      extra_details = { proposer: proposal.proposer_name }
+      proposal.as_json.merge(extra_details)
     end
   end
 
@@ -119,17 +110,19 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
 
   def create_proposals
     if permitted_params['problem']
-      Problem.create! proposer: @feedback_user,
-                      feedback: @feedback_user.feedback,
-                      details: permitted_params['problem'],
-                      primary: true
+      Proposal.create! proposer: @feedback_user,
+                       feedback: @feedback_user.feedback,
+                       details: permitted_params['problem'],
+                       primary: true,
+                       solution: false
     end
 
     return unless permitted_params['solution']
 
-    Solution.create! proposer: @feedback_user,
+    Proposal.create! proposer: @feedback_user,
                      feedback: @feedback_user.feedback,
                      details: permitted_params['solution'],
-                     primary: true
+                     primary: true,
+                     solution: true
   end
 end

@@ -3,8 +3,7 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
     @feedbacks = inbox.feedbacks.includes(
       :feedback_contacts,
       :clarification_posts,
-      solutions: [:proposer, :problems],
-      problems: [:proposer, :solutions]
+      proposals: [:proposer]
     ).where(status: 'active')
 
     set_my_feedback_ids
@@ -44,18 +43,20 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
 
   def create_proposals
     if permitted_params['problem']
-      Problem.create! proposer: @feedback_contact,
-                      feedback: @feedback_contact.feedback,
-                      details: permitted_params['problem'],
-                      primary: true
+      Proposal.create! proposer: @feedback_contact,
+                       feedback: @feedback_contact.feedback,
+                       details: permitted_params['problem'],
+                       primary: true,
+                       solution: false
     end
 
     return unless permitted_params['solution']
 
-    Solution.create! proposer: @feedback_contact,
+    Proposal.create! proposer: @feedback_contact,
                      feedback: @feedback_contact.feedback,
                      details: permitted_params['solution'],
-                     primary: true
+                     primary: true,
+                     solution: true
   end
 
   # TODO: create feedback_supporter model

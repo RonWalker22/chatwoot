@@ -40,9 +40,9 @@ class Feedback < ApplicationRecord
   has_many :supporters, through: :feedback_contacts, source: :contact
   belongs_to :inbox
   belongs_to :account
-  has_many :contact_problems, through: :feedback_contacts, source: :problems
-  has_many :problems, dependent: :destroy
-  has_many :solutions, dependent: :destroy
+  has_many :proposals, dependent: :destroy
+  has_many :user_proposals, through: :feedback_users, source: :proposals
+  has_many :contact_proposals, through: :feedback_contacts, source: :proposals
   has_one :clarification_thread, dependent: :destroy
   has_many :clarification_posts, through: :clarification_thread
 

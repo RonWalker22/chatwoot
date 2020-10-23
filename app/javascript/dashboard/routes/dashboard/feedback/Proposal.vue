@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="{ 'problem-card': isProblem }">
+  <div class="card" :class="{ 'problem-card': !proposal.solution }">
     <div class="row align-middle">
       <div class="columns shrink">
         <i
@@ -37,15 +37,13 @@ export default {
       type: Object,
       required: true,
     },
-    proposalType: {
-      type: String,
-      require: true,
-      default: '',
-    },
   },
   computed: {
     isProblem() {
-      return this.proposalType === 'Problem';
+      return !this.proposal.solution;
+    },
+    proposalType() {
+      return this.proposal.solution ? 'Solution' : 'Problem';
     },
     isPrimarySolution() {
       return this.isSolution && this.isPrimaryProposal;
@@ -54,7 +52,7 @@ export default {
       return this.proposal.primary;
     },
     isSolution() {
-      return this.proposalType === 'Solution';
+      return this.proposal.solution;
     },
     proposalTitle() {
       let messageStart = this.isPrimaryProposal ? 'Primary' : 'Alternative';

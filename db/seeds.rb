@@ -85,34 +85,31 @@ feedback_contact_three = FeedbackContact.create! contact_id: contact.id,
 
 feedback_three.update(requester: feedback_contact_three)
 
-problem_one = Problem.create!(
+Proposal.create!(
   proposer: feedback_contact_one,
   feedback: feedback_contact_one.feedback,
   details: "Because I have use the IK4 platform and patreon, some of my
    supporters might transition from pledging monthly to one-time contributions.
    I don't want to discourage any of my supporters from canceling or lowering
    their monthly pledges.",
-  primary: true
+  primary: true,
+  solution: false
 )
-solution_one = Solution.create!(
+
+Proposal.create!(
   proposer: feedback_contact_one,
   feedback: feedback_contact_one.feedback,
   details: 'Provide patreon supporters with dollar for dollar credit for each pledge.',
-  primary: true
+  primary: true,
+  solution: true
 )
-ProblemSolution.create! problem_id: problem_one.id, solution_id: solution_one.id
 
-3.times do
-  problem  = Problem.create proposer: feedback_contact_one,
-                            feedback: feedback_contact_one.feedback,
-                            details: Faker::Lorem.paragraph(sentence_count: 15),
-                            primary: false
-  solution = Solution.create proposer: feedback_contact_one,
-                             feedback: feedback_contact_one.feedback,
-                             details: Faker::Lorem.paragraph(sentence_count: 15),
-                             primary: false
-  ProblemSolution.create problem_id: problem.id, solution_id: solution.id
-  ProblemSolution.create problem_id: problem_one.id, solution_id: solution.id
+2.times do
+  Proposal.create proposer: feedback_contact_one,
+                  feedback: feedback_contact_one.feedback,
+                  details: Faker::Lorem.paragraph(sentence_count: 15),
+                  primary: false,
+                  solution: true
 
   ClarificationPost.create(
     author: feedback_contact_one,
@@ -127,36 +124,38 @@ ProblemSolution.create! problem_id: problem_one.id, solution_id: solution_one.id
   )
 end
 
-problem_two = Problem.create!(
+Proposal.create!(
   proposer: feedback_contact_two,
   feedback: feedback_contact_two.feedback,
   details: 'I am transitioning from another platform and have a lot of data from their that I can’t utilize.',
-  primary: true
+  primary: true,
+  solution: false
 )
-solution_two = Solution.create!(
+Proposal.create!(
   proposer: feedback_contact_two,
   feedback: feedback_contact_two.feedback,
   details: 'Add the ability to import feedback from other platforms.',
-  primary: true
+  primary: true,
+  solution: true
 )
-ProblemSolution.create! problem_id: problem_two.id, solution_id: solution_two.id
 
-problem_three = Problem.create!(
+Proposal.create!(
   proposer: feedback_contact_three,
   feedback: feedback_contact_three.feedback,
   details: 'Switching between different organization accounts in order to manage multiple products is time consuming.',
-  primary: true
+  primary: true,
+  solution: false
 )
-solution_three = Solution.create!(
+Proposal.create!(
   proposer: feedback_contact_three,
   feedback: feedback_contact_three.feedback,
   details: 'Allow each organization to have multiple products and associate
   customers and feature request to individual products instead of the
   organization. This way I don’t have to sign in and out of my account to
   management multiple products that are tied to the same organization.',
-  primary: true
+  primary: true,
+  solution: true
 )
-ProblemSolution.create! problem_id: problem_three.id, solution_id: solution_three.id
 
 # - + - feedback - + -
 

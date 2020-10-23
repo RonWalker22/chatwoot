@@ -51,8 +51,7 @@ export const mutations = {
       Vue.set($state.feedbacks.active, feedback.id, {
         id: feedback.id,
         title: feedback.title,
-        solutions: feedback.solutions,
-        problems: feedback.problems,
+        proposals: feedback.proposals,
         posts: feedback.posts,
         contact: feedback.contact,
         supported: feedback.supported,
@@ -63,8 +62,7 @@ export const mutations = {
   addFeedback($state, payload) {
     Vue.set($state.feedbacks.review, payload.id, {
       id: payload.id,
-      problems: payload.problems,
-      solutions: payload.solutions,
+      proposals: payload.proposals,
       posts: payload.posts,
       title: payload.title,
     });

@@ -3,17 +3,10 @@
     <div class="row">
       <div class="columns">
         <Proposal
-          :index="0"
-          :proposal-type="'Problem'"
-          :proposal="feedback.problems[0]"
-          @click="focusOnProblem(problem.id, problem.solutions)"
-        />
-        <Proposal
-          v-for="(solution, index) in feedback.solutions"
-          :key="solution.id"
+          v-for="(proposal, index) in feedback.proposals"
+          :key="proposal.id"
           :index="index"
-          :proposal-type="'Solution'"
-          :proposal="solution"
+          :proposal="proposal"
         />
       </div>
     </div>

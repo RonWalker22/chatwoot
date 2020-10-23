@@ -481,26 +481,17 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
-  create_table "problem_solutions", force: :cascade do |t|
-    t.bigint "problem_id", null: false
-    t.bigint "solution_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["problem_id", "solution_id"], name: "index_problem_solutions_on_problem_id_and_solution_id", unique: true
-    t.index ["problem_id"], name: "index_problem_solutions_on_problem_id"
-    t.index ["solution_id"], name: "index_problem_solutions_on_solution_id"
-  end
-
-  create_table "problems", force: :cascade do |t|
+  create_table "proposals", force: :cascade do |t|
     t.string "proposer_type", null: false
     t.bigint "proposer_id", null: false
     t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
+    t.boolean "solution", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_problems_on_feedback_id"
-    t.index ["proposer_type", "proposer_id"], name: "index_problems_on_proposer_type_and_proposer_id"
+    t.index ["feedback_id"], name: "index_proposals_on_feedback_id"
+    t.index ["proposer_type", "proposer_id"], name: "index_proposals_on_proposer_type_and_proposer_id"
   end
 
   create_table "roadmap_group_items", force: :cascade do |t|
@@ -535,18 +526,6 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id"
-  end
-
-  create_table "solutions", force: :cascade do |t|
-    t.string "proposer_type", null: false
-    t.bigint "proposer_id", null: false
-    t.bigint "feedback_id", null: false
-    t.text "details", null: false
-    t.boolean "primary", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_solutions_on_feedback_id"
-    t.index ["proposer_type", "proposer_id"], name: "index_solutions_on_proposer_type_and_proposer_id"
   end
 
   create_table "super_admins", force: :cascade do |t|

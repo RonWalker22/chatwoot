@@ -14,17 +14,17 @@
       :fb-id="feedbacks[$route.params.id].id"
       :supporter="feedbacks[$route.params.id].supported"
     />
-    <div v-if="feedbacks[$route.params.id].problems" class="box">
+    <div v-if="feedbacks[$route.params.id].proposals" class="box">
       <h2 class="title is-6">
         Problem
       </h2>
-      <p>{{ feedbacks[$route.params.id].problems[0].details }}</p>
+      <p>{{ feedbacks[$route.params.id].proposals[0].details }}</p>
     </div>
-    <div v-if="feedbacks[$route.params.id].solutions" class="box">
+    <div v-if="feedbacks[$route.params.id].proposals[1]" class="box">
       <h2 class="title is-6">
         Solution
       </h2>
-      <p>{{ feedbacks[$route.params.id].solutions[0].details }}</p>
+      <p>{{ feedbacks[$route.params.id].proposals[1].details }}</p>
     </div>
     <h2 class="title is-6 has-text-centered">
       Clarification Board
