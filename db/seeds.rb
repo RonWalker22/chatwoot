@@ -112,12 +112,6 @@ Proposal.create!(
                   solution: true
 
   ClarificationPost.create(
-    author: feedback_contact_one,
-    body: Faker::Lorem.paragraph(sentence_count: 3),
-    clarification_thread: feedback_one.clarification_thread
-  )
-
-  ClarificationPost.create(
     author: feedback_contact_two,
     body: Faker::Lorem.paragraph(sentence_count: 3),
     clarification_thread: feedback_two.clarification_thread
@@ -146,7 +140,8 @@ Proposal.create!(
   primary: true,
   solution: false
 )
-Proposal.create!(
+
+proposal_one = Proposal.create!(
   proposer: feedback_contact_three,
   feedback: feedback_contact_three.feedback,
   details: 'Allow each organization to have multiple products and associate
@@ -155,6 +150,12 @@ Proposal.create!(
   management multiple products that are tied to the same organization.',
   primary: true,
   solution: true
+)
+
+ClarificationPost.create(
+  author: feedback_contact_two,
+  body: Faker::Lorem.paragraph(sentence_count: 3),
+  clarification_thread: proposal_one.clarification_thread
 )
 
 # - + - feedback - + -

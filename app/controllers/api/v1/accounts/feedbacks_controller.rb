@@ -67,15 +67,24 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def format_proposals
-    @proposals = @feedback.proposals.includes(proposer: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
+    @proposals = @feedback.proposals.includes(
+      :clarification_thread,
+      proposer: [:feedback_contact, :feedback_user, :user, :contact]
+    ).order(:created_at)
     @proposals = @proposals.map do |proposal|
-      extra_details = { proposer: proposal.proposer_name }
+      extra_details = { proposer: proposal.proposer_name,
+                        thread: proposal.clarification_thread.id }
       proposal.as_json.merge(extra_details)
     end
   end
 
   def set_posts
-    @posts = @feedback.clarification_posts.includes(author: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at).map do |post|
+    @posts = @feedback.clarification_posts.includes(author: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
+    @posts = formate_posts(@posts)
+  end
+
+  def formate_posts(posts)
+    posts.map do |post|
       if post.author_type == 'FeedbackContact'
         name = post.author.contact.name
       else
@@ -85,7 +94,8 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
       { body: post.body,
         author: name,
         id: post.id,
-        date: post.created_at.to_date }
+        date: post.created_at.to_date,
+        thread: post.clarification_thread_id }
     end
   end
 

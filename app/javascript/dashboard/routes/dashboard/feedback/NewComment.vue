@@ -23,6 +23,12 @@
 import { mapActions } from 'vuex';
 
 export default {
+  props: {
+    threadId: {
+      type: [Number],
+      default: 0,
+    },
+  },
   data() {
     return {
       details: '',
@@ -35,6 +41,7 @@ export default {
         let payload = {
           clarification_post: {
             body: this.details,
+            clarification_thread_id: this.threadId,
           },
           feedback_id: this.$route.params.feedback_id,
         };

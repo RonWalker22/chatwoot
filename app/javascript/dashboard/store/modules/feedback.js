@@ -30,6 +30,12 @@ export const getters = {
     );
     return feedback || {};
   },
+  getPosts: ($state, $getters) => (feedbackId, threadId) => {
+    const feedback = $getters.getFeedbackItem(feedbackId);
+    return feedback.posts.filter(post => {
+      return post.thread === threadId;
+    });
+  },
   getUIFlags($state) {
     return $state.uiFlags;
   },

@@ -7,7 +7,13 @@
           :key="proposal.id"
           :index="index"
           :proposal="proposal"
-        />
+        >
+          <Comments
+            :thread-id="proposal.thread"
+            :main-board="false"
+            :feedback-id="proposal.feedback_id"
+          />
+        </Proposal>
       </div>
     </div>
   </div>
@@ -15,10 +21,12 @@
 
 <script>
 import Proposal from './Proposal.vue';
+import Comments from './Comments';
 
 export default {
   components: {
     Proposal,
+    Comments,
   },
   props: {
     feedback: {

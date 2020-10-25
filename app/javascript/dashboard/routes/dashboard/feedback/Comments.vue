@@ -1,15 +1,16 @@
 <template>
-  <div>
-    <h6 class="text-center">
-      Clarification Board
+  <div :class="{ comments: !mainBoard }">
+    <h6 v-if="mainBoard" class="text-center">
+      Public Board
     </h6>
-    <NewComment />
+    <NewComment v-if="mainBoard" :thread-id="threadId" />
     <Comment
       v-for="(post, index) in posts"
       :key="post.id"
       :post="post"
       :index="index"
     />
+    <NewComment v-if="!mainBoard" :thread-id="threadId" />
   </div>
 </template>
 
@@ -23,10 +24,35 @@ export default {
     NewComment,
   },
   props: {
-    posts: {
-      type: Array,
+    mainBoard: {
+      type: Boolean,
+      requried: true,
+      default: false,
+    },
+    threadId: {
+      type: Number,
       required: true,
+      default: 0,
+    },
+    feedbackId: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+  },
+  computed: {
+    posts() {
+      return this.$store.getters['feedback/getPosts'](
+        this.feedbackId,
+        this.threadId
+      );
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.comments {
+  background-color: #fbfbfb;
+}
+</style>

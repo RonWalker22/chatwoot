@@ -195,9 +195,11 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
 
   create_table "clarification_threads", force: :cascade do |t|
     t.bigint "feedback_id", null: false
+    t.bigint "proposal_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feedback_id"], name: "index_clarification_threads_on_feedback_id"
+    t.index ["proposal_id"], name: "index_clarification_threads_on_proposal_id"
   end
 
   create_table "contact_inboxes", force: :cascade do |t|
@@ -622,6 +624,7 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "clarification_posts", "clarification_threads"
   add_foreign_key "clarification_threads", "feedbacks"
+  add_foreign_key "clarification_threads", "proposals"
   add_foreign_key "contact_inboxes", "contacts"
   add_foreign_key "contact_inboxes", "inboxes"
   add_foreign_key "conversations", "contact_inboxes"

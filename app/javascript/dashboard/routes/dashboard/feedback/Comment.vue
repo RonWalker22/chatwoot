@@ -13,10 +13,10 @@
     <div class="media-object">
       <div class="media-object-section">
         <h6>{{ post.author }}</h6>
-        <p>{{ post.date }}</p>
       </div>
       <div class="media-object-section">
         <p>{{ post.body }}</p>
+        <p>{{ post.date }}</p>
       </div>
     </div>
   </div>
@@ -48,14 +48,13 @@ export default {
 @import '~dashboard/assets/scss/mixins';
 
 .media-object {
-  margin-top: 2em;
-  padding-bottom: 4em;
+  margin-top: 1em;
+  padding-bottom: 1em;
 }
 
 .callout {
   background: transparent;
   margin-bottom: 4rem;
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 }
 </style>

@@ -51,7 +51,7 @@ export default {
 }
 
 .feedback-item {
-  background: #f4f6fb;
+  background: white;
   overflow-y: auto;
 }
 

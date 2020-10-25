@@ -1,28 +1,43 @@
 <template>
-  <div class="card" :class="{ 'problem-card': !proposal.solution }">
-    <div class="row align-middle">
-      <div class="columns shrink">
-        <i
-          v-if="proposal.primary"
-          class="ion-star"
-          :title="'Primary ' + proposalType"
-          :class="{ 'primary-text-color': isPrimarySolution }"
-        >
-        </i>
+  <div
+    class="card proposal-card"
+    :class="{
+      'primary-card': isPrimarySolution,
+      'problem-card': isProblem,
+      'solution-card': isSolution,
+    }"
+  >
+    <div class="proposal-main">
+      <div v-if="isPrimarySolution" class="row align-middle">
+        <div class="columns shrink">
+          <button>
+            <i
+              class="ion-checkmark-round primary-text-color"
+              title="Selected Solution"
+            ></i>
+          </button>
+        </div>
+        <div class="columns" />
       </div>
-      <div class="columns">
-        <h6
-          class="text-center"
-          :class="{ 'primary-text-color': isPrimarySolution }"
-        >
-          {{ proposalTitle }}
-        </h6>
+      <div class="row align-middle">
+        <div class="columns">
+          <h6
+            class="text-center"
+            :class="{
+              'primary-text-color': isPrimarySolution,
+              'black-text text-center': isProblem,
+            }"
+          >
+            {{ proposalTitle }}
+          </h6>
+        </div>
+      </div>
+      <p>Proposed by: {{ proposal.proposer }}</p>
+      <div class="card-section">
+        <p>{{ proposal.details }}</p>
       </div>
     </div>
-    <p>Proposed by: {{ proposal.proposer }}</p>
-    <div class="card-section">
-      <p>{{ proposal.details }}</p>
-    </div>
+    <slot class="comments"></slot>
   </div>
 </template>
 
@@ -55,11 +70,14 @@ export default {
       return this.proposal.solution;
     },
     proposalTitle() {
-      let messageStart = this.isPrimaryProposal ? 'Primary' : 'Alternative';
-      let messageMiddle = this.proposalType;
-      let messageEnd = this.isSolution ? '- # ' + (this.index + 1) : '';
+      if (this.isProblem) {
+        return this.proposalType;
+      }
 
-      return `${messageStart} ${messageMiddle} ${messageEnd}`;
+      let messageStart = this.proposalType;
+      let messageEnd = '# ' + this.index;
+
+      return `${messageStart} ${messageEnd}`;
     },
   },
 };
@@ -68,24 +86,58 @@ export default {
 <style lang="scss" scoped>
 @import '~dashboard/assets/scss/variables';
 
-.ion-star {
+.ion-checkmark-round {
   font-size: 30px;
+  margin-bottom: 1rem;
+  display: inline-block;
 }
 
 .card {
-  padding: 2em;
-  border-radius: 25px;
-}
-
-.primary-card {
-  border: 3px solid $color-woot;
+  padding: 0;
 }
 
 .primary-text-color {
   color: $color-woot;
 }
 
+.new-solution-button {
+  background-color: black;
+}
+
+.black-text {
+  color: black;
+}
+
 .problem-card {
-  border-radius: 0px;
+  border: none;
+  margin-top: none;
+}
+
+.solution-card {
+  margin-top: 5em;
+  border: none;
+  border-left: 2px solid black;
+}
+
+.primary-card {
+  border: none;
+  border-left: 5px solid $color-woot !important;
+}
+
+.comments {
+  background: red;
+  padding: 3em;
+}
+
+.proposal-main {
+  background: white;
+  border-bottom: 1px solid gainsboro;
+  padding: 3em;
+}
+
+.proposal-card {
+  background: white;
+  border: 1px solid gainsboro;
+  // padding: 3em;
 }
 </style>

@@ -1,7 +1,17 @@
 <template>
   <div class="feedback-item">
     <div v-if="!uiFlags.fetchingItem">
-      <p>Status: {{ feedback.status.toUpperCase() }}</p>
+      <div class="row">
+        <div class="column shrink">
+          <p>Status: {{ feedback.status.toUpperCase() }}</p>
+        </div>
+        <div class="column" />
+        <div class="column shrink">
+          <button class="button">
+            New Solution
+          </button>
+        </div>
+      </div>
       <h1 class="feedback-title text-center">
         {{ feedback.title }}
       </h1>
@@ -16,7 +26,11 @@
           />
         </div>
       </div>
-      <Comments :posts="feedback.posts" />
+      <Comments
+        :thread-id="feedback.thread"
+        :feedback-id="feedback.id"
+        :main-board="true"
+      />
     </div>
     <div v-else class="text-center">
       <spinner :size="'large'"></spinner>
