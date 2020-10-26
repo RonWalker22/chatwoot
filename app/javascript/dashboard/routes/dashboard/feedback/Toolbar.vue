@@ -14,26 +14,6 @@
           </ul>
         </div>
       </transition>
-      <transition name="menu-slide">
-        <div
-          v-if="showMoveOptionsMenu"
-          v-on-clickaway="showMoveOptions"
-          class="dropdown-pane top"
-        >
-          <ul class="vertical dropdown menu">
-            <li
-              v-for="(move, index) in getMoves"
-              :key="index"
-              @click="updateStatus(move.name)"
-            >
-              <button class="button large expanded">
-                <i :class="move.icon" aria-hidden="true"> </i>
-                <span class="action-text">to {{ move.name }}</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </transition>
     </div>
     <div class="card toolbar-card">
       <div class="row align-center">
@@ -58,10 +38,7 @@
           </button>
         </div>
         <div class="columns shrink">
-          <button class="button large" @click.prevent="showMoveOptions()">
-            <i class="ion-paper-airplane" aria-hidden="true"> </i>
-            <span class="action-text">Move</span>
-          </button>
+          <NewSolution :feedback-id="feedbackId" />
         </div>
         <div class="columns shrink">
           <button class="button large" @click.prevent="showMoreOptions()">
@@ -78,9 +55,11 @@
 import { mapActions } from 'vuex';
 import { mixin as clickaway } from 'vue-clickaway';
 import EditFeedback from './EditFeedback.vue';
+import NewSolution from './NewSolution.vue';
 
 export default {
   components: {
+    NewSolution,
     EditFeedback,
   },
   mixins: [clickaway],
@@ -105,12 +84,7 @@ export default {
   data() {
     return {
       showMoreOptionsMenu: false,
-      showMoveOptionsMenu: false,
-      moves: [
-        { name: 'review', icon: 'ion-paper-airplane' },
-        { name: 'active', icon: 'ion-paper-airplane' },
-        { name: 'resolved', icon: 'ion-paper-airplane' },
-      ],
+      showNewSolution: false,
     };
   },
   computed: {
@@ -119,11 +93,6 @@ export default {
     },
     isRejected() {
       return this.evaluation === 'reject';
-    },
-    getMoves() {
-      return this.moves.filter(move => {
-        return move.name !== this.feedbackStatus;
-      });
     },
   },
   methods: {
@@ -180,11 +149,11 @@ export default {
     checkFeedbackUser() {
       return this.feedbackUserId !== 0;
     },
-    showMoveOptions() {
-      this.showMoveOptionsMenu = !this.showMoveOptionsMenu;
-    },
     showMoreOptions() {
       this.showMoreOptionsMenu = !this.showMoreOptionsMenu;
+    },
+    toggleNewSolution() {
+      this.showNewSolution = !this.showNewSolution;
     },
   },
 };

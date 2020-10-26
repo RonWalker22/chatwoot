@@ -3,6 +3,7 @@ import * as types from '../mutation-types';
 import FeedbackAPI from '../../api/feedbacks';
 import ClarificationPostsAPI from '../../api/clarificationPosts';
 import FeedbackUsersAPI from '../../api/feedbackUsers';
+import ProposalsAPI from '../../api/proposals';
 import Vue from 'vue';
 
 export const state = {
@@ -88,6 +89,22 @@ export const actions = {
       throw new Error(error);
     }
   },
+  createSolution: async ({ commit }, newSolution) => {
+    try {
+      const response = await ProposalsAPI.create(newSolution);
+      commit(types.default.ADD_SOLUTION, response.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  deleteSolution: async ({ commit }, id) => {
+    try {
+      const response = await ProposalsAPI.delete(id);
+      commit(types.default.DELETE_SOLUTION, response.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
   deleteComment: async ({ commit }, id) => {
     try {
       const response = await ClarificationPostsAPI.delete(id);
@@ -126,6 +143,7 @@ export const mutations = {
   [types.default.EDIT_FEEDBACK]: MutationHelpers.update,
   [types.default.UPDATE_FEEDBACK]: MutationHelpers.updateAttributes,
   [types.default.DELETE_FEEDBACK]: MutationHelpers.destroy,
+  [types.default.ADD_SOLUTION]: MutationHelpers.create,
 
   [types.default.DELETE_COMMENT](_state, payload) {
     let newFeedback = {};
@@ -152,6 +170,33 @@ export const mutations = {
 
     Object.assign(newFeedback, feedback);
     newFeedback.posts.push(payload.post);
+
+    Vue.set(_state.records, index, newFeedback);
+  },
+  [types.default.ADD_SOLUTION](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    let feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+    newFeedback.proposals.push(payload);
+
+    Vue.set(_state.records, index, newFeedback);
+  },
+  [types.default.DELETE_SOLUTION](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    let feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+    let newProposal = newFeedback.proposals.filter(proposal => {
+      return proposal.id !== payload.id;
+    });
+    newFeedback.proposals = newProposal;
 
     Vue.set(_state.records, index, newFeedback);
   },

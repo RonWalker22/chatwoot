@@ -8,9 +8,9 @@
     }"
   >
     <div class="proposal-main">
-      <div v-if="isPrimarySolution" class="row align-middle">
+      <div class="row align-middle">
         <div class="columns shrink">
-          <button>
+          <button v-if="isPrimarySolution">
             <i
               class="ion-checkmark-round primary-text-color"
               title="Selected Solution"
@@ -18,6 +18,18 @@
           </button>
         </div>
         <div class="columns" />
+        <div v-if="isSolution" class="columns shrink">
+          <button
+            class="close-btn"
+            aria-label="Delete solution"
+            title="Delete solution"
+            type="button"
+            data-close
+            @click="deleteSolution(proposal.id)"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       </div>
       <div class="row align-middle">
         <div class="columns">
@@ -42,6 +54,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   props: {
     index: {
@@ -79,6 +93,9 @@ export default {
 
       return `${messageStart} ${messageEnd}`;
     },
+  },
+  methods: {
+    ...mapActions('feedback', ['deleteSolution']),
   },
 };
 </script>
@@ -138,6 +155,12 @@ export default {
 .proposal-card {
   background: white;
   border: 1px solid gainsboro;
-  // padding: 3em;
+}
+
+.close-btn {
+  font-size: 2em;
+  :hover {
+    cursor: pointer;
+  }
 }
 </style>
