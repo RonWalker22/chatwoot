@@ -8,7 +8,7 @@ class CreateFeedbackContacts < ActiveRecord::Migration[6.0]
       t.boolean :supporter, null: false, defatul: false
 
       t.timestamps
+      t.index [:feedback_id, :contact_id], unique: true
     end
-    add_index :feedback_contacts, [:feedback_id, :contact_id], unique: true
   end
 end

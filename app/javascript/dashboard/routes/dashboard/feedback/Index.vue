@@ -22,6 +22,7 @@
 <script>
 import FeedbackItem from './FeedbackItem';
 import FeedbackList from './FeedbackList';
+
 export default {
   components: {
     FeedbackItem,
@@ -52,7 +53,7 @@ export default {
 
 .feedback-item {
   background: white;
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .feature-request {

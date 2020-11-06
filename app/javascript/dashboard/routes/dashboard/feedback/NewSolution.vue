@@ -52,9 +52,8 @@
         </div>
       </div>
     </transition>
-    <button class="button large expanded action-button" @click="openModal">
-      <i class="ion-plus-round" aria-hidden="true"> </i>
-      <span class="action-text">Solution</span>
+    <button class="button hollow small" @click="openModal">
+      New Solution
     </button>
   </div>
 </template>
@@ -105,20 +104,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~dashboard/assets/scss/variables';
-
 .modal-content {
   padding: 3rem;
-}
-
-.action-button {
-  background-color: transparent;
-  color: $color-woot;
-}
-
-.action-text {
-  display: block;
-  margin-top: 0.5rem;
 }
 
 .form-item {

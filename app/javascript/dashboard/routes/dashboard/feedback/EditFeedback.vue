@@ -99,9 +99,8 @@
         </div>
       </div>
     </transition>
-    <button class="button large expanded action-button" @click="openModal">
-      <i class="ion-edit" aria-hidden="true"> </i>
-      <span class="action-text">Edit</span>
+    <button class="button hollow small" @click="openModal">
+      Edit Feedback
     </button>
   </div>
 </template>
@@ -190,15 +189,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '~dashboard/assets/scss/variables';
-
 .modal-content {
   padding: 3rem;
-}
-
-.action-button {
-  background-color: transparent;
-  color: $color-woot;
 }
 
 .action-text {

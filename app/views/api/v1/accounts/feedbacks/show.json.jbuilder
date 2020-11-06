@@ -7,5 +7,5 @@ json.account @feedback.account_id
 json.kind @feedback.kind
 json.status @feedback.status
 json.evaluation @evaluation if @evaluation
-json.feedback_user_id @feedback_user_id if @feedback_user_id
+json.feedback_user_id @feedback_user_id || 0
 json.thread @feedback.clarification_thread.id

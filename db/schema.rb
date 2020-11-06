@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_11_235220) do
+ActiveRecord::Schema.define(version: 2020_11_11_235219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -291,6 +291,17 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
     t.index ["contact_id"], name: "index_feedback_contacts_on_contact_id"
     t.index ["feedback_id", "contact_id"], name: "index_feedback_contacts_on_feedback_id_and_contact_id", unique: true
     t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
+  end
+
+  create_table "feedback_user_proposals", force: :cascade do |t|
+    t.bigint "feedback_user_id", null: false
+    t.bigint "proposal_id", null: false
+    t.string "evaluation", default: "undecided", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["feedback_user_id"], name: "index_feedback_user_proposals_on_feedback_user_id"
+    t.index ["proposal_id", "feedback_user_id"], name: "index_proposal_feedback_user_uniqueness", unique: true
+    t.index ["proposal_id"], name: "index_feedback_user_proposals_on_proposal_id"
   end
 
   create_table "feedback_users", force: :cascade do |t|
@@ -630,6 +641,8 @@ ActiveRecord::Schema.define(version: 2020_10_11_235220) do
   add_foreign_key "conversations", "contact_inboxes"
   add_foreign_key "feedback_contacts", "contacts"
   add_foreign_key "feedback_contacts", "feedbacks"
+  add_foreign_key "feedback_user_proposals", "feedback_users"
+  add_foreign_key "feedback_user_proposals", "proposals"
   add_foreign_key "feedback_users", "feedbacks"
   add_foreign_key "feedback_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"

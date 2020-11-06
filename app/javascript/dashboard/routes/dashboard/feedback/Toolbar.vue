@@ -1,20 +1,5 @@
 <template>
-  <div>
-    <div class="bottom-nav">
-      <transition name="menu-slide">
-        <div
-          v-if="showMoreOptionsMenu"
-          v-on-clickaway="showMoreOptions"
-          class="dropdown-pane top"
-        >
-          <ul class="vertical dropdown menu">
-            <li>
-              <EditFeedback :feedback-id="feedbackId" />
-            </li>
-          </ul>
-        </div>
-      </transition>
-    </div>
+  <div class="toolbar-container">
     <div class="card toolbar-card">
       <div class="row align-center">
         <div class="columns shrink">
@@ -37,15 +22,6 @@
             <span class="action-text">Reject</span>
           </button>
         </div>
-        <div class="columns shrink">
-          <NewSolution :feedback-id="feedbackId" />
-        </div>
-        <div class="columns shrink">
-          <button class="button large" @click.prevent="showMoreOptions()">
-            <i class="ion-more" aria-hidden="true"> </i>
-            <span class="action-text">More</span>
-          </button>
-        </div>
       </div>
     </div>
   </div>
@@ -53,63 +29,35 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { mixin as clickaway } from 'vue-clickaway';
-import EditFeedback from './EditFeedback.vue';
-import NewSolution from './NewSolution.vue';
 
 export default {
-  components: {
-    NewSolution,
-    EditFeedback,
-  },
-  mixins: [clickaway],
   props: {
-    feedbackUserId: {
-      type: [String, Number],
-      default: 0,
+    feedback: {
+      type: Object,
+      default() {
+        return {};
+      },
     },
-    evaluation: {
-      type: String,
-      default: 'undecided',
-    },
-    feedbackId: {
-      type: [String, Number],
-      default: 0,
-    },
-    feedbackStatus: {
-      type: String,
-      default: '',
-    },
-  },
-  data() {
-    return {
-      showMoreOptionsMenu: false,
-      showNewSolution: false,
-    };
   },
   computed: {
     isSupported() {
-      return this.evaluation === 'support';
+      return this.feedback.evaluation === 'support';
     },
     isRejected() {
-      return this.evaluation === 'reject';
+      return this.feedback.evaluation === 'reject';
     },
   },
   methods: {
-    ...mapActions('feedback', [
-      'setFeedbackEvaluation',
-      'createFeedbackUser',
-      'updateFeedback',
-    ]),
+    ...mapActions('feedback', ['setFeedbackEvaluation', 'createFeedbackUser']),
     supportFeedback() {
-      if (this.evaluation === 'support') {
+      if (this.feedback.evaluation === 'support') {
         this.resetFeedbackEvaluation();
       } else {
         this.sendEvaluation('support');
       }
     },
     rejectFeedback() {
-      if (this.evaluation === 'reject') {
+      if (this.feedback.evaluation === 'reject') {
         this.resetFeedbackEvaluation();
       } else {
         this.sendEvaluation('reject');
@@ -118,9 +66,6 @@ export default {
     resetFeedbackEvaluation() {
       this.sendEvaluation('undecided');
     },
-    updateStatus(status) {
-      this.sendStatus(status);
-    },
     sendEvaluation(kind) {
       this.setFeedbackEvaluation({
         payload: {
@@ -128,32 +73,13 @@ export default {
             evaluation: kind,
           },
         },
-        id: this.feedbackUserId,
+        id: this.feedback.feedback_user_id,
         feedbackUser: this.checkFeedbackUser(),
-        feedback_id: this.feedbackId,
+        feedback_id: this.feedback.id,
       });
     },
-    sendStatus(status) {
-      if (this.status !== status) {
-        this.updateFeedback({
-          payload: {
-            feedback: {
-              status: status,
-            },
-          },
-          id: this.feedbackId,
-        });
-        this.showMoveOptions();
-      }
-    },
     checkFeedbackUser() {
-      return this.feedbackUserId !== 0;
-    },
-    showMoreOptions() {
-      this.showMoreOptionsMenu = !this.showMoreOptionsMenu;
-    },
-    toggleNewSolution() {
-      this.showNewSolution = !this.showNewSolution;
+      return this.feedback.feedback_user_id !== 0;
     },
   },
 };
@@ -164,7 +90,7 @@ export default {
 
 .toolbar-card {
   border-radius: 25px;
-  background: white;
+  background: #e7f4ff;
   display: inline-block;
   border-color: transparent;
 }
@@ -176,7 +102,7 @@ export default {
 
 .button {
   background-color: transparent;
-  color: $color-woot;
+  color: black;
 }
 
 .evaluated {
@@ -190,5 +116,15 @@ export default {
 
 .bottom-nav {
   border-top: none;
+}
+
+.toolbar-container {
+  position: sticky;
+  max-width: 24rem;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 0;
+  padding: 1rem 0;
+  z-index: 8;
 }
 </style>

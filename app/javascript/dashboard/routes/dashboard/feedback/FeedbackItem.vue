@@ -1,36 +1,28 @@
 <template>
-  <div class="feedback-item">
-    <div v-if="!uiFlags.fetchingItem">
-      <div class="row">
+  <div>
+    <div v-if="!uiFlags.fetchingItem" class="fb-item">
+      <div class="row align-center action-row">
         <div class="column shrink">
-          <p>Status: {{ feedback.status.toUpperCase() }}</p>
+          <NewSolution :feedback-id="feedback.id" />
         </div>
-        <div class="column" />
+        <div class="column small-1"></div>
         <div class="column shrink">
-          <button class="button">
-            New Solution
-          </button>
+          <EditFeedback :feedback-id="feedback.id" />
         </div>
       </div>
       <h1 class="feedback-title text-center">
         {{ feedback.title }}
       </h1>
-      <Proposals :feedback="feedback" />
-      <div class="row align-center">
-        <div class="columns shrink">
-          <Toolbar
-            :feedback-user-id="feedback.feedback_user_id"
-            :evaluation="feedback.evaluation"
-            :feedback-id="feedback.id"
-            :feedback-status="feedback.status"
-          />
-        </div>
+      <div class="column shrink">
+        <p>Status: {{ feedback.status.toUpperCase() }}</p>
       </div>
+      <Proposals :feedback="feedback" />
       <Comments
         :thread-id="feedback.thread"
         :feedback-id="feedback.id"
         :main-board="true"
       />
+      <Toolbar :feedback="feedback" />
     </div>
     <div v-else class="text-center">
       <spinner :size="'large'"></spinner>
@@ -42,8 +34,10 @@
 import { mapGetters } from 'vuex';
 import Proposals from './Proposals';
 import Comments from './Comments';
-import Toolbar from './Toolbar';
 import Spinner from 'shared/components/Spinner.vue';
+import Toolbar from './Toolbar';
+import EditFeedback from './EditFeedback.vue';
+import NewSolution from './NewSolution.vue';
 
 export default {
   components: {
@@ -51,6 +45,8 @@ export default {
     Comments,
     Spinner,
     Toolbar,
+    EditFeedback,
+    NewSolution,
   },
   props: {
     feedbackId: {
@@ -73,6 +69,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '~dashboard/assets/scss/variables';
+
 .card-divider {
   background: transparent;
   h4 {
@@ -80,11 +78,15 @@ export default {
   }
 }
 
-.feedback-item {
+.fb-item {
   padding: 4rem;
 }
 
 .feedback-title {
   font-size: 2rem;
+}
+
+.action-row {
+  margin-bottom: 4rem;
 }
 </style>
