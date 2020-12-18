@@ -1,11 +1,10 @@
 <template>
   <div>
     <div v-if="!uiFlags.fetchingItem" class="fb-item">
-      <div class="row align-center action-row">
+      <div class="row align-justify action-row">
         <div class="column shrink">
           <NewSolution :feedback-id="feedback.id" />
         </div>
-        <div class="column small-1"></div>
         <div class="column shrink">
           <EditFeedback :feedback-id="feedback.id" />
         </div>

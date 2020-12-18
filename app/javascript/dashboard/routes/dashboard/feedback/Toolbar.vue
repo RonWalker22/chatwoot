@@ -5,7 +5,7 @@
         <div class="columns shrink">
           <button
             class="button large"
-            :class="{ evaluated: isSupported }"
+            :class="[isSupported ? 'support-selected' : 'pick-unselected']"
             @click="supportFeedback"
           >
             <i class="ion-thumbsup" aria-hidden="true"> </i>
@@ -15,7 +15,7 @@
         <div class="columns shrink">
           <button
             class="button large"
-            :class="{ evaluated: isRejected }"
+            :class="[isRejected ? 'reject-selected' : 'pick-unselected']"
             @click="rejectFeedback"
           >
             <i class="ion-thumbsdown" aria-hidden="true"> </i>
@@ -90,7 +90,7 @@ export default {
 
 .toolbar-card {
   border-radius: 25px;
-  background: #e7f4ff;
+  background: transparent;
   display: inline-block;
   border-color: transparent;
 }
@@ -105,10 +105,21 @@ export default {
   color: black;
 }
 
-.evaluated {
+.support-selected {
   background-color: $color-woot;
   color: white;
 }
+
+.reject-selected {
+  background-color: firebrick;
+  color: white;
+}
+
+.pick-unselected {
+  background-color: #f5f5f5;
+  color: black;
+}
+
 .dropdown-pane {
   bottom: 30px;
   top: unset;
@@ -126,5 +137,14 @@ export default {
   bottom: 0;
   padding: 1rem 0;
   z-index: 8;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.ion-chevron-down {
+  font-size: 1rem;
+  padding: 0rem 1rem 1rem 1rem;
 }
 </style>

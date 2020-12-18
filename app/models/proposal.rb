@@ -23,6 +23,7 @@ class Proposal < ApplicationRecord
   belongs_to :feedback
   has_one :clarification_thread, dependent: :destroy
   has_many :clarification_posts, through: :clarification_thread
+  has_many :proposal_users, dependent: :destroy
 
   after_create :create_thread
 

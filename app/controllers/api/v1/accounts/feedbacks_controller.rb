@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   before_action :set_feedback, only: [:update, :show]
 
@@ -72,8 +73,12 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
       proposer: [:feedback_contact, :feedback_user, :user, :contact]
     ).order(:created_at)
     @proposals = @proposals.map do |proposal|
+      proposal_user = find_proposal_user(proposal)
       extra_details = { proposer: proposal.proposer_name,
-                        thread: proposal.clarification_thread.id }
+                        thread: proposal.clarification_thread.id,
+                        proposal_user_id: proposal_user_id(proposal_user),
+                        evaluation: proposal_evaluation(proposal_user),
+                        score: proposal_score(proposal_user) }
       proposal.as_json.merge(extra_details)
     end
   end
@@ -97,6 +102,28 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
         date: post.created_at.to_date,
         thread: post.clarification_thread_id }
     end
+  end
+
+  def find_proposal_user(proposal)
+    ProposalUser.find_by proposal: proposal, user: Current.user
+  end
+
+  def proposal_evaluation(proposal_user)
+    proposal_user ? proposal_user.evaluation : 'undecided'
+  end
+
+  def proposal_user_id(proposal_user)
+    proposal_user ? proposal_user.id : 0
+  end
+
+  def proposal_score(proposal_user)
+    return 0 unless proposal_user
+
+    up_votes = ProposalUser.all.where(proposal_id: proposal_user.proposal_id,
+                                      evaluation: 'support').count
+    down_votes = ProposalUser.all.where(proposal_id: proposal_user.proposal_id,
+                                        evaluation: 'reject').count
+    up_votes - down_votes
   end
 
   def set_feedback_user
@@ -136,3 +163,4 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
                      solution: true
   end
 end
+# rubocop:enable Metrics/ClassLength

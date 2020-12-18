@@ -293,17 +293,6 @@ ActiveRecord::Schema.define(version: 2020_11_11_235219) do
     t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
   end
 
-  create_table "feedback_user_proposals", force: :cascade do |t|
-    t.bigint "feedback_user_id", null: false
-    t.bigint "proposal_id", null: false
-    t.string "evaluation", default: "undecided", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_user_id"], name: "index_feedback_user_proposals_on_feedback_user_id"
-    t.index ["proposal_id", "feedback_user_id"], name: "index_proposal_feedback_user_uniqueness", unique: true
-    t.index ["proposal_id"], name: "index_feedback_user_proposals_on_proposal_id"
-  end
-
   create_table "feedback_users", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "user_id", null: false
@@ -494,6 +483,17 @@ ActiveRecord::Schema.define(version: 2020_11_11_235219) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "proposal_users", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "proposal_id", null: false
+    t.string "evaluation", default: "undecided", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["proposal_id", "user_id"], name: "index_proposal_user_uniqueness", unique: true
+    t.index ["proposal_id"], name: "index_proposal_users_on_proposal_id"
+    t.index ["user_id"], name: "index_proposal_users_on_user_id"
+  end
+
   create_table "proposals", force: :cascade do |t|
     t.string "proposer_type", null: false
     t.bigint "proposer_id", null: false
@@ -641,9 +641,9 @@ ActiveRecord::Schema.define(version: 2020_11_11_235219) do
   add_foreign_key "conversations", "contact_inboxes"
   add_foreign_key "feedback_contacts", "contacts"
   add_foreign_key "feedback_contacts", "feedbacks"
-  add_foreign_key "feedback_user_proposals", "feedback_users"
-  add_foreign_key "feedback_user_proposals", "proposals"
   add_foreign_key "feedback_users", "feedbacks"
   add_foreign_key "feedback_users", "users"
+  add_foreign_key "proposal_users", "proposals"
+  add_foreign_key "proposal_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"
 end

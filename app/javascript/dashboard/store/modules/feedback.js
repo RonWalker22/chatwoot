@@ -3,6 +3,7 @@ import * as types from '../mutation-types';
 import FeedbackAPI from '../../api/feedbacks';
 import ClarificationPostsAPI from '../../api/clarificationPosts';
 import FeedbackUsersAPI from '../../api/feedbackUsers';
+import ProposalUsersAPI from '../../api/proposalUsers';
 import ProposalsAPI from '../../api/proposals';
 import Vue from 'vue';
 
@@ -131,6 +132,19 @@ export const actions = {
       throw new Error(error);
     }
   },
+  setProposalEvaluation: async ({ commit }, data) => {
+    try {
+      let createResponse;
+      if (!data.proposalUser) {
+        createResponse = await ProposalUsersAPI.create(data.payload);
+      } else {
+        createResponse = await ProposalUsersAPI.update(data.id, data.payload);
+      }
+      commit(types.default.UPDATE_PROPOSAL, createResponse.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
 };
 
 export const mutations = {
@@ -197,6 +211,33 @@ export const mutations = {
       return proposal.id !== payload.id;
     });
     newFeedback.proposals = newProposal;
+
+    Vue.set(_state.records, index, newFeedback);
+  },
+  [types.default.UPDATE_PROPOSAL](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    const feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+
+    const proposals = newFeedback.proposals;
+    const proposalIndex = proposals.findIndex(proposal => {
+      return proposal.id === payload.proposal_id;
+    });
+
+    const newProposal = newFeedback.proposals[proposalIndex];
+    if (payload.evaluation === 'support') {
+      newProposal.score += newProposal.evaluation === 'undecided' ? 1 : 2;
+    } else if (payload.evaluation === 'reject') {
+      newProposal.score -= newProposal.evaluation === 'undecided' ? 1 : 2;
+    } else if (payload.evaluation === 'undecided') {
+      newProposal.score += newProposal.evaluation === 'reject' ? 1 : -1;
+    }
+    newProposal.evaluation = payload.evaluation;
+    newProposal.proposal_user_id = payload.proposal_user_id;
 
     Vue.set(_state.records, index, newFeedback);
   },
