@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   before_action :set_feedback, only: [:update, :show]
 
@@ -23,26 +22,10 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
       @feedback.save!
       create_proposals
     end
-
-    render json:
-                {
-                  id: @feedback.id,
-                  title: @feedback.title,
-                  kind: @feedback.kind,
-                  account: @feedback.account.id,
-                  posts: [],
-                  status: @feedback.status
-                }
   end
 
   def update
     @feedback.update!(feedback_params)
-    render json: {
-      status: @feedback.status,
-      title: @feedback.title,
-      kind: @feedback.kind,
-      id: @feedback.id
-    }
   rescue ActiveRecord::RecordInvalid => e
     render json: {
       message: e.record.errors.full_messages.join(', ')
@@ -163,4 +146,3 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
                      solution: true
   end
 end
-# rubocop:enable Metrics/ClassLength
