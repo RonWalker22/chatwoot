@@ -2,6 +2,7 @@ import AppContainer from './Dashboard';
 import settings from './settings/settings.routes';
 import conversation from './conversation/conversation.routes';
 import feedback from './feedback/feedback.routes';
+import { routes as contactRoutes } from './contacts/routes';
 import { frontendURL } from '../../helper/URLHelper';
 
 export default {
@@ -12,6 +13,7 @@ export default {
       children: [
         ...conversation.routes,
         ...settings.routes,
+        ...contactRoutes,
         ...feedback.routes,
       ],
     },

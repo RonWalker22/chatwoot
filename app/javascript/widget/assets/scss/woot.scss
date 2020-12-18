@@ -36,6 +36,14 @@ body {
   }
 }
 
+.is-bubble-hidden {
+  .actions {
+    .close-button {
+      display: block !important;
+    }
+  }
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

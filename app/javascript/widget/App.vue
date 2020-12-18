@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import { mapGetters, mapActions } from 'vuex';
 import { setHeader } from 'widget/helpers/axios';
 import { IFrameHelper } from 'widget/helpers/utils';
@@ -99,7 +98,7 @@ export default {
     setLocale(locale) {
       const { enabledLanguages } = window.chatwootWebChannel;
       if (enabledLanguages.some(lang => lang.iso_639_1_code === locale)) {
-        Vue.config.lang = locale;
+        this.$root.$i18n.locale = locale;
       }
     },
     setPosition(position) {

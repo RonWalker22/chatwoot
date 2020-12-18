@@ -49,7 +49,7 @@ class Contact < ApplicationRecord
   has_many :feedback_requests, through: :feedback_contacts, class_name: 'Feedback', as: :requester, dependent: :destroy
 
   before_validation :prepare_email_attribute
-  after_create_commit :dispatch_create_event
+  after_create_commit :dispatch_create_event, :ip_lookup
   after_update_commit :dispatch_update_event
 
   def get_source_id(inbox_id)
@@ -77,6 +77,12 @@ class Contact < ApplicationRecord
       avatar: avatar_url,
       type: 'contact'
     }
+  end
+
+  def ip_lookup
+    return unless account.feature_enabled?('ip_lookup')
+
+    ContactIpLookupJob.perform_later(self)
   end
 
   def prepare_email_attribute

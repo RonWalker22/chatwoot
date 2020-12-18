@@ -7,6 +7,7 @@ export const getSidebarItems = accountId => ({
       'inbox_dashboard',
       'inbox_conversation',
       'conversation_through_inbox',
+      'contacts_dashboard',
       'settings_account_reports',
       'feedback_home',
       'feedback_item',
@@ -34,6 +35,13 @@ export const getSidebarItems = accountId => ({
         toState: frontendURL(`accounts/${accountId}/feedback`),
         toolTip: 'General feedback, feature requests, and bug reports',
         toStateName: 'feedback_home',
+      },
+      contacts: {
+        icon: 'ion-person-stalker',
+        label: 'CONTACTS',
+        hasSubMenu: false,
+        toState: frontendURL(`accounts/${accountId}/contacts`),
+        toStateName: 'contacts_dashboard',
       },
       report: {
         icon: 'ion-arrow-graph-up-right',
