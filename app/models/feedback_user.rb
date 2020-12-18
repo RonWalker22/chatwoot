@@ -25,5 +25,4 @@ class FeedbackUser < ApplicationRecord
   belongs_to :user
   has_many :proposals, as: :proposer, dependent: :destroy
   has_many :clarification_posts, as: :author, dependent: :destroy
-  has_many :feedbacks, as: :proposer, dependent: :destroy
 end
