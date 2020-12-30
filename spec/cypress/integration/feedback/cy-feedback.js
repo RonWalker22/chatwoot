@@ -35,21 +35,21 @@ describe('Feedback interactions with & without new Proposal', function() {
   // 'with new proposal'
   feedbackInteractions(testMessageTwo, 2);
 
-  it.only('edit feedback - finish', function() {
+  it('edit feedback - finish', function() {
     cy.RunEditFeedbackSpecs('finish');
   })
 
-  it.only('edit feedback - start and cancel with button', function() {
+  it('edit feedback - start and cancel with button', function() {
     cy.login();
     cy.visit('/app/accounts/1/feedback/2');
     cy.RunEditFeedbackSpecs('btn');
   })
 
-  it.only('edit feedback - start and cancel with icon', function() {
+  it('edit feedback - start and cancel with icon', function() {
     cy.RunEditFeedbackSpecs('icon');
   })
 
-  it.only('edit feedback - start and cancel with modal mask', function() {
+  it('edit feedback - start and cancel with modal mask', function() {
     cy.RunEditFeedbackSpecs('mask');
   })
 })
