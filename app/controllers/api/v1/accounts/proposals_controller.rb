@@ -11,14 +11,7 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
     proposal.primary = false
 
     if proposal.save
-      render json: {
-        details: proposal.details,
-        proposer: proposal.proposer_name,
-        id: proposal.id,
-        feedback_id: proposal.feedback_id,
-        date: proposal.created_at.to_date,
-        solution: proposal.solution
-      }
+      render json: proposal.as_json.merge(proposal.extra_details)
     else
       render json: proposal.errors, status: :unprocessable_entity
     end

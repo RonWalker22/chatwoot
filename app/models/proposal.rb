@@ -31,9 +31,40 @@ class Proposal < ApplicationRecord
     proposer_type == 'FeedbackContact' ? proposer.contact.name : proposer.user.name
   end
 
+  def extra_details
+    find_proposal_user
+    {
+      proposer: proposer_name,
+      thread: clarification_thread.id,
+      proposal_user_id: proposal_user_id,
+      evaluation: proposal_evaluation,
+      score: proposal_score
+    }
+  end
+
   private
+
+  def find_proposal_user
+    @proposal_user = ProposalUser.find_by proposal: self, user: Current.user
+  end
 
   def create_thread
     ClarificationThread.create feedback: feedback, proposal: self
+  end
+
+  def proposal_evaluation
+    @proposal_user ? @proposal_user.evaluation : 'undecided'
+  end
+
+  def proposal_user_id
+    @proposal_user ? @proposal_user.id : 0
+  end
+
+  def proposal_score
+    up_votes = ProposalUser.all.where(proposal_id: id,
+                                      evaluation: 'support').count
+    down_votes = ProposalUser.all.where(proposal_id: id,
+                                        evaluation: 'reject').count
+    up_votes - down_votes
   end
 end

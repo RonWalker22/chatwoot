@@ -5,6 +5,7 @@
       tabindex="0"
       placeholder="Shift + enter for new line."
       rows="3"
+      data-test-id="proposal-comment-textarea"
       @keydown.enter.exact.prevent="newComment()"
     >
     </textarea>
@@ -12,6 +13,7 @@
       type="button"
       class="button"
       :disabled="details.length < 1"
+      data-test-id="proposal-comment-btn"
       @click="newComment()"
     >
       add comment

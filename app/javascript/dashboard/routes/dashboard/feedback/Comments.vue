@@ -3,14 +3,22 @@
     <h6 v-if="mainBoard" class="text-center">
       Public Board
     </h6>
-    <NewComment v-if="mainBoard" :thread-id="threadId" />
+    <NewComment
+      v-if="mainBoard"
+      :thread-id="threadId"
+      :main-board="mainBoard"
+    />
     <Comment
       v-for="(post, index) in posts"
       :key="post.id"
       :post="post"
       :index="index"
     />
-    <NewComment v-if="!mainBoard" :thread-id="threadId" />
+    <NewComment
+      v-if="!mainBoard"
+      :thread-id="threadId"
+      :main-board="mainBoard"
+    />
   </div>
 </template>
 

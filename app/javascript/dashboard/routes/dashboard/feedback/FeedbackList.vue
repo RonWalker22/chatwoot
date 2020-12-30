@@ -22,6 +22,7 @@
             :key="tab.key"
             :name="tab.name"
             :show-badge="false"
+            :data-test-id="'feedback-tab-' + tab.key"
           />
         </woot-tabs>
       </div>
@@ -34,10 +35,16 @@
       >
         <div class="card">
           <div class="card-section">
-            <p class="h6" :class="'kind-' + feedback.kind">
+            <p
+              class="h6"
+              :class="'kind-' + feedback.kind"
+              data-test-id="feedback-list-type"
+            >
               {{ formatKind(feedback.kind) }}
             </p>
-            <p>{{ feedback.title }}</p>
+            <p data-test-id="feedback-list-title">
+              {{ feedback.title }}
+            </p>
           </div>
         </div>
       </div>
@@ -96,6 +103,9 @@ export default {
   created() {
     this.$store.dispatch('feedback/fetchAllFeedback');
   },
+  mounted() {
+    this.onTabChange(0);
+  },
   methods: {
     formatKind(kind) {
       switch (kind) {
@@ -125,7 +135,10 @@ export default {
       );
     },
     onTabChange(selectedTabIndex) {
-      if (this.selectedTabIndex !== selectedTabIndex) {
+      if (
+        selectedTabIndex === 0 ||
+        this.selectedTabIndex !== selectedTabIndex
+      ) {
         this.selectedTabIndex = selectedTabIndex;
         this.$store.dispatch(
           'feedback/setFeedbackFilter',

@@ -47,30 +47,36 @@
             class="button proposal-vote"
             type="button"
             title="Support proposal"
+            data-test-id="proposal-upvote"
             @click="supportProposal"
           >
             <i
               class="ion-arrow-up-b"
-              :class="{ 'support-proposal': proposalIsSupported }"
+              :class="{ 'upvote-proposal': proposalIsSupported }"
               aria-hidden="true"
+              data-test-id="proposal-upvote-arrow"
             >
             </i>
             <span class="show-for-sr">Support proposal</span>
           </button>
           <div class="proposal-vote-count">
             <span class="show-for-sr">Proposal score</span>
-            <span>{{ proposal.score }}</span>
+            <span data-test-id="proposal-vote-score">
+              {{ proposal.score }}
+            </span>
           </div>
           <div class="row align-middle">
             <button
               class="button proposal-vote"
               type="button"
               title="Reject proposal"
+              data-test-id="proposal-downvote"
               @click="rejectProposal"
             >
               <i
                 class="ion-arrow-down-b"
-                :class="{ 'reject-proposal': proposalIsRejected }"
+                :class="{ 'downvote-proposal': proposalIsRejected }"
+                data-test-id="proposal-downvote-arrow"
                 aria-hidden="true"
               >
               </i>
@@ -80,8 +86,12 @@
         </div>
         <div class="columns">
           <div class="card-section">
-            <p>{{ proposal.proposer }}</p>
-            <p>{{ proposal.details }}</p>
+            <p data-test-id="proposal-author">
+              {{ proposal.proposer }}
+            </p>
+            <p data-test-id="proposal-body">
+              {{ proposal.details }}
+            </p>
           </div>
         </div>
       </div>
@@ -257,11 +267,11 @@ export default {
   font-size: 2em;
 }
 
-.reject-proposal {
+.downvote-proposal {
   color: firebrick;
 }
 
-.support-proposal {
+.upvote-proposal {
   color: $color-woot;
 }
 </style>

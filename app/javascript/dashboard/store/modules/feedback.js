@@ -119,10 +119,6 @@ export const actions = {
   },
   setFeedbackEvaluation: async ({ commit }, data) => {
     try {
-      if (!data.feedbackUser) {
-        const createResponse = await FeedbackUsersAPI.create(data);
-        data.id = createResponse.data.id;
-      }
       const updateResponse = await FeedbackUsersAPI.update(
         data.id,
         data.payload

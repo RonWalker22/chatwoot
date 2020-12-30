@@ -9,11 +9,16 @@
           <EditFeedback :feedback-id="feedback.id" />
         </div>
       </div>
-      <h1 class="feedback-title text-center">
+      <h1 class="feedback-title text-center" data-test-id="feedback-title">
         {{ feedback.title }}
       </h1>
       <div class="column shrink">
-        <p>Status: {{ feedback.status.toUpperCase() }}</p>
+        <p>
+          Status:
+          <span data-test-id="feedback-status">{{ feedback.status }}</span>
+          - Type:
+          <span data-test-id="feedback-type">{{ feedback.kind }}</span>
+        </p>
       </div>
       <Proposals :feedback="feedback" />
       <Comments
@@ -55,14 +60,15 @@ export default {
   },
   computed: {
     feedback() {
-      return this.$store.getters['feedback/getFeedbackItem'](this.feedbackId);
+      let fb = this.$store.getters['feedback/getFeedbackItem'](this.feedbackId);
+      if (!fb.proposals) {
+        this.$store.dispatch('feedback/fetchFeedbackItem', this.feedbackId);
+      }
+      return fb;
     },
     ...mapGetters({
       uiFlags: 'feedback/getUIFlags',
     }),
-  },
-  mounted() {
-    this.$store.dispatch('feedback/fetchFeedbackItem', this.feedbackId);
   },
 };
 </script>

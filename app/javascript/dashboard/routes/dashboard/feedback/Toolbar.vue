@@ -6,6 +6,7 @@
           <button
             class="button large"
             :class="[isSupported ? 'support-selected' : 'pick-unselected']"
+            data-test-id="support-feedback-btn"
             @click="supportFeedback"
           >
             <i class="ion-thumbsup" aria-hidden="true"> </i>
@@ -16,6 +17,7 @@
           <button
             class="button large"
             :class="[isRejected ? 'reject-selected' : 'pick-unselected']"
+            data-test-id="reject-feedback-btn"
             @click="rejectFeedback"
           >
             <i class="ion-thumbsdown" aria-hidden="true"> </i>
@@ -74,12 +76,8 @@ export default {
           },
         },
         id: this.feedback.feedback_user_id,
-        feedbackUser: this.checkFeedbackUser(),
         feedback_id: this.feedback.id,
       });
-    },
-    checkFeedbackUser() {
-      return this.feedback.feedback_user_id !== 0;
     },
   },
 };

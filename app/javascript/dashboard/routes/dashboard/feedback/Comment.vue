@@ -12,11 +12,17 @@
     </button>
     <div class="media-object">
       <div class="media-object-section">
-        <h6>{{ post.author }}</h6>
+        <h6 data-test-id="proposal-comment-author">
+          {{ post.author }}
+        </h6>
       </div>
       <div class="media-object-section">
-        <p>{{ post.body }}</p>
-        <p>{{ post.date }}</p>
+        <p data-test-id="proposal-comment-body">
+          {{ post.body }}
+        </p>
+        <p data-test-id="proposal-comment-date">
+          {{ post.date }}
+        </p>
       </div>
     </div>
   </div>

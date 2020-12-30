@@ -4,7 +4,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
   before_action :set_feedback, only: [:create]
 
   def create
-    find_feedback_user || create_feedback_user
+    find_feedback_user
 
     post = ClarificationPost.new(clarification_post_params)
     post.author = @feedback_user
@@ -56,11 +56,6 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
   def set_feedback
     @feedback = Current.account.feedbacks.find(extra_parms['feedback_id'])
-  end
-
-  def create_feedback_user
-    @feedback_user = FeedbackUser.create user: Current.user,
-                                         feedback: @feedback
   end
 
   def find_feedback_user

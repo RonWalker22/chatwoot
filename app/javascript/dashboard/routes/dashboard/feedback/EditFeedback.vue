@@ -5,14 +5,18 @@
         v-if="show"
         class="modal-mask"
         transition="modal"
+        data-test-id="edit-feedback-cancel-mask"
         @click="cancelModal"
       >
         <div class="modal-container" @click.stop>
           <div class="modal-content">
             <div class="row">
-              <h1>New Feedback</h1>
+              <h1 data-test-id="edit-feedback-title">
+                New Feedback
+              </h1>
               <i
                 class="ion-android-close modal--close"
+                data-test-id="edit-feedback-cancel-icon"
                 @click="cancelModal"
               ></i>
             </div>
@@ -25,6 +29,7 @@
                       <input
                         v-model.trim="payload.feedback.title"
                         type="text"
+                        data-test-id="edit-feedback-new-title-input"
                       />
                     </label>
                   </div>
@@ -36,6 +41,7 @@
                       <select
                         v-model="payload.feedback.status"
                         aria-describedby="feedbackStatusHelpText"
+                        data-test-id="edit-feedback-change-status-select"
                       >
                         <option value="" selected disabled hidden>
                           Select status
@@ -44,6 +50,9 @@
                           v-for="(status, index) in getStatusOptions"
                           :key="index"
                           :value="status.value"
+                          :data-test-id="
+                            'edit-feedback-change-status-option-' + status.value
+                          "
                         >
                           {{ status.name }}
                         </option>
@@ -59,6 +68,7 @@
                       <select
                         v-model="payload.feedback.kind"
                         aria-describedby="feedbackTypeHelpText"
+                        data-test-id="edit-feedback-change-type-select"
                       >
                         <option value="" selected disabled hidden>
                           Select type
@@ -67,6 +77,9 @@
                           v-for="(kind, index) in getKindOptions"
                           :key="index"
                           :value="kind.value"
+                          :data-test-id="
+                            'edit-feedback-change-type-option-' + kind.value
+                          "
                         >
                           {{ kind.name }}
                         </option>
@@ -84,11 +97,16 @@
                     <button
                       class="button"
                       type="submit"
+                      data-test-id="edit-feedback-submit-btn"
                       @click.prevent="submitFeedback"
                     >
                       Submit
                     </button>
-                    <button class="button clear" @click.prevent="cancelModal">
+                    <button
+                      class="button clear"
+                      data-test-id="edit-feedback-cancel-btn"
+                      @click.prevent="cancelModal"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -99,7 +117,11 @@
         </div>
       </div>
     </transition>
-    <button class="button hollow small" @click="openModal">
+    <button
+      class="button hollow small"
+      data-test-id="edit-feedback-btn"
+      @click="openModal"
+    >
       Edit Feedback
     </button>
   </div>

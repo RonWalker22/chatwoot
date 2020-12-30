@@ -5,14 +5,18 @@
         v-if="show"
         class="modal-mask"
         transition="modal"
+        data-test-id="new-solution-cancel-modal-mask"
         @click="cancelModal"
       >
         <div class="modal-container" @click.stop>
           <div class="modal-content">
             <div class="row">
-              <h1>New Solution</h1>
+              <h1 data-test-id="new-solution-title">
+                New Solution
+              </h1>
               <i
                 class="ion-android-close modal--close"
+                data-test-id="new-solution-cancel-icon"
                 @click="cancelModal"
               ></i>
             </div>
@@ -25,6 +29,7 @@
                       tabindex="0"
                       placeholder="Shift + enter for new line."
                       rows="5"
+                      data-test-id="new-solution-textarea"
                       @keydown.enter.exact.prevent="submitProposal"
                     >
                     </textarea>
@@ -37,11 +42,16 @@
                     <button
                       class="button"
                       type="submit"
+                      data-test-id="new-solution-submit-btn"
                       @click.prevent="submitProposal"
                     >
                       Submit
                     </button>
-                    <button class="button clear" @click.prevent="cancelModal">
+                    <button
+                      class="button clear"
+                      data-test-id="new-solution-cancel-btn"
+                      @click.prevent="cancelModal"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -52,7 +62,11 @@
         </div>
       </div>
     </transition>
-    <button class="button hollow small" @click="openModal">
+    <button
+      class="button hollow small"
+      data-test-id="new-solution-btn"
+      @click="openModal"
+    >
       New Solution
     </button>
   </div>

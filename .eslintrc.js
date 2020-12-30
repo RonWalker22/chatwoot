@@ -6,6 +6,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['html', 'prettier', 'babel'],
+  ignorePatterns: ["spec/cypress/"],
   rules: {
     'prettier/prettier': ['error'],
     camelcase: 'off',

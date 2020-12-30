@@ -109,7 +109,7 @@ group :development do
   gem 'squasher'
 end
 
-group :test do
+group :test, :development do
   # Cypress in rails.
   gem 'cypress-on-rails', '~> 1.0'
   # fast cleaning of database
