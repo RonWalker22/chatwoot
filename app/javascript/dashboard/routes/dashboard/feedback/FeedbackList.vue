@@ -104,7 +104,8 @@ export default {
     this.$store.dispatch('feedback/fetchAllFeedback');
   },
   mounted() {
-    this.onTabChange(0);
+    this.selectedTabIndex = 0;
+    this.$store.dispatch('feedback/setFeedbackFilter', this.FeedbackFilterName);
   },
   methods: {
     formatKind(kind) {
@@ -135,16 +136,11 @@ export default {
       );
     },
     onTabChange(selectedTabIndex) {
-      if (
-        selectedTabIndex === 0 ||
-        this.selectedTabIndex !== selectedTabIndex
-      ) {
-        this.selectedTabIndex = selectedTabIndex;
-        this.$store.dispatch(
-          'feedback/setFeedbackFilter',
-          this.FeedbackFilterName
-        );
-      }
+      this.selectedTabIndex = selectedTabIndex;
+      this.$store.dispatch(
+        'feedback/setFeedbackFilter',
+        this.FeedbackFilterName
+      );
     },
   },
 };
