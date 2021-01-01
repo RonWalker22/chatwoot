@@ -5,65 +5,97 @@
         v-if="show"
         class="modal-mask"
         transition="modal"
+        data-test-id="new-feedback-close-mask"
         @click="closeModal"
       >
         <div class="modal-container" @click.stop>
           <div class="modal-content">
             <div class="row">
-              <h1>New Feedback</h1>
-              <i class="ion-android-close modal--close" @click="closeModal"></i>
+              <h1 data-test-id="new-feedback-title">
+                New Feedback
+              </h1>
+              <i
+                class="ion-android-close modal--close"
+                data-test-id="new-feedback-close-icon"
+                @click="closeModal"
+              >
+              </i>
             </div>
             <form>
               <div class="row">
                 <div class="small-7 columns">
                   <label>
                     Feedback Type
-                    <select v-model="payload.feedback.kind">
-                      <option value="" selected disabled hidden>
+                    <select
+                      v-model="payload.feedback.kind"
+                      data-test-id="new-feedback-select-type"
+                    >
+                      <option value="selected disabled hidden">
                         Choose Feedback Type
                       </option>
-                      <option value="request">
+                      <option
+                        value="request"
+                        data-test-id="new-feedback-select-type-option-request"
+                      >
                         Feature Request
                       </option>
-                      <option value="general">
+                      <option
+                        value="general"
+                        data-test-id="new-feedback-select-type-option-general"
+                      >
                         General
                       </option>
-                      <option value="bug">
+                      <option
+                        value="bug"
+                        data-test-id="new-feedback-select-type-option-bug"
+                      >
                         Bug Report
                       </option>
                     </select>
                   </label>
                   <label>
                     Inbox
-                    <select v-model="payload.feedback.inbox_id">
+                    <select
+                      v-model="payload.feedback.inbox_id"
+                      data-test-id="new-feedback-select-inbox"
+                    >
                       <option
                         v-for="inbox in inboxList"
                         :key="inbox.id"
                         :value="inbox.id"
+                        :data-test-id="`new-feedback-select-option-${inbox.id}`"
                       >
                         {{ inbox.name }}
                       </option>
                     </select>
                   </label>
                 </div>
-                <div v-if="requestFeedback" class="small-12 columns">
+                <div class="small-12 columns">
                   <label>
                     Title
-                    <input v-model.trim="payload.feedback.title" type="text" />
+                    <input
+                      v-model.trim="payload.feedback.title"
+                      type="text"
+                      data-test-id="new-feedback-input-title"
+                    />
                   </label>
                   <label>
                     Problem
-                    <textarea v-model="payload.problem" rows="4"></textarea>
+                    <textarea
+                      v-model="payload.problem"
+                      rows="4"
+                      data-test-id="new-feedback-input-problem"
+                    >
+                    </textarea>
                   </label>
                   <label>
                     Solution
-                    <textarea v-model="payload.solution" rows="4"></textarea>
-                  </label>
-                </div>
-                <div v-else class="small-12 columns">
-                  <label>
-                    Details
-                    <textarea v-model="payload.details" rows="6"></textarea>
+                    <textarea
+                      v-model="payload.solution"
+                      rows="4"
+                      data-test-id="new-feedback-input-solution"
+                    >
+                    </textarea>
                   </label>
                 </div>
               </div>
@@ -72,11 +104,16 @@
                   <button
                     class="button"
                     type="submit"
+                    data-test-id="new-feedback-submit-btn"
                     @click.prevent="submitFeedback"
                   >
                     Submit
                   </button>
-                  <button class="button clear" @click.prevent="CancelModal">
+                  <button
+                    class="button clear"
+                    data-test-id="new-feedback-cancel-btn"
+                    @click.prevent="CancelModal"
+                  >
                     Cancel
                   </button>
                 </div>
@@ -89,6 +126,7 @@
     <woot-button
       class="expanded"
       variant="hollow primary small"
+      data-test-id="new-feedback-btn"
       @click="openModal"
     >
       New Feedback
@@ -98,6 +136,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import router from '../../../routes';
+import { frontendURL, feedbackUrl } from '../../../helper/URLHelper';
 
 export default {
   data() {
@@ -111,14 +151,10 @@ export default {
         },
         problem: '',
         solution: '',
-        details: '',
       },
     };
   },
   computed: {
-    requestFeedback() {
-      return this.payload.feedback.kind === 'request';
-    },
     ...mapGetters({
       inboxList: 'inboxes/getInboxes',
     }),
@@ -134,7 +170,6 @@ export default {
         },
         problem: '',
         solution: '',
-        details: '',
       };
       this.show = false;
       this.payload = resetFeedback;
@@ -145,21 +180,40 @@ export default {
     openModal() {
       this.show = true;
     },
-    getFeedbackObject() {
-      return {
-        feedback: {
-          title: this.payload.feedback.title,
-          kind: this.payload.feedback.kind,
-          inbox_id: this.payload.feedback.inbox_id,
+    getFeedbackArray() {
+      return [
+        {
+          feedback: {
+            title: this.payload.feedback.title,
+            kind: this.payload.feedback.kind,
+            inbox_id: this.payload.feedback.inbox_id,
+          },
         },
-        problem: this.payload.problem,
-        solution: this.payload.solution,
-        details: this.payload.details,
-      };
+        {
+          proposal: {
+            details: this.payload.problem,
+            solution: false,
+          },
+        },
+        {
+          proposal: {
+            details: this.payload.solution,
+            solution: true,
+          },
+        },
+      ];
     },
     submitFeedback() {
-      this.createFeedback(this.getFeedbackObject());
-      this.CancelModal();
+      this.closeModal();
+      this.createFeedback(this.getFeedbackArray()).then(feedback => {
+        this.$store.dispatch('feedback/setSelectedFeedbackId', feedback.id);
+        const path = feedbackUrl({
+          accountId: feedback.account,
+          id: feedback.id,
+        });
+        this.$store.dispatch('feedback/fetchFeedbackItem', feedback.id);
+        router.push({ path: frontendURL(path) });
+      });
     },
   },
 };

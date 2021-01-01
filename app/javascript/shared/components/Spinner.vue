@@ -84,5 +84,16 @@ export default {
       margin-top: -$space-small + $space-micro;
     }
   }
+
+  &.mega {
+    width: $space-mega;
+    height: $space-mega;
+
+    &:before {
+      width: $space-mega;
+      height: $space-mega;
+      margin-top: $space-mega;
+    }
+  }
 }
 </style>

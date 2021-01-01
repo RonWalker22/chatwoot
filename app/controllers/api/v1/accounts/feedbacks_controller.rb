@@ -13,14 +13,13 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def create
-    ActiveRecord::Base.transaction do
-      @feedback = Feedback.new(feedback_params)
-      @feedback.account = Current.account
-      @feedback.save!
-      create_feedback_user
-      @feedback.requester = @feedback_user
-      @feedback.save!
-      create_proposals
+    @feedback = Feedback.new(feedback_params)
+    @feedback.account = Current.account
+
+    if @feedback.save
+      render :create
+    else
+      render json: feedback.errors, status: :unprocessable_entity
     end
   end
 
@@ -81,28 +80,6 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
     end
   end
 
-  # def find_proposal_user(proposal)
-  #   ProposalUser.find_by proposal: proposal, user: Current.user
-  # end
-
-  # def proposal_evaluation(proposal_user)
-  #   proposal_user ? proposal_user.evaluation : 'undecided'
-  # end
-
-  # def proposal_user_id(proposal_user)
-  #   proposal_user ? proposal_user.id : 0
-  # end
-
-  # def proposal_score(proposal_user)
-  #   return 0 unless proposal_user
-
-  #   up_votes = ProposalUser.all.where(proposal_id: proposal_user.proposal_id,
-  #                                     evaluation: 'support').count
-  #   down_votes = ProposalUser.all.where(proposal_id: proposal_user.proposal_id,
-  #                                       evaluation: 'reject').count
-  #   up_votes - down_votes
-  # end
-
   def set_feedback_user
     @feedback_user = FeedbackUser.find_by(
       feedback: @feedback,
@@ -121,23 +98,5 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   def create_feedback_user
     @feedback_user = FeedbackUser.create user: Current.user,
                                          feedback: @feedback
-  end
-
-  def create_proposals
-    if permitted_params['problem']
-      Proposal.create! proposer: @feedback_user,
-                       feedback: @feedback_user.feedback,
-                       details: permitted_params['problem'],
-                       primary: true,
-                       solution: false
-    end
-
-    return unless permitted_params['solution']
-
-    Proposal.create! proposer: @feedback_user,
-                     feedback: @feedback_user.feedback,
-                     details: permitted_params['solution'],
-                     primary: true,
-                     solution: true
   end
 end

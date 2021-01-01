@@ -16,13 +16,29 @@ export const state = {
     updatingItem: false,
     deletingItem: false,
   },
-  feedbackStatusFilter: 'review',
+  selectedFeedbackId: 0,
+  statusTabs: [
+    {
+      key: 'review',
+      name: 'Review',
+    },
+    {
+      key: 'active',
+      name: 'Active',
+    },
+    {
+      key: 'resolved',
+      name: 'Resolved',
+    },
+  ],
+  selectedStatusTabIndex: 0,
 };
 
 export const getters = {
-  getAllFeedback($state) {
+  getAllFeedback($state, $getters) {
+    let feedbackStatusFilter = $getters.getfeedbackStatusFilter.key;
     const feedback = $state.records.filter(
-      record => record.status === $state.feedbackStatusFilter
+      record => record.status === feedbackStatusFilter
     );
     return feedback || {};
   },
@@ -40,6 +56,18 @@ export const getters = {
   },
   getUIFlags($state) {
     return $state.uiFlags;
+  },
+  getSelectedFeedbackId($state) {
+    return $state.selectedFeedbackId;
+  },
+  getStatusTabs($state) {
+    return $state.statusTabs;
+  },
+  getfeedbackStatusFilter($state, $getters) {
+    return $getters.getStatusTabs[$getters.getSelectedStatusTabIndex];
+  },
+  getSelectedStatusTabIndex($state) {
+    return $state.selectedStatusTabIndex;
   },
 };
 
@@ -74,11 +102,23 @@ export const actions = {
       commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
     }
   },
-  createFeedback: async ({ commit }, newFeedback) => {
+  createFeedback: async ({ commit }, feedbackData) => {
+    commit(types.default.SET_FEEDBACK_UI_FLAG, { creatingItem: true });
     try {
-      const response = await FeedbackAPI.create(newFeedback);
-      commit(types.default.ADD_FEEDBACK, response.data);
+      const newFeedback = await FeedbackAPI.create(feedbackData[0]);
+      if (feedbackData[1].proposal.details !== '') {
+        feedbackData[1].proposal.feedback_id = newFeedback.data.id;
+        await ProposalsAPI.create(feedbackData[1]);
+      }
+      if (feedbackData[2].proposal.details !== '') {
+        feedbackData[2].proposal.feedback_id = newFeedback.data.id;
+        await ProposalsAPI.create(feedbackData[2]);
+      }
+      commit(types.default.ADD_FEEDBACK, newFeedback.data);
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { creatingItem: false });
+      return newFeedback.data;
     } catch (error) {
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { creatingItem: false });
       throw new Error(error);
     }
   },
@@ -114,8 +154,11 @@ export const actions = {
       throw new Error(error);
     }
   },
-  setFeedbackFilter({ commit }, data) {
-    commit(types.default.CHANGE_FEEDBACK_STATUS_FILTER, data);
+  setSelectedFeedbackId({ commit }, data) {
+    commit(types.default.CHANGE_SELECTED_FEEDBACK_ID, data);
+  },
+  setSelectedStatusTabIndex({ commit }, index) {
+    commit(types.default.CHANGE_SELECTED_STATUS_TAB_INDEX, index);
   },
   setFeedbackEvaluation: async ({ commit }, data) => {
     try {
@@ -237,8 +280,11 @@ export const mutations = {
 
     Vue.set(_state.records, index, newFeedback);
   },
-  [types.default.CHANGE_FEEDBACK_STATUS_FILTER](_state, data) {
-    _state.feedbackStatusFilter = data;
+  [types.default.CHANGE_SELECTED_FEEDBACK_ID](_state, data) {
+    _state.selectedFeedbackId = data;
+  },
+  [types.default.CHANGE_SELECTED_STATUS_TAB_INDEX](_state, data) {
+    _state.selectedStatusTabIndex = data;
   },
 };
 

@@ -6,20 +6,20 @@
           <NewSolution :feedback-id="feedback.id" />
         </div>
         <div class="column shrink">
+          <p>
+            Status:
+            <span data-test-id="feedback-status">{{ feedback.status }}</span>
+            - Type:
+            <span data-test-id="feedback-type">{{ feedback.kind }}</span>
+          </p>
+        </div>
+        <div class="column shrink">
           <EditFeedback :feedback-id="feedback.id" />
         </div>
       </div>
       <h1 class="feedback-title text-center" data-test-id="feedback-title">
         {{ feedback.title }}
       </h1>
-      <div class="column shrink">
-        <p>
-          Status:
-          <span data-test-id="feedback-status">{{ feedback.status }}</span>
-          - Type:
-          <span data-test-id="feedback-type">{{ feedback.kind }}</span>
-        </p>
-      </div>
       <Proposals :feedback="feedback" />
       <Comments
         :thread-id="feedback.thread"
@@ -28,9 +28,6 @@
       />
       <Toolbar :feedback="feedback" />
     </div>
-    <div v-else class="text-center">
-      <spinner :size="'large'"></spinner>
-    </div>
   </div>
 </template>
 
@@ -38,7 +35,6 @@
 import { mapGetters } from 'vuex';
 import Proposals from './Proposals';
 import Comments from './Comments';
-import Spinner from 'shared/components/Spinner.vue';
 import Toolbar from './Toolbar';
 import EditFeedback from './EditFeedback.vue';
 import NewSolution from './NewSolution.vue';
@@ -47,28 +43,28 @@ export default {
   components: {
     Proposals,
     Comments,
-    Spinner,
     Toolbar,
     EditFeedback,
     NewSolution,
   },
   props: {
-    feedbackId: {
-      type: [String, Number],
-      default: 0,
+    feedback: {
+      type: Object,
+      required: true,
     },
   },
   computed: {
-    feedback() {
-      let fb = this.$store.getters['feedback/getFeedbackItem'](this.feedbackId);
-      if (!fb.proposals) {
-        this.$store.dispatch('feedback/fetchFeedbackItem', this.feedbackId);
-      }
-      return fb;
-    },
     ...mapGetters({
       uiFlags: 'feedback/getUIFlags',
+      statusTabs: 'feedback/getStatusTabs',
     }),
+  },
+  mounted() {
+    this.statusTabs.forEach((statusObject, i) => {
+      if (statusObject.key === this.feedback.status) {
+        this.$store.dispatch('feedback/setSelectedStatusTabIndex', i);
+      }
+    });
   },
 };
 </script>
@@ -93,5 +89,11 @@ export default {
 
 .action-row {
   margin-bottom: 4rem;
+}
+
+.card-section {
+  p {
+    text-align: left !important;
+  }
 }
 </style>

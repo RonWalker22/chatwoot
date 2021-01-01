@@ -61,6 +61,6 @@ export default {
 
 <style lang="scss" scoped>
 .comments {
-  background-color: #fbfbfb;
+  background-color: #f4f6fb;
 }
 </style>

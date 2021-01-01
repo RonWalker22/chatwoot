@@ -106,6 +106,7 @@ export default {
         proposal: {
           details: this.proposal.details,
           feedback_id: this.feedbackId,
+          solution: true,
         },
       };
     },

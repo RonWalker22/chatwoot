@@ -4,3 +4,4 @@ json.kind @feedback.kind
 json.account @feedback.account.id
 json.posts []
 json.status @feedback.status
+json.evaluation @evaluation if @evaluation

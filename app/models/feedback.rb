@@ -47,6 +47,7 @@ class Feedback < ApplicationRecord
   has_many :clarification_posts, through: :clarification_thread
 
   after_create :create_thread
+  after_create :create_requester
 
   def requester_name
     requester_type == 'FeedbackContact' ? requester.contact.name : requester.user.name
@@ -56,5 +57,11 @@ class Feedback < ApplicationRecord
 
   def create_thread
     ClarificationThread.create feedback: self
+  end
+
+  def create_requester
+    @feedback_user = FeedbackUser.create user: Current.user, feedback: self
+    self.requester = @feedback_user
+    save!
   end
 end

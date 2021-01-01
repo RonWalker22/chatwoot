@@ -7,7 +7,6 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   def create
     proposal = Proposal.new(proposal_params)
     proposal.proposer = @feedback_user
-    proposal.solution = true
     proposal.primary = false
 
     if proposal.save
@@ -34,7 +33,10 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   end
 
   def proposal_params
-    params.require(:proposal).permit(:details, :feedback_id)
+    params.require(:proposal).permit(:details,
+                                     :feedback_id,
+                                     :primary,
+                                     :solution)
   end
 
   def set_feedback

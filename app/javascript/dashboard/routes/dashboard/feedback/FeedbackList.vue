@@ -13,12 +13,12 @@
     <div class="row align-center">
       <div class="columns shrink">
         <woot-tabs
-          :index="selectedTabIndex"
+          :index="selectedStatusTabIndex"
           class="tab--chat-type"
           @change="onTabChange"
         >
           <woot-tabs-item
-            v-for="tab in tabs"
+            v-for="tab in statusTabs"
             :key="tab.key"
             :name="tab.name"
             :show-badge="false"
@@ -33,14 +33,20 @@
         :key="feedback.id"
         @click="cardClick(feedback.id, feedback.account)"
       >
-        <div class="card">
+        <div
+          class="card"
+          :class="{
+            'card-active': selectedFeedbackId == feedback.id,
+          }"
+          data-test-id="feedback-list-card"
+        >
           <div class="card-section">
             <p
               class="h6"
               :class="'kind-' + feedback.kind"
               data-test-id="feedback-list-type"
             >
-              {{ formatKind(feedback.kind) }}
+              {{ feedback.kind }}
             </p>
             <p data-test-id="feedback-list-title">
               {{ feedback.title }}
@@ -67,58 +73,22 @@ export default {
     Spinner,
     NewFeedback,
   },
-  data() {
-    return {
-      tabs: [
-        {
-          key: 'review',
-          name: 'Review',
-        },
-        {
-          key: 'active',
-          name: 'Active',
-        },
-        {
-          key: 'resolved',
-          name: 'Resolved',
-        },
-      ],
-      selectedTabIndex: 0,
-    };
-  },
   computed: {
     ...mapGetters({
       feedbackList: 'feedback/getAllFeedback',
       uiFlags: 'feedback/getUIFlags',
+      selectedFeedbackId: 'feedback/getSelectedFeedbackId',
+      feedbackStatusFilter: 'feedback/getfeedbackStatusFilter',
+      selectedStatusTabIndex: 'feedback/getSelectedStatusTabIndex',
+      statusTabs: 'feedback/getStatusTabs',
     }),
-    FeedbackFilters() {
-      return {
-        status: this.activeStatus,
-      };
+    currentFeedbackId() {
+      return this.$router.currentRoute.params.feedback_id;
     },
-    FeedbackFilterName() {
-      return this.tabs[this.selectedTabIndex].key;
-    },
-  },
-  created() {
-    this.$store.dispatch('feedback/fetchAllFeedback');
-  },
-  mounted() {
-    this.selectedTabIndex = 0;
-    this.$store.dispatch('feedback/setFeedbackFilter', this.FeedbackFilterName);
   },
   methods: {
-    formatKind(kind) {
-      switch (kind) {
-        case 'request':
-          return 'Request';
-        case 'bug':
-          return 'Bug';
-        default:
-          return 'General';
-      }
-    },
     cardClick(feedbackId, accountId) {
+      this.$store.dispatch('feedback/setSelectedFeedbackId', feedbackId);
       this.updateFeedback(feedbackId);
       const path = feedbackUrl({
         accountId: accountId,
@@ -129,17 +99,10 @@ export default {
     updateFeedback(id) {
       this.$store.dispatch('feedback/fetchFeedbackItem', id);
     },
-    updateFeedbackFilter() {
-      this.$store.dispatch(
-        'feedback/setFeedbackFilter',
-        this.FeedbackFilterName
-      );
-    },
     onTabChange(selectedTabIndex) {
-      this.selectedTabIndex = selectedTabIndex;
       this.$store.dispatch(
-        'feedback/setFeedbackFilter',
-        this.FeedbackFilterName
+        'feedback/setSelectedStatusTabIndex',
+        selectedTabIndex
       );
     },
   },
@@ -160,9 +123,13 @@ $xy-grid: true;
     cursor: pointer;
   }
 }
+
+.card-active {
+  background: #f4f6fb;
+}
+
 .card-section {
   .h6 {
-    text-transform: capitalize;
     background: none;
     color: $color-woot;
   }
