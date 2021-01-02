@@ -76,9 +76,10 @@ export default {
           },
           feedback_id: this.$route.params.feedback_id,
         };
-        this.createComment({ ...payload });
+        this.createComment({ ...payload }).then(() => {
+          this.active = false;
+        });
         this.details = '';
-        this.active = false;
       }
     },
   },

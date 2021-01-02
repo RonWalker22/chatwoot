@@ -41,11 +41,7 @@
           data-test-id="feedback-list-card"
         >
           <div class="card-section">
-            <p
-              class="h6"
-              :class="'kind-' + feedback.kind"
-              data-test-id="feedback-list-type"
-            >
+            <p class="h6" data-test-id="feedback-list-type">
               {{ feedback.kind }}
             </p>
             <p data-test-id="feedback-list-title">

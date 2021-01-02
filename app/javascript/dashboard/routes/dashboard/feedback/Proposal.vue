@@ -208,8 +208,15 @@ export default {
   color: black;
 }
 
+.proposal-card {
+  background: transparent;
+  border: none;
+  border-left: dashed steelblue 1px;
+}
+
 .problem-card {
   margin-top: none;
+  border-left: solid firebrick 2px;
 }
 
 .solution-card {
@@ -217,19 +224,13 @@ export default {
 }
 
 .primary-card {
-  border-left: solid steelblue 2px !important;
+  border-left: solid steelblue 2px;
 }
 
 .proposal-main {
   background: white;
   padding-left: 3em;
   padding-right: 3em;
-}
-
-.proposal-card {
-  background: white;
-  border: none;
-  border-left: dashed black 1px;
 }
 
 .close-btn {
