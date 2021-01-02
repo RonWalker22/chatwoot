@@ -1,18 +1,23 @@
-import '../../support/commands/feedback-commands';
+import '../../support/commands/feedback-evaluation-commands';
 import '../../support/commands/edit-feedback-commands';
 import '../../support/commands/new-feedback-commands';
 import '../../support/commands/feedback-card-commands';
-const feedbackInteractions = function(testMessage, commentLength) {
+import '../../support/commands/feedback-comments-commands';
+import '../../support/commands/proposal-vote-commands';
+import '../../support/commands/new-proposal-commands';
+
+
+const feedbackInteractions = function() {
   it('Feedback Evaluation Specs', function() {
-    cy.RunFeedbackEvaluationSpecs(testMessage);
+    cy.RunFeedbackEvaluationSpecs();
   })
 
   it('Proposal Vote Specs', function() {
-    cy.RunProposalVoteSpecs(testMessage);
+    cy.RunProposalVoteSpecs();
   })
 
   it('add new comment', function() {
-    cy.addNewComment(testMessage, commentLength);
+    cy.addNewComment();
   });
 };
 
@@ -24,18 +29,15 @@ describe('Feedback interactions with & without new Proposal', function() {
     cy.login();
   });
 
-  let testMessageOne = 'landy candy 2';
-  let testMessageTwo = 'red wing 21';
-
   // 'without new proposal'
-  feedbackInteractions(testMessageOne, 1);
+  feedbackInteractions();
 
   it('create new proposal', function() {
     cy.RunNewProposalSpecs('NEW Proposal');
   })
 
   // 'with new proposal'
-  feedbackInteractions(testMessageTwo, 2);
+  feedbackInteractions();
 
   it('edit feedback - finish', function() {
     cy.RunEditFeedbackSpecs('finish');

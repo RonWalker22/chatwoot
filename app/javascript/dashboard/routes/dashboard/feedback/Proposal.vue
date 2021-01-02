@@ -8,9 +8,14 @@
     }"
   >
     <div class="proposal-main">
-      <div class="row align-middle">
-        <div v-if="isSolution" class="columns shrink">
-          <button v-if="isPrimarySolution">
+      <div class="row align-top">
+        <div class="columns shrink">
+          <h2 :class="{ 'black-text': isProblem }">
+            {{ proposalTitle }}
+          </h2>
+        </div>
+        <div v-if="isPrimarySolution" class="columns shrink">
+          <button>
             <i
               class="ion-checkmark-round primary-text-color"
               title="Selected Solution"
@@ -19,14 +24,7 @@
             <span class="show-for-sr">Selected Solution</span>
           </button>
         </div>
-        <div class="columns">
-          <h6
-            class="text-center"
-            :class="{ 'black-text text-center': isProblem }"
-          >
-            {{ proposalTitle }}
-          </h6>
-        </div>
+        <div class="columns"></div>
         <div class="columns shrink">
           <button
             v-if="isSolution"
@@ -191,8 +189,7 @@ export default {
 
 .ion-checkmark-round {
   font-size: 30px;
-  margin-bottom: 1rem;
-  display: inline-block;
+  margin-left: 1rem;
 }
 
 .card {
@@ -212,35 +209,27 @@ export default {
 }
 
 .problem-card {
-  border: none;
   margin-top: none;
 }
 
 .solution-card {
   margin-top: 5em;
-  border: none;
-  border-left: 2px solid black;
 }
 
 .primary-card {
-  border: none;
-  border: 3px solid $color-woot !important;
-}
-
-.comments {
-  background: red;
-  padding: 3em;
+  border-left: solid steelblue 2px !important;
 }
 
 .proposal-main {
   background: white;
-  border-bottom: 1px solid gainsboro;
-  padding: 3em;
+  padding-left: 3em;
+  padding-right: 3em;
 }
 
 .proposal-card {
   background: white;
-  border: 1px solid gainsboro;
+  border: none;
+  border-left: dashed black 1px;
 }
 
 .close-btn {
@@ -273,5 +262,10 @@ export default {
 
 .upvote-proposal {
   color: $color-woot;
+}
+
+h2 {
+  font-size: $font-size-medium;
+  margin-top: 1rem;
 }
 </style>

@@ -1,24 +1,15 @@
 <template>
-  <div :class="{ comments: !mainBoard }">
+  <div :class="{ comments: !mainBoard, 'public-board': mainBoard }">
     <h6 v-if="mainBoard" class="text-center">
       Public Board
     </h6>
-    <NewComment
-      v-if="mainBoard"
-      :thread-id="threadId"
-      :main-board="mainBoard"
-    />
     <Comment
       v-for="(post, index) in posts"
       :key="post.id"
       :post="post"
       :index="index"
     />
-    <NewComment
-      v-if="!mainBoard"
-      :thread-id="threadId"
-      :main-board="mainBoard"
-    />
+    <NewComment :thread-id="threadId" :main-board="mainBoard" />
   </div>
 </template>
 
@@ -62,5 +53,13 @@ export default {
 <style lang="scss" scoped>
 .comments {
   background-color: #f4f6fb;
+  background-color: transparent;
+  padding-left: 3em;
+}
+
+.public-board {
+  h6 {
+    margin-bottom: 5em;
+  }
 }
 </style>

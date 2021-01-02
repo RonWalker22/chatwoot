@@ -96,4 +96,8 @@ export default {
     text-align: left !important;
   }
 }
+
+h1 {
+  font-size: $font-size-large;
+}
 </style>

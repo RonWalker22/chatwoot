@@ -59,8 +59,8 @@ export default {
 }
 
 .callout {
-  background: transparent;
-  margin-bottom: 4rem;
+  background: #f4f6fb;
+  margin-bottom: 0;
   border: none;
 }
 </style>
