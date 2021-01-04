@@ -3,9 +3,33 @@
     <div class="row">
       <div class="columns">
         <Proposal
-          v-for="(proposal, index) in feedback.proposals"
+          v-for="proposal in proposals.problems"
           :key="proposal.id"
-          :index="index"
+          :index="proposal.id"
+          :proposal="proposal"
+        >
+          <Comments
+            :thread-id="proposal.thread"
+            :main-board="false"
+            :feedback-id="proposal.feedback_id"
+          />
+        </Proposal>
+        <Proposal
+          v-for="proposal in proposals.primaries"
+          :key="proposal.id"
+          :index="proposal.id"
+          :proposal="proposal"
+        >
+          <Comments
+            :thread-id="proposal.thread"
+            :main-board="false"
+            :feedback-id="proposal.feedback_id"
+          />
+        </Proposal>
+        <Proposal
+          v-for="proposal in proposals.alternatives"
+          :key="proposal.id"
+          :index="proposal.id"
           :proposal="proposal"
         >
           <Comments
@@ -32,6 +56,25 @@ export default {
     feedback: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    proposals() {
+      let sortedProposals = {
+        problems: [],
+        primaries: [],
+        alternatives: [],
+      };
+      this.feedback.proposals.forEach(proposal => {
+        if (!proposal.solution) {
+          sortedProposals.problems.push(proposal);
+        } else if (proposal.primary) {
+          sortedProposals.primaries.push(proposal);
+        } else {
+          sortedProposals.alternatives.push(proposal);
+        }
+      });
+      return sortedProposals;
     },
   },
 };

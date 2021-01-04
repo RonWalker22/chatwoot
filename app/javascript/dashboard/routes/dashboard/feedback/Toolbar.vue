@@ -100,7 +100,6 @@ export default {
 
 .button {
   background-color: transparent;
-  color: black;
 }
 
 .support-selected {

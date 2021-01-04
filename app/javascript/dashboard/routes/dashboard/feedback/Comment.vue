@@ -1,15 +1,5 @@
 <template>
   <div class="callout" data-closable="slide-out-right">
-    <button
-      class="close-button"
-      aria-label="Delete comment"
-      title="Delete comment"
-      type="button"
-      data-close
-      @click="deleteComment(post.id)"
-    >
-      <span aria-hidden="true">&times;</span>
-    </button>
     <div class="media-object">
       <div class="media-object-section">
         <h6 data-test-id="proposal-comment-author">
@@ -24,14 +14,21 @@
           {{ post.date }}
         </p>
       </div>
+      <div class="media-object-section more-actions-btn">
+        <more-actions :id="post.id" :is-solution="false" />
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
+import MoreActions from './MoreActions';
 
 export default {
+  components: {
+    MoreActions,
+  },
   props: {
     post: {
       type: Object,
@@ -62,5 +59,10 @@ export default {
   background: #f4f6fb;
   margin-bottom: 0;
   border: none;
+  padding-right: 0;
+}
+
+.more-actions-btn {
+  margin-left: auto;
 }
 </style>

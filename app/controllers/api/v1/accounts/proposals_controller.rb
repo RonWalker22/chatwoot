@@ -1,5 +1,5 @@
 class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
-  before_action :set_proposal, only: [:destroy]
+  before_action :set_proposal, only: [:destroy, :update]
   before_action :check_authorization, except: [:create]
   before_action :set_feedback, only: [:create]
   before_action :find_feedback_user, only: [:create]
@@ -24,6 +24,17 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
       feedback_id: feedback_id,
       id: id
     }
+  end
+
+  def update
+    @proposal.update!(proposal_params)
+    render json: { id: @proposal.id,
+                   primary: @proposal.primary,
+                   feedback_id: @proposal.feedback_id }
+  rescue ActiveRecord::RecordInvalid => e
+    render json: {
+      message: e.record.errors.full_messages.join(', ')
+    }, status: :unprocessable_entity
   end
 
   private

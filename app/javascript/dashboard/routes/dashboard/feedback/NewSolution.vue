@@ -93,7 +93,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions('feedback', ['createSolution']),
+    ...mapActions('feedback', ['createProposal']),
     cancelModal() {
       this.proposal.details = '';
       this.show = false;
@@ -111,7 +111,7 @@ export default {
       };
     },
     submitProposal() {
-      this.createSolution(this.getFeedbackObject());
+      this.createProposal(this.getFeedbackObject());
       this.cancelModal();
     },
   },

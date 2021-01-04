@@ -12,6 +12,7 @@
           v-for="item in accessibleMenuItems"
           :key="item.toState"
           :menu-item="item"
+          :data-test-id="'main-sidebar-item-' + item.toStateName"
         />
         <sidebar-item
           v-if="shouldShowInboxes"

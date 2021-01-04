@@ -32,6 +32,12 @@ Cypress.Commands.add('login', () => {
     .type('123456');
   cy.get("[data-testid='submit_button']").click();
   cy.get("[data-test-id='no-conversation-selected']")
-  cy.visit('/app/accounts/1/feedback/1');
+  cy.get("[data-test-id='main-sidebar-item-feedback_home']")
+    .click();
+  cy.get("[data-test-id='feedback-tab-active']")
+    .click();
+  cy.get("[data-test-id='feedback-list-card']")
+    .first()
+    .click();
   cy.get('[data-test-id="feedback-title"]');
 });

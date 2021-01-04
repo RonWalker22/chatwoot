@@ -130,18 +130,26 @@ export const actions = {
       throw new Error(error);
     }
   },
-  createSolution: async ({ commit }, newSolution) => {
+  createProposal: async ({ commit }, newProposal) => {
     try {
-      const response = await ProposalsAPI.create(newSolution);
-      commit(types.default.ADD_SOLUTION, response.data);
+      const response = await ProposalsAPI.create(newProposal);
+      commit(types.default.ADD_PROPOSAL, response.data);
     } catch (error) {
       throw new Error(error);
     }
   },
-  deleteSolution: async ({ commit }, id) => {
+  deleteProposal: async ({ commit }, id) => {
     try {
       const response = await ProposalsAPI.delete(id);
-      commit(types.default.DELETE_SOLUTION, response.data);
+      commit(types.default.DELETE_PROPOSAL, response.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  updateProposal: async ({ commit }, proposal) => {
+    try {
+      const response = await ProposalsAPI.update(proposal.id, proposal.payload);
+      commit(types.default.UPDATE_PROPOSAL, response.data);
     } catch (error) {
       throw new Error(error);
     }
@@ -179,7 +187,7 @@ export const actions = {
       } else {
         createResponse = await ProposalUsersAPI.update(data.id, data.payload);
       }
-      commit(types.default.UPDATE_PROPOSAL, createResponse.data);
+      commit(types.default.UPDATE_PROPOSAL_EVALUATION, createResponse.data);
     } catch (error) {
       throw new Error(error);
     }
@@ -196,8 +204,24 @@ export const mutations = {
   [types.default.EDIT_FEEDBACK]: MutationHelpers.update,
   [types.default.UPDATE_FEEDBACK]: MutationHelpers.updateAttributes,
   [types.default.DELETE_FEEDBACK]: MutationHelpers.destroy,
-  [types.default.ADD_SOLUTION]: MutationHelpers.create,
+  [types.default.UPDATE_PROPOSAL](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    const feedback = _state.records[index];
 
+    Object.assign(newFeedback, feedback);
+
+    const proposals = newFeedback.proposals;
+    const proposalIndex = proposals.findIndex(proposal => {
+      return proposal.id === payload.id;
+    });
+
+    newFeedback.proposals[proposalIndex].primary = payload.primary;
+
+    Vue.set(_state.records, index, newFeedback);
+  },
   [types.default.DELETE_COMMENT](_state, payload) {
     let newFeedback = {};
     const index = state.records.findIndex(
@@ -226,7 +250,7 @@ export const mutations = {
 
     Vue.set(_state.records, index, newFeedback);
   },
-  [types.default.ADD_SOLUTION](_state, payload) {
+  [types.default.ADD_PROPOSAL](_state, payload) {
     let newFeedback = {};
     const index = state.records.findIndex(
       record => record.id === payload.feedback_id
@@ -238,7 +262,7 @@ export const mutations = {
 
     Vue.set(_state.records, index, newFeedback);
   },
-  [types.default.DELETE_SOLUTION](_state, payload) {
+  [types.default.DELETE_PROPOSAL](_state, payload) {
     let newFeedback = {};
     const index = state.records.findIndex(
       record => record.id === payload.feedback_id
@@ -253,7 +277,7 @@ export const mutations = {
 
     Vue.set(_state.records, index, newFeedback);
   },
-  [types.default.UPDATE_PROPOSAL](_state, payload) {
+  [types.default.UPDATE_PROPOSAL_EVALUATION](_state, payload) {
     let newFeedback = {};
     const index = state.records.findIndex(
       record => record.id === payload.feedback_id

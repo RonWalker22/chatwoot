@@ -1,25 +1,30 @@
 Cypress.Commands.add('RunNewProposalSpecs', (content) => {
-  (function createNewSolution() {
-    cy.clickNewSolution();
-    cy.typeSolutionText(content);
-    cy.submitNewSolution();
-    cy.confirmSubmission(content);
-  })();
-
-  (function newSolutionIconCancel() {
-    cy.clickNewSolution();
-    cy.typeSolutionText(content);
-    cy.cancelWithIcon();
-    cy.confirmCancel();
-  })();
-
-  (function newSolutionIconButton() {
-    cy.clickNewSolution();
-    cy.typeSolutionText(content);
-    cy.cancelWithBtn();
-    cy.confirmCancel();
-  })();
+  cy.createNewSolution(content);
+  cy.newSolutionIconCancel(content);
+  cy.newSolutionButtonCancel(content);
 });
+
+Cypress.Commands.add('createNewSolution', (content) => {
+  cy.clickNewSolution();
+  cy.typeSolutionText(content);
+  cy.submitNewSolution();
+  cy.confirmSubmission(content);
+});
+
+Cypress.Commands.add('newSolutionIconCancel', (content) => {
+  cy.clickNewSolution();
+  cy.typeSolutionText(content);
+  cy.cancelWithIcon();
+  cy.confirmCancel();
+});
+
+Cypress.Commands.add('newSolutionButtonCancel', (content) => {
+  cy.clickNewSolution();
+  cy.typeSolutionText(content);
+  cy.cancelWithBtn();
+  cy.confirmCancel();
+});
+
 
 Cypress.Commands.add('clickNewSolution', () => {
   cy.get('[data-test-id="new-solution-btn"]')

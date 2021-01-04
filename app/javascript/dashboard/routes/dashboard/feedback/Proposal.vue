@@ -6,6 +6,8 @@
       'problem-card': isProblem,
       'solution-card': isSolution,
     }"
+    data-test-id="proposal-card"
+    test
   >
     <div class="proposal-main">
       <div class="row align-top">
@@ -14,29 +16,24 @@
             {{ proposalTitle }}
           </h2>
         </div>
+        <div class="columns"></div>
         <div v-if="isPrimarySolution" class="columns shrink">
-          <button>
+          <div>
             <i
               class="ion-checkmark-round primary-text-color"
               title="Selected Solution"
               aria-hidden="true"
             ></i>
             <span class="show-for-sr">Selected Solution</span>
-          </button>
+          </div>
         </div>
-        <div class="columns"></div>
         <div class="columns shrink">
-          <button
+          <more-actions
             v-if="isSolution"
-            class="close-btn"
-            aria-label="Delete solution"
-            title="Delete solution"
-            type="button"
-            data-close
-            @click="deleteSolution(proposal.id)"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
+            :id="proposal.id"
+            :is-solution="true"
+            :is-primary="proposal.primary"
+          />
         </div>
       </div>
       <div class="row align-top">
@@ -100,8 +97,12 @@
 
 <script>
 import { mapActions } from 'vuex';
+import MoreActions from './MoreActions';
 
 export default {
+  components: {
+    MoreActions,
+  },
   props: {
     index: {
       type: [Number, String],
@@ -146,7 +147,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('feedback', ['deleteSolution', 'setProposalEvaluation']),
+    ...mapActions('feedback', ['setProposalEvaluation']),
     supportProposal() {
       if (this.proposal.evaluation === 'support') {
         this.resetProposalEvaluation();
@@ -188,8 +189,7 @@ export default {
 @import '~dashboard/assets/scss/variables';
 
 .ion-checkmark-round {
-  font-size: 30px;
-  margin-left: 1rem;
+  font-size: 25px;
 }
 
 .card {
@@ -212,6 +212,7 @@ export default {
   background: transparent;
   border: none;
   border-left: dashed steelblue 1px;
+  padding-right: 3em;
 }
 
 .problem-card {
@@ -230,7 +231,6 @@ export default {
 .proposal-main {
   background: white;
   padding-left: 3em;
-  padding-right: 3em;
 }
 
 .close-btn {

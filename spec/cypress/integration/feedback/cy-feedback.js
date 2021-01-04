@@ -5,6 +5,7 @@ import '../../support/commands/feedback-card-commands';
 import '../../support/commands/feedback-comments-commands';
 import '../../support/commands/proposal-vote-commands';
 import '../../support/commands/new-proposal-commands';
+import '../../support/commands/proposal-more-toolbar-commands';
 
 
 const feedbackInteractions = function() {
@@ -38,6 +39,10 @@ describe('Feedback interactions with & without new Proposal', function() {
 
   // 'with new proposal'
   feedbackInteractions();
+
+  it('proposal more toolbar specs', function() {
+    cy.RunProposalMoreToolbarSpecs();
+  })
 
   it('edit feedback - finish', function() {
     cy.RunEditFeedbackSpecs('finish');
