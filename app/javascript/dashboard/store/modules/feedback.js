@@ -24,7 +24,7 @@ export const state = {
     },
     {
       key: 'active',
-      name: 'Active',
+      name: 'Public',
     },
     {
       key: 'resolved',

@@ -1,7 +1,7 @@
 <template>
   <div :class="{ comments: !mainBoard, 'public-board': mainBoard }">
     <h6 v-if="mainBoard" class="text-center">
-      Public Board
+      Public Comments
     </h6>
     <Comment
       v-for="(post, index) in posts"
@@ -9,7 +9,12 @@
       :post="post"
       :index="index"
     />
-    <NewComment :thread-id="threadId" :main-board="mainBoard" />
+    <NewComment
+      :thread-id="threadId"
+      :main-board="mainBoard"
+      :is-public="mainBoard"
+      :is-problem="problem"
+    />
   </div>
 </template>
 
@@ -38,6 +43,10 @@ export default {
       required: true,
       default: 0,
     },
+    problem: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     posts() {
@@ -52,14 +61,21 @@ export default {
 
 <style lang="scss" scoped>
 .comments {
-  background-color: #f4f6fb;
   background-color: transparent;
   padding-left: 3em;
 }
 
 .public-board {
+  margin-top: 5em;
+  border-top: 4px solid blueviolet;
+  border-left: 4px solid blueviolet;
+  padding: 3rem;
+  .callout {
+    background-color: transparent;
+  }
   h6 {
-    margin-bottom: 5em;
+    margin-bottom: 1em;
+    color: blueviolet;
   }
 }
 </style>

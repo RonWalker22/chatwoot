@@ -56,7 +56,7 @@ export default {
 }
 
 .callout {
-  background: #f4f6fb;
+  background-color: #f4f6fb;
   margin-bottom: 0;
   border: none;
   padding-right: 0;

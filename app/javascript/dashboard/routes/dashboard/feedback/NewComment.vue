@@ -8,7 +8,10 @@
     >
       reply
     </button>
-    <div v-else>
+    <div
+      v-else
+      :class="{ 'public-comment': isPublic, 'problem-comment': isProblem }"
+    >
       <textarea
         v-model="details"
         v-focus
@@ -28,11 +31,11 @@
         add comment
       </button>
       <button
-        class="button clear"
+        class="button hollow"
         data-test-id="proposal-comment-cancel-btn"
         @click="(active = false), (details = '')"
       >
-        Cancel
+        cancel
       </button>
     </div>
   </div>
@@ -55,6 +58,14 @@ export default {
       default: 0,
     },
     mainBoard: {
+      type: Boolean,
+      default: false,
+    },
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
+    isProblem: {
       type: Boolean,
       default: false,
     },
@@ -96,14 +107,53 @@ textarea {
   margin-top: 1em;
 }
 
+.hollow {
+  background: transparent;
+  color: $color-woot;
+  border: none;
+}
+
+.problem-comment {
+  .button {
+    background: firebrick;
+  }
+
+  .hollow {
+    background: transparent;
+    color: firebrick;
+    border: none;
+  }
+
+  textarea:focus {
+    border: 1px solid firebrick;
+  }
+}
+
+.public-comment {
+  .button {
+    background: blueviolet;
+  }
+
+  .hollow {
+    background: transparent;
+    color: blueviolet;
+    border: none;
+  }
+
+  textarea:focus {
+    border: 1px solid blueviolet;
+  }
+}
+
 .new-comment-preview {
+  font-size: 1.3rem;
   background: transparent;
   color: #3c4858;
   border-color: transparent;
   text-decoration: underline;
   &:hover {
     border-color: transparent;
-    color: $color-woot;
+    color: #3c4858;
     background: transparent;
   }
 }

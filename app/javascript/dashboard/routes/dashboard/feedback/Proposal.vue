@@ -16,7 +16,6 @@
             {{ proposalTitle }}
           </h2>
         </div>
-        <div class="columns"></div>
         <div v-if="isPrimarySolution" class="columns shrink">
           <div>
             <i
@@ -27,6 +26,7 @@
             <span class="show-for-sr">Selected Solution</span>
           </div>
         </div>
+        <div class="columns"></div>
         <div class="columns shrink">
           <more-actions
             v-if="isSolution"
@@ -190,6 +190,7 @@ export default {
 
 .ion-checkmark-round {
   font-size: 25px;
+  margin-left: 1rem;
 }
 
 .card {
@@ -211,25 +212,31 @@ export default {
 .proposal-card {
   background: transparent;
   border: none;
-  border-left: dashed steelblue 2px;
-  padding-right: 3em;
+  margin-right: 3em;
+  border-left: dashed $color-woot 2px;
 }
 
 .problem-card {
   margin-top: none;
-  border-left: solid firebrick 2px;
+  border-left: solid firebrick 4px;
+  h2 {
+    color: firebrick;
+  }
 }
 
 .solution-card {
   margin-top: 5em;
+  h2 {
+    color: $color-woot;
+  }
 }
 
 .primary-card {
-  border-left: solid steelblue 2px;
+  border-left: solid $color-woot 4px;
 }
 
 .proposal-main {
-  background: white;
+  background: transparent;
   padding-left: 3em;
 }
 

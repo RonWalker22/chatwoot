@@ -10,6 +10,7 @@
         >
           <Comments
             :thread-id="proposal.thread"
+            :problem="true"
             :main-board="false"
             :feedback-id="proposal.feedback_id"
           />
