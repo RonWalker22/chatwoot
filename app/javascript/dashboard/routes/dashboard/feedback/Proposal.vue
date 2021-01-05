@@ -211,7 +211,7 @@ export default {
 .proposal-card {
   background: transparent;
   border: none;
-  border-left: dashed steelblue 1px;
+  border-left: dashed steelblue 2px;
   padding-right: 3em;
 }
 
