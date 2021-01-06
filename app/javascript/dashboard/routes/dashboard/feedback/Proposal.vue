@@ -212,13 +212,13 @@ export default {
 .proposal-card {
   background: transparent;
   border: none;
-  margin-right: 3em;
+  padding: 3em;
   border-left: dashed $color-woot 2px;
 }
 
 .problem-card {
+  border: none;
   margin-top: none;
-  border-left: solid firebrick 4px;
   h2 {
     color: firebrick;
   }
@@ -232,12 +232,12 @@ export default {
 }
 
 .primary-card {
+  border: solid 4px;
   border-left: solid $color-woot 4px;
 }
 
 .proposal-main {
   background: transparent;
-  padding-left: 3em;
 }
 
 .close-btn {
@@ -265,11 +265,11 @@ export default {
 }
 
 .downvote-proposal {
-  color: firebrick;
+  color: darkmagenta;
 }
 
 .upvote-proposal {
-  color: $color-woot;
+  color: darkmagenta;
 }
 
 h2 {

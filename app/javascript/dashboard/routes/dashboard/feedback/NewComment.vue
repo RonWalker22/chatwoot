@@ -8,10 +8,7 @@
     >
       reply
     </button>
-    <div
-      v-else
-      :class="{ 'public-comment': isPublic, 'problem-comment': isProblem }"
-    >
+    <div v-else>
       <textarea
         v-model="details"
         v-focus
@@ -65,10 +62,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    isProblem: {
-      type: Boolean,
-      default: false,
-    },
   },
   data() {
     return {
@@ -111,38 +104,6 @@ textarea {
   background: transparent;
   color: $color-woot;
   border: none;
-}
-
-.problem-comment {
-  .button {
-    background: firebrick;
-  }
-
-  .hollow {
-    background: transparent;
-    color: firebrick;
-    border: none;
-  }
-
-  textarea:focus {
-    border: 1px solid firebrick;
-  }
-}
-
-.public-comment {
-  .button {
-    background: blueviolet;
-  }
-
-  .hollow {
-    background: transparent;
-    color: blueviolet;
-    border: none;
-  }
-
-  textarea:focus {
-    border: 1px solid blueviolet;
-  }
 }
 
 .new-comment-preview {

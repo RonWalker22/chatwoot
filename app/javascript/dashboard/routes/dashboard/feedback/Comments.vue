@@ -13,7 +13,6 @@
       :thread-id="threadId"
       :main-board="mainBoard"
       :is-public="mainBoard"
-      :is-problem="problem"
     />
   </div>
 </template>
@@ -43,10 +42,6 @@ export default {
       required: true,
       default: 0,
     },
-    problem: {
-      type: Boolean,
-      default: false,
-    },
   },
   computed: {
     posts() {
@@ -60,22 +55,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '~dashboard/assets/scss/variables';
+
 .comments {
   background-color: transparent;
-  padding-left: 3em;
 }
 
 .public-board {
-  margin-top: 5em;
-  border-top: 4px solid blueviolet;
-  border-left: 4px solid blueviolet;
+  margin-top: 10em;
   padding: 3rem;
   .callout {
     background-color: transparent;
   }
   h6 {
     margin-bottom: 1em;
-    color: blueviolet;
+    color: $color-woot;
   }
 }
 </style>
