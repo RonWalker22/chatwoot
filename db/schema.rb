@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_11_235219) do
+ActiveRecord::Schema.define(version: 2021_01_07_131834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -487,6 +487,15 @@ ActiveRecord::Schema.define(version: 2020_11_11_235219) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "pro_cons", force: :cascade do |t|
+    t.text "body", null: false
+    t.bigint "proposal_user_id", null: false
+    t.boolean "pro", default: true, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["proposal_user_id"], name: "index_pro_cons_on_proposal_user_id"
+  end
+
   create_table "proposal_users", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "proposal_id", null: false
@@ -662,6 +671,7 @@ ActiveRecord::Schema.define(version: 2020_11_11_235219) do
   add_foreign_key "feedback_contacts", "feedbacks"
   add_foreign_key "feedback_users", "feedbacks"
   add_foreign_key "feedback_users", "users"
+  add_foreign_key "pro_cons", "proposal_users"
   add_foreign_key "proposal_users", "proposals"
   add_foreign_key "proposal_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"

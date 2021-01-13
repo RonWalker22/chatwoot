@@ -6,6 +6,7 @@ import '../../support/commands/feedback-comments-commands';
 import '../../support/commands/proposal-vote-commands';
 import '../../support/commands/new-proposal-commands';
 import '../../support/commands/proposal-more-toolbar-commands';
+import '../../support/commands/pro-con-commands';
 
 
 const feedbackInteractions = function() {
@@ -86,5 +87,11 @@ describe('Feedback interactions with & without new Proposal', function() {
     cy.login();
     cy.visit('/app/accounts/1/feedback/2');
     cy.RunFeedbackCardSpecs();
+  })
+
+  it('RunProConSpecs', function() {
+    cy.login();
+    cy.visit('/app/accounts/1/feedback/4');
+    cy.RunProConSpecs();
   })
 })

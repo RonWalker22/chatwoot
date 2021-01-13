@@ -5,6 +5,7 @@ import ClarificationPostsAPI from '../../api/clarificationPosts';
 import FeedbackUsersAPI from '../../api/feedbackUsers';
 import ProposalUsersAPI from '../../api/proposalUsers';
 import ProposalsAPI from '../../api/proposals';
+import ProConsAPI from '../../api/proCons';
 import Vue from 'vue';
 
 export const state = {
@@ -154,6 +155,22 @@ export const actions = {
       throw new Error(error);
     }
   },
+  createProCon: async ({ commit }, newProCon) => {
+    try {
+      const response = await ProConsAPI.create(newProCon);
+      commit(types.default.ADD_PRO_CON, response.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
+  deleteProCon: async ({ commit }, id) => {
+    try {
+      const response = await ProConsAPI.delete(id);
+      commit(types.default.DELETE_PRO_CON, response.data);
+    } catch (error) {
+      throw new Error(error);
+    }
+  },
   deleteComment: async ({ commit }, id) => {
     try {
       const response = await ClarificationPostsAPI.delete(id);
@@ -259,6 +276,43 @@ export const mutations = {
 
     Object.assign(newFeedback, feedback);
     newFeedback.proposals.push(payload);
+
+    Vue.set(_state.records, index, newFeedback);
+  },
+  [types.default.ADD_PRO_CON](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    let feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+    newFeedback.proposals = newFeedback.proposals.map(proposal => {
+      if (proposal.id === payload.proposal_id) {
+        proposal.pro_cons.push(payload.pro_con);
+        return proposal;
+      }
+      return proposal;
+    });
+
+    Vue.set(_state.records, index, newFeedback);
+  },
+  [types.default.DELETE_PRO_CON](_state, payload) {
+    let newFeedback = {};
+    const index = state.records.findIndex(
+      record => record.id === payload.feedback_id
+    );
+    let feedback = _state.records[index];
+
+    Object.assign(newFeedback, feedback);
+    newFeedback.proposals = newFeedback.proposals.map(proposal => {
+      if (proposal.id === payload.proposal_id) {
+        proposal.pro_cons = proposal.pro_cons.filter(pro_con => {
+          return pro_con.id !== payload.id;
+        });
+      }
+      return proposal;
+    });
 
     Vue.set(_state.records, index, newFeedback);
   },

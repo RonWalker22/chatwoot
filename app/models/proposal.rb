@@ -24,6 +24,7 @@ class Proposal < ApplicationRecord
   has_one :clarification_thread, dependent: :destroy
   has_many :clarification_posts, through: :clarification_thread
   has_many :proposal_users, dependent: :destroy
+  has_many :pro_cons, through: :proposal_users
 
   after_create :create_thread
 
@@ -38,7 +39,8 @@ class Proposal < ApplicationRecord
       thread: clarification_thread.id,
       proposal_user_id: proposal_user_id,
       evaluation: proposal_evaluation,
-      score: proposal_score
+      score: proposal_score,
+      pro_cons: format_pro_cons
     }
   end
 
@@ -66,5 +68,13 @@ class Proposal < ApplicationRecord
     down_votes = ProposalUser.all.where(proposal_id: id,
                                         evaluation: 'reject').count
     up_votes - down_votes
+  end
+
+  def format_pro_cons
+    result = []
+    pro_cons.each do |pro_con|
+      result.push pro_con.as_json.merge user_name: pro_con.user.available_name
+    end
+    result
   end
 end

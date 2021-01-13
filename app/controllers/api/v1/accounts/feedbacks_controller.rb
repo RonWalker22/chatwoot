@@ -52,6 +52,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   def format_proposals
     @proposals = @feedback.proposals.includes(
       :clarification_thread,
+      pro_cons: [:user],
       proposer: [:feedback_contact, :feedback_user, :user, :contact]
     ).order(:created_at)
     @proposals = @proposals.map do |proposal|
@@ -66,12 +67,11 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
 
   def formate_posts(posts)
     posts.map do |post|
-      if post.author_type == 'FeedbackContact'
-        name = post.author.contact.name
-      else
-        user = post.author.user
-        name = user.display_name.presence ? user.display_name : user.name
-      end
+      name = if post.author_type == 'FeedbackContact'
+               post.author.contact.name
+             else
+               post.author.user.available_name
+             end
       { body: post.body,
         author: name,
         id: post.id,

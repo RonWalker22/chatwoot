@@ -13,8 +13,9 @@
       :class="{ 'dropdown-pane--open': showActions }"
     >
       <div v-if="isSolution">
+        <new-pro-con :proposal-id="proposal.id" />
         <button
-          v-if="!isPrimary"
+          v-if="!proposal.primary"
           class="button small clear row small-6 action--button"
           data-test-id="proposal-add-primary"
           @click="addPrimary"
@@ -52,22 +53,24 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { mixin as clickaway } from 'vue-clickaway';
+import NewProCon from './NewProCon';
 
 export default {
+  components: {
+    NewProCon,
+  },
   mixins: [clickaway],
   props: {
     id: {
-      type: [String, Number],
+      type: [Number, String],
       required: true,
+    },
+    proposal: {
+      type: Object,
+      default: () => ({}),
     },
     isSolution: {
       type: Boolean,
-      require: true,
-      default: false,
-    },
-    isPrimary: {
-      type: Boolean,
-      require: true,
       default: false,
     },
   },
@@ -127,64 +130,5 @@ export default {
 </script>
 <style scoped lang="scss">
 @import '~dashboard/assets/scss/mixins';
-
-.more--button {
-  align-items: center;
-  display: flex;
-  margin-left: var(--space-small);
-  padding: var(--space-small);
-
-  &.clear.more--button {
-    color: var(--color-body);
-  }
-
-  &:hover {
-    color: var(--w-800);
-  }
-}
-
-.actions--container {
-  position: relative;
-}
-
-.dropdown-pane {
-  @include elegant-card;
-  @include border-light;
-  right: -12px;
-  top: 48px;
-  width: auto;
-
-  &::before {
-    @include arrow(top, var(--color-border-light), 14px);
-    top: -14px;
-    position: absolute;
-    right: 6px;
-  }
-
-  &::after {
-    @include arrow(top, white, var(--space-slab));
-    top: -12px;
-    position: absolute;
-    right: var(--space-small);
-  }
-}
-
-.dropdown-pane--open {
-  display: block;
-  visibility: visible;
-}
-
-.action--button {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  white-space: nowrap;
-  padding: var(--space-small) var(--space-smaller);
-  font-size: var(--font-size-small);
-
-  .icon {
-    margin-right: var(--space-smaller);
-    min-width: var(--space-normal);
-  }
-}
+@import '~dashboard/assets/scss/_more-actions';
 </style>

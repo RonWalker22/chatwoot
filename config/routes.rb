@@ -37,6 +37,7 @@ Rails.application.routes.draw do
           resources :feedback_users, only: [:update, :create]
           resources :proposal_users, only: [:update, :create]
           resources :proposals, only: [:create, :update, :destroy]
+          resources :pro_cons, only: [:create, :update, :destroy]
           resources :agents, except: [:show, :edit, :new]
           resources :callbacks, only: [] do
             collection do

@@ -31,8 +31,8 @@
           <more-actions
             v-if="isSolution"
             :id="proposal.id"
+            :proposal="proposal"
             :is-solution="true"
-            :is-primary="proposal.primary"
           />
         </div>
       </div>
@@ -91,6 +91,10 @@
         </div>
       </div>
     </div>
+    <pro-cons
+      v-if="proposal.pro_cons.length > 0"
+      :pro-cons="proposal.pro_cons"
+    />
     <slot class="comments"></slot>
   </div>
 </template>
@@ -98,10 +102,12 @@
 <script>
 import { mapActions } from 'vuex';
 import MoreActions from './MoreActions';
+import ProCons from './ProCons';
 
 export default {
   components: {
     MoreActions,
+    ProCons,
   },
   props: {
     index: {
@@ -217,22 +223,15 @@ export default {
 }
 
 .problem-card {
-  border: none;
+  border-left: solid transparent 4px;
   margin-top: none;
-  h2 {
-    color: firebrick;
-  }
 }
 
 .solution-card {
   margin-top: 5em;
-  h2 {
-    color: $color-woot;
-  }
 }
 
 .primary-card {
-  border: solid 4px;
   border-left: solid $color-woot 4px;
 }
 

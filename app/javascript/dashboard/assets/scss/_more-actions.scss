@@ -1,0 +1,56 @@
+$color-whtie: #fff;
+
+.more--button {
+  align-items: center;
+  display: flex;
+  margin-left: var(--space-small);
+  padding: var(--space-small);
+
+  &.clear.more--button {
+    color: var(--color-body);
+  }
+
+  &:hover {
+    color: var(--w-800);
+  }
+}
+
+.actions--container {
+  position: relative;
+}
+
+.dropdown-pane {
+  @include elegant-card;
+  @include border-light;
+  right: -12px;
+  top: 48px;
+  width: auto;
+
+  &::before {
+    @include arrow(top, var(--color-border-light), 14px);
+    position: absolute;
+    right: 6px;
+    top: -14px;
+  }
+
+  &::after {
+    @include arrow(top, $color-whtie, var(--space-slab));
+    position: absolute;
+    right: var(--space-small);
+    top: -12px;
+  }
+}
+
+.dropdown-pane--open {
+  display: block;
+  visibility: visible;
+}
+
+.action--button {
+  align-items: center;
+  display: flex;
+  font-size: var(--font-size-small);
+  padding: var(--space-small) var(--space-smaller);
+  white-space: nowrap;
+  width: 100%;
+}

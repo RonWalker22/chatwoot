@@ -23,4 +23,5 @@
 class ProposalUser < ApplicationRecord
   belongs_to :proposal
   belongs_to :user
+  has_many :pro_cons, dependent: :destroy
 end

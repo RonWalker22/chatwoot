@@ -160,6 +160,29 @@ ClarificationPost.create(
   clarification_thread: proposal_one.clarification_thread
 )
 
+proposal_user_one = ProposalUser.create(
+  proposal: proposal_one,
+  user: User.first
+)
+
+ProCon.create(
+  body: "Moluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
+  quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
+  Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
+  ",
+  pro: true,
+  proposal_user: proposal_user_one
+)
+
+ProCon.create(
+  body: "Toluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
+  quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
+  Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
+  ",
+  pro: false,
+  proposal_user: proposal_user_one
+)
+
 # - + - feedback - + -
 
 # - + - roadmap - + -

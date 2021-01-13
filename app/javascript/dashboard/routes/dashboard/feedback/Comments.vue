@@ -69,7 +69,6 @@ export default {
   }
   h6 {
     margin-bottom: 1em;
-    color: $color-woot;
   }
 }
 </style>
