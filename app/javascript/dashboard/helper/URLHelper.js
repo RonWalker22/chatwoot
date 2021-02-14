@@ -19,7 +19,10 @@ export const feedbackUrl = ({ accountId, id, label }) => {
   if (label) {
     return `accounts/${accountId}/label/${label}/feedback/${id}`;
   }
-  return `accounts/${accountId}/feedback/${id}`;
+  if (id) {
+    return `accounts/${accountId}/feedback/${id}`;
+  }
+  return `accounts/${accountId}/feedback`;
 };
 
 export const accountIdFromPathname = pathname => {

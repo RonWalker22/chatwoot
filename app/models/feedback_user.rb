@@ -21,8 +21,15 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class FeedbackUser < ApplicationRecord
+  EVALUATION_OPTIONS = %w[reject
+                          support
+                          undecided
+                          ready
+                          wait].freeze
+  validates :evaluation, inclusion: { in: EVALUATION_OPTIONS }
   belongs_to :feedback
   belongs_to :user
-  has_many :proposals, as: :proposer, dependent: :destroy
-  has_many :clarification_posts, as: :author, dependent: :destroy
+  has_many :feedbacks, as: :requester, dependent: :nullify
+  has_many :proposals, as: :proposer, dependent: :nullify
+  has_many :clarification_posts, as: :author, dependent: :nullify
 end

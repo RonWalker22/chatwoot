@@ -3,18 +3,18 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
   before_action :check_authorization, except: [:create]
 
   def create
-    proposal_user = ProposalUser.new(
-      proposal_id: proposal_user_params[:proposal_id],
-      user: Current.user,
-      evaluation: proposal_user_params[:evaluation]
-    )
+    proposal_user = ProposalUser.new(proposal_user_params)
+    authorize(proposal_user)
+    proposal_user.user = Current.user
+
     if proposal_user.save
       render json: {
         evaluation: proposal_user.evaluation,
         feedback_id: proposal_user.proposal.feedback.id,
         proposal_user_id: proposal_user.id,
         proposal_id: proposal_user.proposal.id,
-        id: proposal_user.proposal.id
+        id: proposal_user.proposal.id,
+        voted: proposal_user.voted
       }
     else
       render json: proposal_user.errors, status: :unprocessable_entity
@@ -28,7 +28,8 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
       feedback_id: @proposal_user.proposal.feedback.id,
       proposal_user_id: @proposal_user.id,
       proposal_id: @proposal_user.proposal.id,
-      id: @proposal_user.proposal.id
+      id: @proposal_user.proposal.id,
+      voted: @proposal_user.voted
     }
   rescue ActiveRecord::RecordInvalid => e
     render json: {
@@ -39,11 +40,13 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
   private
 
   def proposal_user_params
-    params.require('proposal_user').permit(:evaluation, :proposal_id, :id)
+    params.require('proposal_user').permit(:evaluation,
+                                           :proposal_id,
+                                           :voted)
   end
 
   def set_proposal_user
-    @proposal_user = ProposalUser.find(proposal_user_params[:id])
+    @proposal_user = ProposalUser.find(params[:id])
   end
 
   def check_authorization

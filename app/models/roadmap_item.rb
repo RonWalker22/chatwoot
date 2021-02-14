@@ -13,7 +13,7 @@
 #
 # Indexes
 #
-#  index_roadmap_items_on_feedback_id  (feedback_id)
+#  index_roadmap_items_on_feedback_id  (feedback_id) UNIQUE
 #
 # Foreign Keys
 #

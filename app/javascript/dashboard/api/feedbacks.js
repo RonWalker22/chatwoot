@@ -4,6 +4,16 @@ class Feedbacks extends ApiClient {
   constructor() {
     super('feedbacks', { accountScoped: true });
   }
+
+  bulkUpdate(data) {
+    // eslint-disable-next-line no-undef
+    return axios.post(`${this.url}/bulk_update`, data);
+  }
+
+  bulkDelete(data) {
+    // eslint-disable-next-line no-undef
+    return axios.post(`${this.url}/bulk_destroy`, data);
+  }
 }
 
 export default new Feedbacks();

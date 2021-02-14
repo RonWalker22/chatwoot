@@ -5,4 +5,5 @@ json.array! @feedbacks do |feedback|
   json.account feedback.account_id
   json.posts []
   json.status feedback.status
+  json.evaluation feedback_user_evaluation(feedback.feedback_users)
 end

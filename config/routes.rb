@@ -32,7 +32,12 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
-          resources :feedbacks, only: [:create, :index, :update, :show]
+          resources :feedbacks, only: [:create, :index, :update, :show] do
+            collection do
+              post :bulk_update
+              post :bulk_destroy
+            end
+          end
           resources :clarification_posts, only: [:create, :destroy]
           resources :feedback_users, only: [:update, :create]
           resources :proposal_users, only: [:update, :create]

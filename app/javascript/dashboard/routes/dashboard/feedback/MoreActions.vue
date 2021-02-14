@@ -14,22 +14,24 @@
     >
       <div v-if="isSolution">
         <new-pro-con :proposal-id="proposal.id" />
-        <button
-          v-if="!proposal.primary"
-          class="button small clear row small-6 action--button"
-          data-test-id="proposal-add-primary"
-          @click="addPrimary"
-        >
-          <span>mark as primary</span>
-        </button>
-        <button
-          v-else
-          class="button small clear row small-6 action--button"
-          data-test-id="proposal-remove-primary"
-          @click="removePrimary"
-        >
-          <span>remove primary mark</span>
-        </button>
+        <div v-if="isAdmin">
+          <button
+            v-if="!proposal.primary"
+            class="button small clear row small-6 action--button"
+            data-test-id="proposal-add-primary"
+            @click="addPrimary"
+          >
+            <span>mark as primary</span>
+          </button>
+          <button
+            v-else
+            class="button small clear row small-6 action--button"
+            data-test-id="proposal-remove-primary"
+            @click="removePrimary"
+          >
+            <span>remove primary mark</span>
+          </button>
+        </div>
         <button
           class="button small clear row alert small-6 action--button"
           data-test-id="delete-proposal"
@@ -82,7 +84,11 @@ export default {
   computed: {
     ...mapGetters({
       currentChat: 'getSelectedChat',
+      currentRole: 'getCurrentRole',
     }),
+    isAdmin() {
+      return this.currentRole === 'administrator';
+    },
   },
   methods: {
     ...mapActions('feedback', ['deleteComment']),

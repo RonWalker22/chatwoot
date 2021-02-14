@@ -5,8 +5,10 @@ class CreateRoadmapItems < ActiveRecord::Migration[6.0]
       t.text :body
       t.date :due_by
       t.string :status, null: false, default: 'later'
-      t.references :feedback, null: true, foreign_key: true
-
+      t.references :feedback,
+                   null: true,
+                   foreign_key: true,
+                   index: { unique: true }
       t.timestamps
     end
   end

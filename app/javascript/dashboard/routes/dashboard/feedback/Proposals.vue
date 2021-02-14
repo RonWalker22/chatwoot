@@ -7,6 +7,7 @@
           :key="proposal.id"
           :index="proposal.id"
           :proposal="proposal"
+          :feedback-status="feedback.status"
         >
           <Comments
             :thread-id="proposal.thread"
@@ -19,6 +20,7 @@
           :key="proposal.id"
           :index="proposal.id"
           :proposal="proposal"
+          :feedback-status="feedback.status"
         >
           <Comments
             :thread-id="proposal.thread"
@@ -31,6 +33,7 @@
           :key="proposal.id"
           :index="proposal.id"
           :proposal="proposal"
+          :feedback-status="feedback.status"
         >
           <Comments
             :thread-id="proposal.thread"

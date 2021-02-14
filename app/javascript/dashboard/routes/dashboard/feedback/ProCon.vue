@@ -39,17 +39,20 @@ export default {
 
 .con,
 .pro {
-  padding: 3rem;
+  padding-left: 2rem;
+  padding-top: 1rem;
   box-shadow: -2px 2px 5px gainsboro;
 }
 
 .con {
+  border-left: 4px solid black;
   h5 {
-    color: firebrick;
+    color: black;
   }
 }
 
 .pro {
+  border-left: 4px solid $color-woot;
   h5 {
     color: $color-woot;
   }
@@ -59,7 +62,6 @@ export default {
   margin-top: 3rem;
 }
 h5 {
-  display: inline-block;
   padding: 0.5rem;
   font-size: 1.5rem;
   color: white;

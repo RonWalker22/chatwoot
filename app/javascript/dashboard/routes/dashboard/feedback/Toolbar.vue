@@ -1,10 +1,10 @@
 <template>
-  <div class="toolbar-container">
+  <div v-if="reviewStatus" class="toolbar-container">
     <div class="card toolbar-card">
       <div class="row align-center">
-        <div class="columns shrink">
+        <div class="columns small-6">
           <button
-            class="button large"
+            class="button large expanded"
             :class="[isSupported ? 'support-selected' : 'pick-unselected']"
             data-test-id="support-feedback-btn"
             @click="supportFeedback"
@@ -13,9 +13,9 @@
             <span class="action-text">Support</span>
           </button>
         </div>
-        <div class="columns shrink">
+        <div class="columns small-6">
           <button
-            class="button large"
+            class="button large expanded"
             :class="[isRejected ? 'reject-selected' : 'pick-unselected']"
             data-test-id="reject-feedback-btn"
             @click="rejectFeedback"
@@ -43,23 +43,30 @@ export default {
   },
   computed: {
     isSupported() {
-      return this.feedback.evaluation === 'support';
+      const evaluation = this.feedback.evaluation;
+      return evaluation === 'support';
     },
     isRejected() {
-      return this.feedback.evaluation === 'reject';
+      const evaluation = this.feedback.evaluation;
+      return evaluation === 'reject';
+    },
+    reviewStatus() {
+      return this.feedback.status === 'review';
     },
   },
   methods: {
     ...mapActions('feedback', ['setFeedbackEvaluation', 'createFeedbackUser']),
     supportFeedback() {
-      if (this.feedback.evaluation === 'support') {
+      const evaluation = this.feedback.evaluation;
+      if (evaluation === 'support') {
         this.resetFeedbackEvaluation();
       } else {
         this.sendEvaluation('support');
       }
     },
     rejectFeedback() {
-      if (this.feedback.evaluation === 'reject') {
+      const evaluation = this.feedback.evaluation;
+      if (evaluation === 'reject') {
         this.resetFeedbackEvaluation();
       } else {
         this.sendEvaluation('reject');
@@ -91,6 +98,7 @@ export default {
   background: transparent;
   display: inline-block;
   border-color: transparent;
+  width: inherit;
 }
 
 .action-text {
@@ -108,7 +116,7 @@ export default {
 }
 
 .reject-selected {
-  background-color: firebrick;
+  background-color: #b22222;
   color: white;
 }
 
@@ -128,7 +136,7 @@ export default {
 
 .toolbar-container {
   position: sticky;
-  max-width: 24rem;
+  width: 37rem;
   margin-left: auto;
   margin-right: auto;
   bottom: 0;

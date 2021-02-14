@@ -1,19 +1,23 @@
 <template>
-  <div :class="{ comments: !mainBoard, 'public-board': mainBoard }">
-    <h6 v-if="mainBoard" class="text-center">
-      Public Comments
-    </h6>
-    <Comment
-      v-for="(post, index) in posts"
-      :key="post.id"
-      :post="post"
-      :index="index"
-    />
-    <NewComment
-      :thread-id="threadId"
-      :main-board="mainBoard"
-      :is-public="mainBoard"
-    />
+  <div class="comments">
+    <div v-if="show || zeroComments">
+      <Comment
+        v-for="(post, index) in posts"
+        :key="post.id"
+        :post="post"
+        :index="index"
+      />
+      <NewComment :thread-id="threadId" />
+    </div>
+    <div v-else>
+      <button
+        class="button small hollow"
+        data-test-id="comments-show-btn"
+        @click="show = true"
+      >
+        show comments({{ posts.length }})
+      </button>
+    </div>
   </div>
 </template>
 
@@ -43,12 +47,20 @@ export default {
       default: 0,
     },
   },
+  data() {
+    return {
+      show: false,
+    };
+  },
   computed: {
     posts() {
       return this.$store.getters['feedback/getPosts'](
         this.feedbackId,
         this.threadId
       );
+    },
+    zeroComments() {
+      return this.posts.length === 0;
     },
   },
 };
@@ -59,16 +71,19 @@ export default {
 
 .comments {
   background-color: transparent;
+  margin-top: 1rem;
 }
 
-.public-board {
-  margin-top: 10em;
-  padding: 3rem;
-  .callout {
-    background-color: transparent;
+.button.hollow {
+  border: none;
+  color: #3c4858;
+
+  &:hover {
+    color: $color-woot;
   }
-  h6 {
-    margin-bottom: 1em;
-  }
+}
+
+.hide-btn {
+  text-align: center;
 }
 </style>

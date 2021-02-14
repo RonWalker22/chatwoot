@@ -4,6 +4,7 @@
 #
 #  id          :bigint           not null, primary key
 #  evaluation  :string           default("undecided"), not null
+#  voted       :boolean          default(FALSE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  proposal_id :bigint           not null

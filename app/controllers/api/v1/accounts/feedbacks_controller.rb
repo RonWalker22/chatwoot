@@ -1,5 +1,10 @@
 class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   before_action :set_feedback, only: [:update, :show]
+  before_action :check_authorization, except: [:create,
+                                               :index,
+                                               :show,
+                                               :bulk_update,
+                                               :bulk_destroy]
 
   def index
     @feedbacks = feedbacks
@@ -31,6 +36,18 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
     }, status: :unprocessable_entity
   end
 
+  def bulk_update
+    @feedbacks = Current.account.feedbacks.find(params[:ids])
+    @feedbacks.each do |feedback|
+      feedback.update(feedback_params)
+    end
+  end
+
+  def bulk_destroy
+    feedbacks = Current.account.feedbacks.destroy_by(id: params[:ids])
+    render json: { ids: feedbacks.pluck(:id) }
+  end
+
   private
 
   def set_feedback
@@ -46,7 +63,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def feedbacks
-    Current.account.feedbacks
+    Current.account.feedbacks.includes(:feedback_users)
   end
 
   def format_proposals
@@ -75,7 +92,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
       { body: post.body,
         author: name,
         id: post.id,
-        date: post.created_at.to_date,
+        date: post.created_at.strftime('%b %d %Y'),
         thread: post.clarification_thread_id }
     end
   end
@@ -98,5 +115,9 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   def create_feedback_user
     @feedback_user = FeedbackUser.create user: Current.user,
                                          feedback: @feedback
+  end
+
+  def check_authorization
+    authorize(@feedback)
   end
 end

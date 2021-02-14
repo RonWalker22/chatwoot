@@ -3,11 +3,11 @@
 # Table name: clarification_posts
 #
 #  id                      :bigint           not null, primary key
-#  author_type             :string           not null
+#  author_type             :string
 #  body                    :text             not null
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
-#  author_id               :bigint           not null
+#  author_id               :bigint
 #  clarification_thread_id :bigint           not null
 #
 # Indexes

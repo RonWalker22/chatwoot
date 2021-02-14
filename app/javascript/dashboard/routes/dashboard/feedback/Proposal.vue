@@ -1,32 +1,76 @@
 <template>
-  <div
-    class="card proposal-card"
-    :class="{
-      'primary-card': isPrimarySolution,
-      'problem-card': isProblem,
-      'solution-card': isSolution,
-    }"
-    data-test-id="proposal-card"
-    test
-  >
+  <div class="card proposal-card" data-test-id="proposal-card" test>
     <div class="proposal-main">
       <div class="row align-top">
-        <div class="columns shrink">
-          <h2 :class="{ 'black-text': isProblem }">
-            {{ proposalTitle }}
+        <div class="columns">
+          <h2 class="proposal-title">
+            {{ proposalType }}
+            <span v-if="isSolution" class="solution-id"> #{{ index }}</span>
           </h2>
-        </div>
-        <div v-if="isPrimarySolution" class="columns shrink">
-          <div>
+          <div v-if="isPrimarySolution" class="primary-checkmark">
             <i
-              class="ion-checkmark-round primary-text-color"
+              class="ion-checkmark-round"
               title="Selected Solution"
               aria-hidden="true"
             ></i>
             <span class="show-for-sr">Selected Solution</span>
           </div>
+          <div class="row align-top">
+            <div v-if="isSolution && reviewStatus" class="row">
+              <div class="row align-middle align-center">
+                <div class="column shrink">
+                  <div v-if="reviewStatus">
+                    <button
+                      class="button proposal-vote"
+                      type="button"
+                      title="Support proposal"
+                      data-test-id="proposal-upvote"
+                      @click="supportProposal"
+                    >
+                      <i
+                        class="ion-arrow-up-b"
+                        :class="{ 'upvote-proposal': proposalIsSupported }"
+                        aria-hidden="true"
+                        data-test-id="proposal-upvote-arrow"
+                      >
+                      </i>
+                      <span class="show-for-sr">Support proposal</span>
+                    </button>
+                    <div class="proposal-vote-count">
+                      <span class="show-for-sr">Proposal score</span>
+                      <span data-test-id="proposal-vote-score">
+                        {{ proposalScore }}
+                      </span>
+                    </div>
+                    <button
+                      class="button proposal-vote"
+                      type="button"
+                      title="Reject proposal"
+                      data-test-id="proposal-downvote"
+                      @click="rejectProposal"
+                    >
+                      <i
+                        class="ion-arrow-down-b"
+                        :class="{ 'downvote-proposal': proposalIsRejected }"
+                        data-test-id="proposal-downvote-arrow"
+                        aria-hidden="true"
+                      >
+                      </i>
+                      <span class="show-for-sr">Reject proposal</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="card-section">
+                <p data-test-id="proposal-body">
+                  {{ proposal.details }}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="columns"></div>
         <div class="columns shrink">
           <more-actions
             v-if="isSolution"
@@ -36,65 +80,29 @@
           />
         </div>
       </div>
-      <div class="row align-top">
-        <div v-if="isSolution" class="columns shrink">
-          <button
-            class="button proposal-vote"
-            type="button"
-            title="Support proposal"
-            data-test-id="proposal-upvote"
-            @click="supportProposal"
-          >
-            <i
-              class="ion-arrow-up-b"
-              :class="{ 'upvote-proposal': proposalIsSupported }"
-              aria-hidden="true"
-              data-test-id="proposal-upvote-arrow"
-            >
-            </i>
-            <span class="show-for-sr">Support proposal</span>
-          </button>
-          <div class="proposal-vote-count">
-            <span class="show-for-sr">Proposal score</span>
-            <span data-test-id="proposal-vote-score">
-              {{ proposal.score }}
-            </span>
-          </div>
-          <div class="row align-middle">
-            <button
-              class="button proposal-vote"
-              type="button"
-              title="Reject proposal"
-              data-test-id="proposal-downvote"
-              @click="rejectProposal"
-            >
-              <i
-                class="ion-arrow-down-b"
-                :class="{ 'downvote-proposal': proposalIsRejected }"
-                data-test-id="proposal-downvote-arrow"
-                aria-hidden="true"
-              >
-              </i>
-              <span class="show-for-sr">Reject proposal</span>
-            </button>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="card-section">
-            <p data-test-id="proposal-author">
-              {{ proposal.proposer }}
-            </p>
-            <p data-test-id="proposal-body">
-              {{ proposal.details }}
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
     <pro-cons
       v-if="proposal.pro_cons.length > 0"
       :pro-cons="proposal.pro_cons"
     />
+    <div class="row align-right">
+      <div class="column shrink">
+        <p class="proposal-details">
+          proposed
+          <span data-test-id="proposal-date">
+            {{ proposal.date }}
+          </span>
+          <span v-if="voted" data-test-id="proposal-author">
+            by {{ proposal.proposer }}
+          </span>
+        </p>
+      </div>
+      <div class="column shrink">
+        <p class="proposal-details">
+          <span v-if="isSolution && voted">({{ proposalScoreDetails }})</span>
+        </p>
+      </div>
+    </div>
     <slot class="comments"></slot>
   </div>
 </template>
@@ -116,6 +124,10 @@ export default {
     },
     proposal: {
       type: Object,
+      required: true,
+    },
+    feedbackStatus: {
+      type: String,
       required: true,
     },
   },
@@ -141,15 +153,25 @@ export default {
     proposalIsRejected() {
       return this.proposal.evaluation === 'reject';
     },
-    proposalTitle() {
-      if (this.isProblem) {
-        return this.proposalType;
+    voted() {
+      return this.proposal.voted;
+    },
+    proposalScore() {
+      return this.voted
+        ? this.proposal.score.up - this.proposal.score.down
+        : 'vote';
+    },
+    reviewStatus() {
+      return this.feedbackStatus === 'review';
+    },
+    proposalScoreDetails() {
+      const total = this.proposal.score.up + this.proposal.score.down;
+      const percentage = (this.proposal.score.up / total) * 100;
+      const voteName = total === 1 ? 'vote' : 'votes';
+      if (total === 0) {
+        return '0 total votes';
       }
-
-      let messageStart = this.proposalType;
-      let messageEnd = '# ' + this.index;
-
-      return `${messageStart} ${messageEnd}`;
+      return `${percentage}% support with ${total} total ${voteName}`;
     },
   },
   methods: {
@@ -178,6 +200,7 @@ export default {
             evaluation: kind,
             proposal_id: this.proposal.id,
             id: this.proposal.proposal_user_id,
+            voted: true,
           },
         },
         proposalUser: this.checkProposalUser(),
@@ -197,46 +220,29 @@ export default {
 .ion-checkmark-round {
   font-size: 25px;
   margin-left: 1rem;
+  color: #079307;
 }
 
 .card {
   padding: 0;
 }
 
-.primary-text-color {
-  color: $color-woot;
-}
-
 .new-solution-button {
   background-color: black;
 }
 
-.black-text {
-  color: black;
-}
-
 .proposal-card {
   background: transparent;
+  padding: 3em 3em 3em 0;
   border: none;
-  padding: 3em;
-  border-left: dashed $color-woot 2px;
-}
-
-.problem-card {
-  border-left: solid transparent 4px;
-  margin-top: none;
-}
-
-.solution-card {
-  margin-top: 5em;
-}
-
-.primary-card {
-  border-left: solid $color-woot 4px;
+  border-bottom: solid 2px gainsboro;
 }
 
 .proposal-main {
   background: transparent;
+  h2 {
+    color: #000;
+  }
 }
 
 .close-btn {
@@ -250,6 +256,9 @@ export default {
   border: none;
   color: gray;
   background-color: transparent;
+  display: block;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .ion-arrow-up-b,
@@ -259,20 +268,45 @@ export default {
 
 .proposal-vote-count {
   text-align: center;
-  color: gray;
-  font-size: 2em;
+  color: #6e767d;
+  font-size: 1.8em;
 }
 
 .downvote-proposal {
-  color: darkmagenta;
+  color: $color-woot;
 }
 
 .upvote-proposal {
-  color: darkmagenta;
+  color: $color-woot;
 }
 
 h2 {
   font-size: $font-size-medium;
-  margin-top: 1rem;
+}
+
+.solution-id {
+  color: #6e767d;
+}
+
+.card-section {
+  padding: 1rem 1rem 1rem 0rem;
+}
+
+.proposal-details {
+  font-size: 1.3rem;
+  // margin-right: 3rem;
+}
+
+.primary-checkmark {
+  display: inline-block;
+}
+
+.proposal-title {
+  display: inline-block;
+  padding-top: 1rem;
+}
+
+.vote-container {
+  margin-right: 1rem;
 }
 </style>

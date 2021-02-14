@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_07_131834) do
+ActiveRecord::Schema.define(version: 2021_01_28_160215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -186,8 +186,8 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
 
   create_table "clarification_posts", force: :cascade do |t|
     t.text "body", null: false
-    t.string "author_type", null: false
-    t.bigint "author_id", null: false
+    t.string "author_type"
+    t.bigint "author_id"
     t.bigint "clarification_thread_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -295,6 +295,14 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
     t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
   end
 
+  create_table "feedback_groups", force: :cascade do |t|
+    t.string "title"
+    t.integer "priority"
+    t.boolean "active"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "feedback_users", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "user_id", null: false
@@ -312,12 +320,14 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
     t.bigint "requester_id"
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
+    t.bigint "feedback_group_id"
     t.integer "funding_goal", default: 0
     t.string "status", default: "review", null: false
     t.string "kind", default: "request", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
+    t.index ["feedback_group_id"], name: "index_feedbacks_on_feedback_group_id"
     t.index ["inbox_id"], name: "index_feedbacks_on_inbox_id"
     t.index ["requester_type", "requester_id"], name: "index_feedbacks_on_requester_type_and_requester_id"
   end
@@ -499,6 +509,7 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
   create_table "proposal_users", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "proposal_id", null: false
+    t.boolean "voted", default: false, null: false
     t.string "evaluation", default: "undecided", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -508,8 +519,8 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
   end
 
   create_table "proposals", force: :cascade do |t|
-    t.string "proposer_type", null: false
-    t.bigint "proposer_id", null: false
+    t.string "proposer_type"
+    t.bigint "proposer_id"
     t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
@@ -551,7 +562,7 @@ ActiveRecord::Schema.define(version: 2021_01_07_131834) do
     t.bigint "feedback_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id"
+    t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id", unique: true
   end
 
   create_table "super_admins", force: :cascade do |t|

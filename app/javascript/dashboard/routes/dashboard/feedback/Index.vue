@@ -4,8 +4,14 @@
       <div class="medium-4 columns feedback-list">
         <FeedbackList />
       </div>
-      <div class="medium-8 columns hate feedback-item">
-        <div v-if="feedbackId !== 0">
+      <div
+        class="medium-8 columns hate feedback-item"
+        :class="{ 'fb-edit': bulkEditActive }"
+      >
+        <div v-if="bulkEditActive">
+          <bulk-edit-toolbar />
+        </div>
+        <div v-else-if="feedback.id && !bulkEditActive">
           <FeedbackItem
             v-if="!uiFlags.fetchingItem && !uiFlags.creatingItem"
             :feedback="feedback"
@@ -31,6 +37,7 @@
 import { mapGetters } from 'vuex';
 import FeedbackItem from './FeedbackItem';
 import FeedbackList from './FeedbackList';
+import BulkEditToolbar from './BulkEditToolbar';
 import Spinner from 'shared/components/Spinner.vue';
 
 export default {
@@ -38,6 +45,7 @@ export default {
     FeedbackItem,
     FeedbackList,
     Spinner,
+    BulkEditToolbar,
   },
   props: {
     feedbackId: {
@@ -48,9 +56,19 @@ export default {
   computed: {
     ...mapGetters({
       uiFlags: 'feedback/getUIFlags',
+      bulkEditActive: 'feedback/getBulkEditActive',
     }),
     feedback() {
       return this.$store.getters['feedback/getFeedbackItem'](this.feedbackId);
+    },
+    defaultTabIndex() {
+      let index = 0;
+      this.$store.getters['feedback/getStatusTabs'].forEach((statusTab, i) => {
+        if (statusTab.name === 'Review') {
+          index = i;
+        }
+      });
+      return index;
     },
   },
   created() {
@@ -61,8 +79,10 @@ export default {
       this.$store.dispatch('feedback/fetchFeedbackItem', this.feedbackId);
       this.$store.dispatch('feedback/setSelectedFeedbackId', this.feedbackId);
     } else {
-      this.$store.dispatch('feedback/setSelectedStatusTabIndex', 0);
-      this.$store.dispatch('feedback/setSelectedFeedbackId', 0);
+      this.$store.dispatch(
+        'feedback/setSelectedStatusTabIndex',
+        this.defaultTabIndex
+      );
     }
   },
 };
@@ -73,13 +93,16 @@ export default {
 @import '~dashboard/assets/scss/mixins';
 
 .feedback-list {
-  background: white;
+  background: #f4f6fb;
   overflow-y: scroll;
 }
 
 .feedback-item {
   background: white;
   overflow-y: scroll;
+}
+.fb-edit {
+  background: #f4f6fb;
 }
 
 .feature-request {

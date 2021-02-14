@@ -28,7 +28,7 @@
         add comment
       </button>
       <button
-        class="button hollow"
+        class="button clear"
         data-test-id="proposal-comment-cancel-btn"
         @click="(active = false), (details = '')"
       >
@@ -53,14 +53,6 @@ export default {
     threadId: {
       type: [Number],
       default: 0,
-    },
-    mainBoard: {
-      type: Boolean,
-      default: false,
-    },
-    isPublic: {
-      type: Boolean,
-      default: false,
     },
   },
   data() {
@@ -92,18 +84,13 @@ export default {
 
 <style lang="scss" scoped>
 @import '~dashboard/assets/scss/variables';
+
 textarea:focus {
   border: 1px solid $color-woot;
 }
 
 textarea {
   margin-top: 1em;
-}
-
-.hollow {
-  background: transparent;
-  color: $color-woot;
-  border: none;
 }
 
 .new-comment-preview {
@@ -114,7 +101,7 @@ textarea {
   text-decoration: underline;
   &:hover {
     border-color: transparent;
-    color: #3c4858;
+    color: $color-woot;
     background: transparent;
   }
 }

@@ -20,10 +20,21 @@ AccountUser.create!(
   role: :administrator
 )
 
+agent_one = User.new(name: 'Bob', email: 'bob@acme.inc', password: '123456')
+agent_one.skip_confirmation!
+agent_one.save!
+
+AccountUser.create!(
+  account_id: account.id,
+  user_id: agent_one.id,
+  role: :agent
+)
+
 web_widget = Channel::WebWidget.create!(account: account, website_url: 'https://acme.inc')
 
 inbox = Inbox.create!(channel: web_widget, account: account, name: 'Acme Support')
 InboxMember.create!(user: user, inbox: inbox)
+InboxMember.create!(user: agent_one, inbox: inbox)
 
 contact = Contact.create!(name: 'jane', email: 'jane@example.com', phone_number: '0000', account: account)
 contact_inbox = ContactInbox.create!(inbox: inbox, contact: contact, source_id: user.id)
@@ -46,21 +57,21 @@ feedback_one = Feedback.create!(
   funding_goal: 1000,
   inbox_id: inbox.id,
   account_id: web_widget.account.id,
-  status: 'active'
+  status: 'review'
 )
 feedback_two = Feedback.create!(
   title: 'Import feature requests from other platforms',
   funding_goal: 1000,
   inbox_id: inbox.id,
   account_id: web_widget.account.id,
-  status: 'active'
+  status: 'review'
 )
 feedback_three = Feedback.create!(
   title: 'Support organizations with multiple products',
   funding_goal: 1000,
   inbox_id: inbox.id,
   account_id: web_widget.account.id,
-  status: 'active'
+  status: 'review'
 )
 
 feedback_contact_one = FeedbackContact.create! contact_id: contact.id,
@@ -90,10 +101,10 @@ feedback_three.update(requester: feedback_contact_three)
 Proposal.create!(
   proposer: feedback_contact_one,
   feedback: feedback_contact_one.feedback,
-  details: "Because I have use the IK4 platform and patreon, some of my
-   supporters might transition from pledging monthly to one-time contributions.
-   I don't want to discourage any of my supporters from canceling or lowering
-   their monthly pledges.",
+  details: "Because I have use the IK4 platform and patreon, some of my\
+ supporters might transition from pledging monthly to one-time contributions.\
+ I do not want to discourage any of my supporters from canceling or lowering\
+ their monthly pledges.",
   primary: true,
   solution: false
 )
@@ -183,6 +194,12 @@ ProCon.create(
   proposal_user: proposal_user_one
 )
 
+10.times do |i|
+  FeedbackGroup.create! active: true,
+                        priority: i + 1,
+                        title: "Review Priority #{i + 1}"
+end
+
 # - + - feedback - + -
 
 # - + - roadmap - + -
@@ -247,7 +264,7 @@ brand_icon = RoadmapItem.create!(title: 'Brand Icon',
 
 dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
                                              body: 'Intergate Dialogflow platform,',
-                                             feedback: feedback_one,
+                                             feedback: feedback_two,
                                              due_by: Date.new(2007, 5, 12))
 
 RoadmapGroupItem.create!(roadmap_group: solo_done,

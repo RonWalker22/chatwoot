@@ -20,34 +20,57 @@ export const state = {
   selectedFeedbackId: 0,
   statusTabs: [
     {
+      key: 'preview',
+      name: 'Preview',
+      options: ['preview'],
+      main: true,
+      filter: 'all',
+    },
+    {
       key: 'review',
       name: 'Review',
+      options: ['review', 'upcoming'],
+      main: true,
+      filter: 'review',
     },
     {
-      key: 'active',
-      name: 'Public',
-    },
-    {
-      key: 'resolved',
-      name: 'Resolved',
+      key: 'archive',
+      name: 'Archive',
+      options: ['all', 'reject', 'accept'],
+      main: true,
+      filter: 'accept',
     },
   ],
   selectedStatusTabIndex: 0,
+  bulkSelectIndex: {
+    previous: 0,
+    current: 0,
+  },
+  bulkEditCheckStatus: [],
+  socom: new Set([]),
 };
 
 export const getters = {
   getAllFeedback($state, $getters) {
-    let feedbackStatusFilter = $getters.getfeedbackStatusFilter.key;
-    const feedback = $state.records.filter(
-      record => record.status === feedbackStatusFilter
-    );
-    return feedback || {};
+    const feedbackStatus = $getters.getFeedbackStatus;
+    return $state.records.filter(record => {
+      if (feedbackStatus.filter === 'all') {
+        return feedbackStatus.options.includes(record.status);
+      }
+      return record.status === feedbackStatus.filter;
+    });
   },
   getFeedbackItem: $state => feedbackId => {
-    const [feedback] = $state.records.filter(
-      record => record.id === Number(feedbackId)
-    );
-    return feedback || {};
+    let feedbackItem = {};
+    const feedbacks = $state.records;
+    for (let index = 0; index < feedbacks.length; index += 1) {
+      let feedback = feedbacks[index];
+      if (feedback.id === Number(feedbackId)) {
+        feedbackItem = feedback;
+        break;
+      }
+    }
+    return feedbackItem;
   },
   getPosts: ($state, $getters) => (feedbackId, threadId) => {
     const feedback = $getters.getFeedbackItem(feedbackId);
@@ -64,11 +87,37 @@ export const getters = {
   getStatusTabs($state) {
     return $state.statusTabs;
   },
-  getfeedbackStatusFilter($state, $getters) {
+  getFeedbackStatus($state, $getters) {
     return $getters.getStatusTabs[$getters.getSelectedStatusTabIndex];
   },
   getSelectedStatusTabIndex($state) {
     return $state.selectedStatusTabIndex;
+  },
+  getAvailableStatusOptions($state, $getters) {
+    return $getters.getStatusTabs.filter((status, i) => {
+      return i !== $getters.getSelectedStatusTabIndex;
+    });
+  },
+  getBulkEditActive($state, $getters) {
+    return $getters.getBulkEditCheckStatus.some(status => status);
+  },
+  getBulkSelectIndex($state) {
+    return $state.bulkSelectIndex;
+  },
+
+  getBulkEditCheckStatus($state) {
+    return $state.bulkEditCheckStatus;
+  },
+  getBulkSelectedIds($state, $getters) {
+    let ids = [];
+    let AllFeedbacks = $getters.getAllFeedback;
+    let status = $getters.getBulkEditCheckStatus;
+    for (let index = 0; index < AllFeedbacks.length; index += 1) {
+      if (status[index]) {
+        ids.push(AllFeedbacks[index].id);
+      }
+    }
+    return ids;
   },
 };
 
@@ -179,11 +228,46 @@ export const actions = {
       throw new Error(error);
     }
   },
+  setBulkSelectIndex({ commit }, data) {
+    commit(types.default.SET_BULK_SELECT_INDEX, data);
+  },
+  setBulkEditCheckStatus({ commit }, data) {
+    commit(types.default.SET_BULK_EDIT_CHECK_STATUS, data);
+  },
+  resetBulkEditCheckStatus({ commit }) {
+    commit(types.default.RESET_BULK_EDIT_CHECK_STATUS);
+  },
+  updateMultipleFeedbacks: async ({ commit }, data) => {
+    commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: true });
+    try {
+      const response = await FeedbackAPI.bulkUpdate(data.payload);
+      commit(types.default.UPDATE_MULTIPLE_FEEDBACKS, response.data);
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    } catch (error) {
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    }
+  },
+  deleteMultipleFeedbacks: async ({ commit }, data) => {
+    commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: true });
+    try {
+      const response = await FeedbackAPI.bulkDelete(data.payload);
+      commit(types.default.DELETE_MULTIPLE_FEEDBACKS, response.data.ids);
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    } catch (error) {
+      commit(types.default.SET_FEEDBACK_UI_FLAG, { updatingItem: false });
+    }
+  },
+  resetSelectedFeedbackId({ commit }) {
+    commit(types.default.RESET_SELECTED_FEEDBACK_ID);
+  },
   setSelectedFeedbackId({ commit }, data) {
     commit(types.default.CHANGE_SELECTED_FEEDBACK_ID, data);
   },
   setSelectedStatusTabIndex({ commit }, index) {
     commit(types.default.CHANGE_SELECTED_STATUS_TAB_INDEX, index);
+  },
+  setSelectedStatusTabFilter({ commit }, data) {
+    commit(types.default.CHANGE_SELECTED_STATUS_TAB_FILTER, data);
   },
   setFeedbackEvaluation: async ({ commit }, data) => {
     try {
@@ -220,6 +304,9 @@ export const mutations = {
   [types.default.ADD_FEEDBACK]: MutationHelpers.create,
   [types.default.EDIT_FEEDBACK]: MutationHelpers.update,
   [types.default.UPDATE_FEEDBACK]: MutationHelpers.updateAttributes,
+  [types.default.UPDATE_MULTIPLE_FEEDBACKS]:
+    MutationHelpers.bulkUpdateAttributes,
+  [types.default.DELETE_MULTIPLE_FEEDBACKS]: MutationHelpers.bulkDestroy,
   [types.default.DELETE_FEEDBACK]: MutationHelpers.destroy,
   [types.default.UPDATE_PROPOSAL](_state, payload) {
     let newFeedback = {};
@@ -347,22 +434,52 @@ export const mutations = {
 
     const newProposal = newFeedback.proposals[proposalIndex];
     if (payload.evaluation === 'support') {
-      newProposal.score += newProposal.evaluation === 'undecided' ? 1 : 2;
+      if (newProposal.evaluation === 'reject') {
+        newProposal.score.down -= 1;
+      }
+      newProposal.score.up += 1;
     } else if (payload.evaluation === 'reject') {
-      newProposal.score -= newProposal.evaluation === 'undecided' ? 1 : 2;
+      if (newProposal.evaluation === 'support') {
+        newProposal.score.up -= 1;
+      }
+      newProposal.score.down += 1;
     } else if (payload.evaluation === 'undecided') {
-      newProposal.score += newProposal.evaluation === 'reject' ? 1 : -1;
+      if (newProposal.evaluation === 'reject') {
+        newProposal.score.down -= 1;
+      } else if (newProposal.evaluation === 'support') {
+        newProposal.score.up -= 1;
+      }
     }
     newProposal.evaluation = payload.evaluation;
     newProposal.proposal_user_id = payload.proposal_user_id;
+    newProposal.voted = payload.voted;
 
     Vue.set(_state.records, index, newFeedback);
   },
   [types.default.CHANGE_SELECTED_FEEDBACK_ID](_state, data) {
     _state.selectedFeedbackId = data;
   },
+  [types.default.RESET_SELECTED_FEEDBACK_ID](_state) {
+    _state.selectedFeedbackId = 0;
+  },
   [types.default.CHANGE_SELECTED_STATUS_TAB_INDEX](_state, data) {
     _state.selectedStatusTabIndex = data;
+  },
+  [types.default.CHANGE_SELECTED_STATUS_TAB_FILTER](_state, data) {
+    let tab = _state.statusTabs[data.index];
+    tab.filter = data.value;
+    Vue.set(_state.statusTabs, data.index, tab);
+  },
+  [types.default.SET_BULK_SELECT_INDEX](_state, indexes) {
+    _state.bulkSelectIndex = indexes;
+  },
+  [types.default.SET_BULK_EDIT_CHECK_STATUS](_state, checks) {
+    checks.forEach(check => {
+      Vue.set(_state.bulkEditCheckStatus, check.index, check.payload);
+    });
+  },
+  [types.default.RESET_BULK_EDIT_CHECK_STATUS](_state) {
+    _state.bulkEditCheckStatus = [];
   },
 };
 

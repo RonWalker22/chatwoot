@@ -157,6 +157,7 @@ export default {
   computed: {
     ...mapGetters({
       inboxList: 'inboxes/getInboxes',
+      accountId: 'getCurrentAccountId',
     }),
   },
   methods: {
@@ -208,7 +209,7 @@ export default {
       this.createFeedback(this.getFeedbackArray()).then(feedback => {
         this.$store.dispatch('feedback/setSelectedFeedbackId', feedback.id);
         const path = feedbackUrl({
-          accountId: feedback.account,
+          accountId: this.accountId,
           id: feedback.id,
         });
         this.$store.dispatch('feedback/fetchFeedbackItem', feedback.id);

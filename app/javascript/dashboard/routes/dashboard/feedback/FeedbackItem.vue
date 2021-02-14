@@ -2,49 +2,40 @@
   <div>
     <div v-if="!uiFlags.fetchingItem" class="fb-item">
       <div class="row align-justify action-row">
-        <div class="column shrink">
+        <div class="column small-2">
           <NewSolution :feedback-id="feedback.id" />
         </div>
-        <div class="column shrink">
-          <p>
-            Status:
-            <span data-test-id="feedback-status">{{ feedback.status }}</span>
-            - Type:
-            <span data-test-id="feedback-type">{{ feedback.kind }}</span>
-          </p>
-        </div>
-        <div class="column shrink">
-          <EditFeedback :feedback-id="feedback.id" />
+        <div class="column small-2">
+          <div v-if="isAdmin">
+            <button
+              class="button hollow small"
+              data-test-id="edit-feedback-btn"
+              @click="editFeedback"
+            >
+              Edit Feedback
+            </button>
+          </div>
         </div>
       </div>
       <h1 class="feedback-title text-center" data-test-id="feedback-title">
         {{ feedback.title }}
       </h1>
       <Proposals :feedback="feedback" />
-      <Comments
-        :thread-id="feedback.thread"
-        :feedback-id="feedback.id"
-        :main-board="true"
-      />
       <Toolbar :feedback="feedback" />
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import Proposals from './Proposals';
-import Comments from './Comments';
 import Toolbar from './Toolbar';
-import EditFeedback from './EditFeedback.vue';
 import NewSolution from './NewSolution.vue';
 
 export default {
   components: {
     Proposals,
-    Comments,
     Toolbar,
-    EditFeedback,
     NewSolution,
   },
   props: {
@@ -57,7 +48,13 @@ export default {
     ...mapGetters({
       uiFlags: 'feedback/getUIFlags',
       statusTabs: 'feedback/getStatusTabs',
+      currentRole: 'getCurrentRole',
+      feedbackList: 'feedback/getAllFeedback',
+      bulkSelectIndex: 'feedback/getBulkSelectIndex',
     }),
+    isAdmin() {
+      return this.currentRole === 'administrator';
+    },
   },
   mounted() {
     this.statusTabs.forEach((statusObject, i) => {
@@ -65,6 +62,26 @@ export default {
         this.$store.dispatch('feedback/setSelectedStatusTabIndex', i);
       }
     });
+  },
+  methods: {
+    ...mapActions('feedback', ['setBulkEditCheckStatus', 'setBulkSelectIndex']),
+    editFeedback() {
+      for (let i = 0; i < this.feedbackList.length; i += 1) {
+        if (this.feedbackList[i].id === this.feedback.id) {
+          this.setBulkEditCheckStatus([
+            {
+              index: i,
+              payload: true,
+            },
+          ]);
+          this.setBulkSelectIndex({
+            previous: this.bulkSelectIndex.previous,
+            current: i,
+          });
+          break;
+        }
+      }
+    },
   },
 };
 </script>
@@ -99,5 +116,22 @@ export default {
 
 h1 {
   font-size: $font-size-large;
+}
+
+.menu-vx {
+  position: fixed;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  height: 100%;
+  display: grid;
+  margin: 0;
+  margin-left: 1rem;
+  li {
+    a {
+      color: #6e767d;
+    }
+  }
 }
 </style>

@@ -34,6 +34,23 @@ export const updateAttributes = (state, data) => {
   });
 };
 
+export const bulkUpdateAttributes = (state, data) => {
+  state.records.forEach((element, index) => {
+    for (let i = 0; i < data.length; i += 1) {
+      if (element.id === data[i].id) {
+        Vue.set(state.records, index, { ...state.records[index], ...data[i] });
+        break;
+      }
+    }
+  });
+};
+
+export const bulkDestroy = (state, ids) => {
+  state.records = state.records.filter(record => {
+    return !ids.includes(record.id);
+  });
+};
+
 export const updatePresence = (state, data) => {
   state.records.forEach((element, index) => {
     const availabilityStatus = data[element.id];

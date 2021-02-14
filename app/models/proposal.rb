@@ -5,12 +5,12 @@
 #  id            :bigint           not null, primary key
 #  details       :text             not null
 #  primary       :boolean          default(FALSE), not null
-#  proposer_type :string           not null
+#  proposer_type :string
 #  solution      :boolean          default(FALSE), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  feedback_id   :bigint           not null
-#  proposer_id   :bigint           not null
+#  proposer_id   :bigint
 #
 # Indexes
 #
@@ -29,7 +29,7 @@ class Proposal < ApplicationRecord
   after_create :create_thread
 
   def proposer_name
-    proposer_type == 'FeedbackContact' ? proposer.contact.name : proposer.user.name
+    proposer_type == 'FeedbackContact' ? proposer.contact.name : proposer.user.available_name
   end
 
   def extra_details
@@ -40,7 +40,9 @@ class Proposal < ApplicationRecord
       proposal_user_id: proposal_user_id,
       evaluation: proposal_evaluation,
       score: proposal_score,
-      pro_cons: format_pro_cons
+      pro_cons: format_pro_cons,
+      date: created_at.strftime('%b %d %Y'),
+      voted: proposal_voted
     }
   end
 
@@ -58,6 +60,10 @@ class Proposal < ApplicationRecord
     @proposal_user ? @proposal_user.evaluation : 'undecided'
   end
 
+  def proposal_voted
+    @proposal_user ? @proposal_user.voted : false
+  end
+
   def proposal_user_id
     @proposal_user ? @proposal_user.id : 0
   end
@@ -67,7 +73,7 @@ class Proposal < ApplicationRecord
                                       evaluation: 'support').count
     down_votes = ProposalUser.all.where(proposal_id: id,
                                         evaluation: 'reject').count
-    up_votes - down_votes
+    { up: up_votes, down: down_votes }
   end
 
   def format_pro_cons
