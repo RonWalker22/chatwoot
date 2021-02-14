@@ -181,6 +181,8 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.string "welcome_tagline"
     t.integer "feature_flags", default: 3, null: false
     t.integer "reply_time", default: 0
+    t.string "hmac_token"
+    t.index ["hmac_token"], name: "index_channel_web_widgets_on_hmac_token", unique: true
     t.index ["website_token"], name: "index_channel_web_widgets_on_website_token", unique: true
   end
 
@@ -210,6 +212,7 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.string "source_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "hmac_verified", default: false
     t.index ["contact_id"], name: "index_contact_inboxes_on_contact_id"
     t.index ["inbox_id", "source_id"], name: "index_contact_inboxes_on_inbox_id_and_source_id", unique: true
     t.index ["inbox_id"], name: "index_contact_inboxes_on_inbox_id"
@@ -250,9 +253,11 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "identifier"
     t.datetime "last_activity_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.bigint "team_id"
     t.index ["account_id", "display_id"], name: "index_conversations_on_account_id_and_display_id", unique: true
     t.index ["account_id"], name: "index_conversations_on_account_id"
     t.index ["contact_inbox_id"], name: "index_conversations_on_contact_inbox_id"
+    t.index ["team_id"], name: "index_conversations_on_team_id"
   end
 
   create_table "email_templates", force: :cascade do |t|
@@ -361,7 +366,9 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.jsonb "serialized_value", default: {}, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "locked", default: true, null: false
     t.index ["name", "created_at"], name: "index_installation_configs_on_name_and_created_at", unique: true
+    t.index ["name"], name: "index_installation_configs_on_name", unique: true
   end
 
   create_table "integrations_hooks", force: :cascade do |t|
@@ -563,6 +570,21 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id", unique: true
+  create_table "platform_app_permissibles", force: :cascade do |t|
+    t.bigint "platform_app_id", null: false
+    t.string "permissible_type", null: false
+    t.bigint "permissible_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["permissible_type", "permissible_id"], name: "index_platform_app_permissibles_on_permissibles"
+    t.index ["platform_app_id", "permissible_id", "permissible_type"], name: "unique_permissibles_index", unique: true
+    t.index ["platform_app_id"], name: "index_platform_app_permissibles_on_platform_app_id"
+  end
+
+  create_table "platform_apps", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "super_admins", force: :cascade do |t|
@@ -606,6 +628,25 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
+  create_table "team_members", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["team_id"], name: "index_team_members_on_team_id"
+    t.index ["user_id"], name: "index_team_members_on_user_id"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.boolean "allow_auto_assign", default: true
+    t.bigint "account_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_teams_on_account_id"
+  end
+
   create_table "telegram_bots", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "auth_key"
@@ -638,6 +679,7 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
     t.datetime "updated_at", null: false
     t.string "pubsub_token"
     t.integer "availability", default: 0
+    t.jsonb "ui_settings", default: {}
     t.index ["email"], name: "index_users_on_email"
     t.index ["pubsub_token"], name: "index_users_on_pubsub_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -686,4 +728,22 @@ ActiveRecord::Schema.define(version: 2021_01_28_160215) do
   add_foreign_key "proposal_users", "proposals"
   add_foreign_key "proposal_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"
+  add_foreign_key "conversations", "teams"
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "team_members", "users"
+  add_foreign_key "teams", "accounts"
+  create_trigger("accounts_after_insert_row_tr", :generated => true, :compatibility => 1).
+      on("accounts").
+      after(:insert).
+      for_each(:row) do
+    "execute format('create sequence IF NOT EXISTS conv_dpid_seq_%s', NEW.id);"
+  end
+
+  create_trigger("conversations_before_insert_row_tr", :generated => true, :compatibility => 1).
+      on("conversations").
+      before(:insert).
+      for_each(:row) do
+    "NEW.display_id := nextval('conv_dpid_seq_' || NEW.account_id);"
+  end
+
 end

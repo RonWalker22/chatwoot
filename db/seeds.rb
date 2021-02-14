@@ -2,278 +2,288 @@
 GlobalConfig.clear_cache
 ConfigLoader.new.process
 
-account = Account.create!(
-  name: 'Acme Inc',
-  domain: 'support.chatwoot.com',
-  support_email: ENV.fetch('MAILER_SENDER_EMAIL', 'accounts@chatwoot.com')
-)
+## Seeds productions
+if Rails.env.production?
+  # Setup Onboarding flow
+  ::Redis::Alfred.set(::Redis::Alfred::CHATWOOT_INSTALLATION_ONBOARDING, true)
+end
 
-user = User.new(name: 'John', email: 'john@acme.inc', password: '123456')
-user.skip_confirmation!
-user.save!
+## Seeds for Local Development
+unless Rails.env.production?
+  SuperAdmin.create!(email: 'john@acme.inc', password: '123456')
 
-SuperAdmin.create!(email: 'john@acme.inc', password: '123456') unless Rails.env.production?
+  account = Account.create!(
+    name: 'Acme Inc',
+    domain: 'support.chatwoot.com',
+    support_email: ENV.fetch('MAILER_SENDER_EMAIL', 'accounts@chatwoot.com')
+  )
 
-AccountUser.create!(
-  account_id: account.id,
-  user_id: user.id,
-  role: :administrator
-)
+  user = User.new(name: 'John', email: 'john@acme.inc', password: '123456')
+  user.skip_confirmation!
+  user.save!
 
-agent_one = User.new(name: 'Bob', email: 'bob@acme.inc', password: '123456')
-agent_one.skip_confirmation!
-agent_one.save!
+  AccountUser.create!(
+    account_id: account.id,
+    user_id: user.id,
+    role: :administrator
+  )
 
-AccountUser.create!(
-  account_id: account.id,
-  user_id: agent_one.id,
-  role: :agent
-)
+  web_widget = Channel::WebWidget.create!(account: account, website_url: 'https://acme.inc')
 
-web_widget = Channel::WebWidget.create!(account: account, website_url: 'https://acme.inc')
+  inbox = Inbox.create!(channel: web_widget, account: account, name: 'Acme Support')
+  InboxMember.create!(user: user, inbox: inbox)
 
-inbox = Inbox.create!(channel: web_widget, account: account, name: 'Acme Support')
-InboxMember.create!(user: user, inbox: inbox)
-InboxMember.create!(user: agent_one, inbox: inbox)
+  contact = Contact.create!(name: 'jane', email: 'jane@example.com', phone_number: '0000', account: account)
+  contact_inbox = ContactInbox.create!(inbox: inbox, contact: contact, source_id: user.id)
+  conversation = Conversation.create!(
+    account: account,
+    inbox: inbox,
+    status: :open,
+    assignee: user,
+    contact: contact,
+    contact_inbox: contact_inbox,
+    additional_attributes: {}
+  )
+  Message.create!(content: 'Hello', account: account, inbox: inbox, conversation: conversation, message_type: :incoming)
+  CannedResponse.create!(account: account, short_code: 'start', content: 'Hello welcome to chatwoot.')
 
-contact = Contact.create!(name: 'jane', email: 'jane@example.com', phone_number: '0000', account: account)
-contact_inbox = ContactInbox.create!(inbox: inbox, contact: contact, source_id: user.id)
-conversation = Conversation.create!(
-  account: account,
-  inbox: inbox,
-  status: :open,
-  assignee: user,
-  contact: contact,
-  contact_inbox: contact_inbox,
-  additional_attributes: {}
-)
-Message.create!(content: 'Hello', account: account, inbox: inbox, conversation: conversation, message_type: :incoming)
-CannedResponse.create!(account: account, short_code: 'start', content: 'Hello welcome to chatwoot.')
+  agent_one = User.new(name: 'Bob', email: 'bob@acme.inc', password: '123456')
+  agent_one.skip_confirmation!
+  agent_one.save!
 
-# - + - feedback - + -
+  AccountUser.create!(
+    account_id: account.id,
+    user_id: agent_one.id,
+    role: :agent
+  )
 
-feedback_one = Feedback.create!(
-  title: 'Patreon integration - Give IK4 credit for patreon pledges',
-  funding_goal: 1000,
-  inbox_id: inbox.id,
-  account_id: web_widget.account.id,
-  status: 'review'
-)
-feedback_two = Feedback.create!(
-  title: 'Import feature requests from other platforms',
-  funding_goal: 1000,
-  inbox_id: inbox.id,
-  account_id: web_widget.account.id,
-  status: 'review'
-)
-feedback_three = Feedback.create!(
-  title: 'Support organizations with multiple products',
-  funding_goal: 1000,
-  inbox_id: inbox.id,
-  account_id: web_widget.account.id,
-  status: 'review'
-)
+  InboxMember.create!(user: agent_one, inbox: inbox)
 
-feedback_contact_one = FeedbackContact.create! contact_id: contact.id,
-                                               feedback_id: feedback_one.id,
-                                               support_level: 600,
-                                               prefund_level: 600,
-                                               supporter: true
+  # - + - feedback - + -
 
-feedback_one.update(requester: feedback_contact_one)
+  feedback_one = Feedback.create!(
+    title: 'Patreon integration - Give IK4 credit for patreon pledges',
+    funding_goal: 1000,
+    inbox_id: inbox.id,
+    account_id: web_widget.account.id,
+    status: 'review'
+  )
+  feedback_two = Feedback.create!(
+    title: 'Import feature requests from other platforms',
+    funding_goal: 1000,
+    inbox_id: inbox.id,
+    account_id: web_widget.account.id,
+    status: 'review'
+  )
+  feedback_three = Feedback.create!(
+    title: 'Support organizations with multiple products',
+    funding_goal: 1000,
+    inbox_id: inbox.id,
+    account_id: web_widget.account.id,
+    status: 'review'
+  )
 
-feedback_contact_two = FeedbackContact.create! contact_id: contact.id,
-                                               feedback_id: feedback_two.id,
-                                               support_level: 900,
-                                               prefund_level: 900,
-                                               supporter: true
+  feedback_contact_one = FeedbackContact.create! contact_id: contact.id,
+                                                feedback_id: feedback_one.id,
+                                                support_level: 600,
+                                                prefund_level: 600,
+                                                supporter: true
 
-feedback_two.update(requester: feedback_contact_two)
+  feedback_one.update(requester: feedback_contact_one)
 
-feedback_contact_three = FeedbackContact.create! contact_id: contact.id,
-                                                 feedback_id: feedback_three.id,
-                                                 support_level: 200,
-                                                 prefund_level: 200,
-                                                 supporter: true
+  feedback_contact_two = FeedbackContact.create! contact_id: contact.id,
+                                                feedback_id: feedback_two.id,
+                                                support_level: 900,
+                                                prefund_level: 900,
+                                                supporter: true
 
-feedback_three.update(requester: feedback_contact_three)
+  feedback_two.update(requester: feedback_contact_two)
 
-Proposal.create!(
-  proposer: feedback_contact_one,
-  feedback: feedback_contact_one.feedback,
-  details: "Because I have use the IK4 platform and patreon, some of my\
- supporters might transition from pledging monthly to one-time contributions.\
- I do not want to discourage any of my supporters from canceling or lowering\
- their monthly pledges.",
-  primary: true,
-  solution: false
-)
+  feedback_contact_three = FeedbackContact.create! contact_id: contact.id,
+                                                  feedback_id: feedback_three.id,
+                                                  support_level: 200,
+                                                  prefund_level: 200,
+                                                  supporter: true
 
-Proposal.create!(
-  proposer: feedback_contact_one,
-  feedback: feedback_contact_one.feedback,
-  details: 'Provide patreon supporters with dollar for dollar credit for each pledge.',
-  primary: true,
-  solution: true
-)
+  feedback_three.update(requester: feedback_contact_three)
 
-2.times do
-  Proposal.create proposer: feedback_contact_one,
-                  feedback: feedback_contact_one.feedback,
-                  details: Faker::Lorem.paragraph(sentence_count: 15),
-                  primary: false,
-                  solution: true
+  Proposal.create!(
+    proposer: feedback_contact_one,
+    feedback: feedback_contact_one.feedback,
+    details: "Because I have use the IK4 platform and patreon, some of my\
+  supporters might transition from pledging monthly to one-time contributions.\
+  I do not want to discourage any of my supporters from canceling or lowering\
+  their monthly pledges.",
+    primary: true,
+    solution: false
+  )
+
+  Proposal.create!(
+    proposer: feedback_contact_one,
+    feedback: feedback_contact_one.feedback,
+    details: 'Provide patreon supporters with dollar for dollar credit for each pledge.',
+    primary: true,
+    solution: true
+  )
+
+  2.times do
+    Proposal.create proposer: feedback_contact_one,
+                    feedback: feedback_contact_one.feedback,
+                    details: Faker::Lorem.paragraph(sentence_count: 15),
+                    primary: false,
+                    solution: true
+
+    ClarificationPost.create(
+      author: feedback_contact_two,
+      body: Faker::Lorem.paragraph(sentence_count: 3),
+      clarification_thread: feedback_two.clarification_thread
+    )
+  end
+
+  Proposal.create!(
+    proposer: feedback_contact_two,
+    feedback: feedback_contact_two.feedback,
+    details: 'I am transitioning from another platform and have a lot of data from their that I can’t utilize.',
+    primary: true,
+    solution: false
+  )
+  Proposal.create!(
+    proposer: feedback_contact_two,
+    feedback: feedback_contact_two.feedback,
+    details: 'Add the ability to import feedback from other platforms.',
+    primary: true,
+    solution: true
+  )
+
+  Proposal.create!(
+    proposer: feedback_contact_three,
+    feedback: feedback_contact_three.feedback,
+    details: 'Switching between different organization accounts in order to manage multiple products is time consuming.',
+    primary: true,
+    solution: false
+  )
+
+  proposal_one = Proposal.create!(
+    proposer: feedback_contact_three,
+    feedback: feedback_contact_three.feedback,
+    details: 'Allow each organization to have multiple products and associate
+    customers and feature request to individual products instead of the
+    organization. This way I don’t have to sign in and out of my account to
+    management multiple products that are tied to the same organization.',
+    primary: true,
+    solution: true
+  )
 
   ClarificationPost.create(
     author: feedback_contact_two,
     body: Faker::Lorem.paragraph(sentence_count: 3),
-    clarification_thread: feedback_two.clarification_thread
+    clarification_thread: proposal_one.clarification_thread
   )
-end
 
-Proposal.create!(
-  proposer: feedback_contact_two,
-  feedback: feedback_contact_two.feedback,
-  details: 'I am transitioning from another platform and have a lot of data from their that I can’t utilize.',
-  primary: true,
-  solution: false
-)
-Proposal.create!(
-  proposer: feedback_contact_two,
-  feedback: feedback_contact_two.feedback,
-  details: 'Add the ability to import feedback from other platforms.',
-  primary: true,
-  solution: true
-)
+  proposal_user_one = ProposalUser.create(
+    proposal: proposal_one,
+    user: User.first
+  )
 
-Proposal.create!(
-  proposer: feedback_contact_three,
-  feedback: feedback_contact_three.feedback,
-  details: 'Switching between different organization accounts in order to manage multiple products is time consuming.',
-  primary: true,
-  solution: false
-)
+  ProCon.create(
+    body: "Moluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
+    quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
+    Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
+    ",
+    pro: true,
+    proposal_user: proposal_user_one
+  )
 
-proposal_one = Proposal.create!(
-  proposer: feedback_contact_three,
-  feedback: feedback_contact_three.feedback,
-  details: 'Allow each organization to have multiple products and associate
-  customers and feature request to individual products instead of the
-  organization. This way I don’t have to sign in and out of my account to
-  management multiple products that are tied to the same organization.',
-  primary: true,
-  solution: true
-)
+  ProCon.create(
+    body: "Toluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
+    quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
+    Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
+    ",
+    pro: false,
+    proposal_user: proposal_user_one
+  )
 
-ClarificationPost.create(
-  author: feedback_contact_two,
-  body: Faker::Lorem.paragraph(sentence_count: 3),
-  clarification_thread: proposal_one.clarification_thread
-)
+  10.times do |i|
+    FeedbackGroup.create! active: true,
+                          priority: i + 1,
+                          title: "Review Priority #{i + 1}"
+  end
 
-proposal_user_one = ProposalUser.create(
-  proposal: proposal_one,
-  user: User.first
-)
+  # - + - feedback - + -
 
-ProCon.create(
-  body: "Moluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
-  quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
-  Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
-  ",
-  pro: true,
-  proposal_user: proposal_user_one
-)
+  # - + - roadmap - + -
 
-ProCon.create(
-  body: "Toluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
-  quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
-  Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
-  ",
-  pro: false,
-  proposal_user: proposal_user_one
-)
-
-10.times do |i|
-  FeedbackGroup.create! active: true,
-                        priority: i + 1,
-                        title: "Review Priority #{i + 1}"
-end
-
-# - + - feedback - + -
-
-# - + - roadmap - + -
-
-solo_now = RoadmapGroup.create!(title: 'solo now',
-                                status: 'now',
-                                inbox: inbox,
-                                account: web_widget.account,
-                                due_by: Date.new(2007, 5, 12))
-
-solo_next = RoadmapGroup.create!(title: 'solo next',
-                                 status: 'next',
-                                 inbox: inbox,
-                                 account: web_widget.account,
-                                 due_by: Date.new(2007, 5, 12))
-
-solo_later = RoadmapGroup.create!(title: 'solo later',
-                                  status: 'later',
+  solo_now = RoadmapGroup.create!(title: 'solo now',
+                                  status: 'now',
                                   inbox: inbox,
                                   account: web_widget.account,
                                   due_by: Date.new(2007, 5, 12))
 
-intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
-                                       body: 'Intergate the social media network, Reddit',
-                                       due_by: Date.new(2007, 5, 12))
+  solo_next = RoadmapGroup.create!(title: 'solo next',
+                                  status: 'next',
+                                  inbox: inbox,
+                                  account: web_widget.account,
+                                  due_by: Date.new(2007, 5, 12))
 
-intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
-                                        body: 'Intergate cloud storage and file storage - Dropbox',
+  solo_later = RoadmapGroup.create!(title: 'solo later',
+                                    status: 'later',
+                                    inbox: inbox,
+                                    account: web_widget.account,
+                                    due_by: Date.new(2007, 5, 12))
+
+  intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
+                                        body: 'Intergate the social media network, Reddit',
                                         due_by: Date.new(2007, 5, 12))
 
-intergate_slack = RoadmapItem.create!(title: 'Intergate Slack',
-                                      body: 'Intergate platform for team communication - Slack',
-                                      feedback: feedback_one,
-                                      due_by: Date.new(2007, 5, 12))
+  intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
+                                          body: 'Intergate cloud storage and file storage - Dropbox',
+                                          due_by: Date.new(2007, 5, 12))
 
-RoadmapGroupItem.create!(roadmap_group: solo_now,
-                         roadmap_item: intergate_reddit)
+  intergate_slack = RoadmapItem.create!(title: 'Intergate Slack',
+                                        body: 'Intergate platform for team communication - Slack',
+                                        feedback: feedback_one,
+                                        due_by: Date.new(2007, 5, 12))
 
-RoadmapGroupItem.create!(roadmap_group: solo_next,
-                         roadmap_item: intergate_dropbox)
+  RoadmapGroupItem.create!(roadmap_group: solo_now,
+                          roadmap_item: intergate_reddit)
 
-RoadmapGroupItem.create!(roadmap_group: solo_later,
-                         roadmap_item: intergate_slack)
+  RoadmapGroupItem.create!(roadmap_group: solo_next,
+                          roadmap_item: intergate_dropbox)
 
-# - + - roadmap - + -
+  RoadmapGroupItem.create!(roadmap_group: solo_later,
+                          roadmap_item: intergate_slack)
 
-# - + - changelog - + -
+  # - + - roadmap - + -
 
-solo_done = RoadmapGroup.create!(title: 'solo done',
-                                 status: 'done',
-                                 inbox: inbox,
-                                 account: web_widget.account,
-                                 due_by: Date.new(2007, 5, 12))
+  # - + - changelog - + -
 
-drag_drop = RoadmapItem.create!(title: 'Drag and Drop',
-                                body: 'Enable drag and drop, copy & paste image/files in the agent input box.',
-                                due_by: Date.new(2007, 5, 12))
+  solo_done = RoadmapGroup.create!(title: 'solo done',
+                                  status: 'done',
+                                  inbox: inbox,
+                                  account: web_widget.account,
+                                  due_by: Date.new(2007, 5, 12))
 
-brand_icon = RoadmapItem.create!(title: 'Brand Icon',
-                                 body: 'Ability to set brand icon as staff/agent avatar',
-                                 due_by: Date.new(2007, 5, 12))
+  drag_drop = RoadmapItem.create!(title: 'Drag and Drop',
+                                  body: 'Enable drag and drop, copy & paste image/files in the agent input box.',
+                                  due_by: Date.new(2007, 5, 12))
 
-dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
-                                             body: 'Intergate Dialogflow platform,',
-                                             feedback: feedback_two,
-                                             due_by: Date.new(2007, 5, 12))
+  brand_icon = RoadmapItem.create!(title: 'Brand Icon',
+                                  body: 'Ability to set brand icon as staff/agent avatar',
+                                  due_by: Date.new(2007, 5, 12))
 
-RoadmapGroupItem.create!(roadmap_group: solo_done,
-                         roadmap_item: drag_drop)
+  dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
+                                              body: 'Intergate Dialogflow platform,',
+                                              feedback: feedback_two,
+                                              due_by: Date.new(2007, 5, 12))
 
-RoadmapGroupItem.create!(roadmap_group: solo_done,
-                         roadmap_item: brand_icon)
+  RoadmapGroupItem.create!(roadmap_group: solo_done,
+                          roadmap_item: drag_drop)
 
-RoadmapGroupItem.create!(roadmap_group: solo_done,
-                         roadmap_item: dialogflow_integration)
+  RoadmapGroupItem.create!(roadmap_group: solo_done,
+                          roadmap_item: brand_icon)
 
-# - + - changelog - + -
+  RoadmapGroupItem.create!(roadmap_group: solo_done,
+                          roadmap_item: dialogflow_integration)
+
+  # - + - changelog - + -
+end
