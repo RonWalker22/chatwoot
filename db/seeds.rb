@@ -84,26 +84,27 @@ unless Rails.env.production?
   )
 
   feedback_contact_one = FeedbackContact.create! contact_id: contact.id,
-                                                feedback_id: feedback_one.id,
-                                                support_level: 600,
-                                                prefund_level: 600,
-                                                supporter: true
+                                                 feedback_id: feedback_one.id,
+                                                 support_level: 600,
+                                                 prefund_level: 600,
+                                                 supporter: true
 
   feedback_one.update(requester: feedback_contact_one)
 
   feedback_contact_two = FeedbackContact.create! contact_id: contact.id,
-                                                feedback_id: feedback_two.id,
-                                                support_level: 900,
-                                                prefund_level: 900,
-                                                supporter: true
+                                                 feedback_id: feedback_two.id,
+                                                 support_level: 900,
+                                                 prefund_level: 900,
+                                                 supporter: true
 
   feedback_two.update(requester: feedback_contact_two)
 
   feedback_contact_three = FeedbackContact.create! contact_id: contact.id,
-                                                  feedback_id: feedback_three.id,
-                                                  support_level: 200,
-                                                  prefund_level: 200,
-                                                  supporter: true
+                                                   feedback_id:
+                                                    feedback_three.id,
+                                                   support_level: 200,
+                                                   prefund_level: 200,
+                                                   supporter: true
 
   feedback_three.update(requester: feedback_contact_three)
 
@@ -220,10 +221,10 @@ unless Rails.env.production?
                                   due_by: Date.new(2007, 5, 12))
 
   solo_next = RoadmapGroup.create!(title: 'solo next',
-                                  status: 'next',
-                                  inbox: inbox,
-                                  account: web_widget.account,
-                                  due_by: Date.new(2007, 5, 12))
+                                   status: 'next',
+                                   inbox: inbox,
+                                   account: web_widget.account,
+                                   due_by: Date.new(2007, 5, 12))
 
   solo_later = RoadmapGroup.create!(title: 'solo later',
                                     status: 'later',
@@ -232,8 +233,8 @@ unless Rails.env.production?
                                     due_by: Date.new(2007, 5, 12))
 
   intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
-                                        body: 'Intergate the social media network, Reddit',
-                                        due_by: Date.new(2007, 5, 12))
+                                         body: 'Intergate the social media  network, Reddit',
+                                         due_by: Date.new(2007, 5, 12))
 
   intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
                                           body: 'Intergate cloud storage and file storage - Dropbox',
@@ -245,45 +246,45 @@ unless Rails.env.production?
                                         due_by: Date.new(2007, 5, 12))
 
   RoadmapGroupItem.create!(roadmap_group: solo_now,
-                          roadmap_item: intergate_reddit)
+                           roadmap_item: intergate_reddit)
 
   RoadmapGroupItem.create!(roadmap_group: solo_next,
-                          roadmap_item: intergate_dropbox)
+                           roadmap_item: intergate_dropbox)
 
   RoadmapGroupItem.create!(roadmap_group: solo_later,
-                          roadmap_item: intergate_slack)
+                           roadmap_item: intergate_slack)
 
   # - + - roadmap - + -
 
   # - + - changelog - + -
 
   solo_done = RoadmapGroup.create!(title: 'solo done',
-                                  status: 'done',
-                                  inbox: inbox,
-                                  account: web_widget.account,
-                                  due_by: Date.new(2007, 5, 12))
+                                   status: 'done',
+                                   inbox: inbox,
+                                   account: web_widget.account,
+                                   due_by: Date.new(2007, 5, 12))
 
   drag_drop = RoadmapItem.create!(title: 'Drag and Drop',
                                   body: 'Enable drag and drop, copy & paste image/files in the agent input box.',
                                   due_by: Date.new(2007, 5, 12))
 
   brand_icon = RoadmapItem.create!(title: 'Brand Icon',
-                                  body: 'Ability to set brand icon as staff/agent avatar',
-                                  due_by: Date.new(2007, 5, 12))
+                                   body: 'Ability to set brand icon as staff/ agent avatar',
+                                   due_by: Date.new(2007, 5, 12))
 
   dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
-                                              body: 'Intergate Dialogflow platform,',
-                                              feedback: feedback_two,
-                                              due_by: Date.new(2007, 5, 12))
+                                               body: 'Intergate Dialogflow  platform,',
+                                               feedback: feedback_two,
+                                               due_by: Date.new(2007, 5, 12))
 
   RoadmapGroupItem.create!(roadmap_group: solo_done,
-                          roadmap_item: drag_drop)
+                           roadmap_item: drag_drop)
 
   RoadmapGroupItem.create!(roadmap_group: solo_done,
-                          roadmap_item: brand_icon)
+                           roadmap_item: brand_icon)
 
   RoadmapGroupItem.create!(roadmap_group: solo_done,
-                          roadmap_item: dialogflow_integration)
+                           roadmap_item: dialogflow_integration)
 
   # - + - changelog - + -
 end
