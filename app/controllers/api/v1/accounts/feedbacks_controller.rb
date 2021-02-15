@@ -55,7 +55,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def feedback_params
-    params.require(:feedback).permit(:title, :status, :funding_goal, :kind, :inbox_id)
+    params.require(:feedback).permit(:title, :status, :kind, :inbox_id)
   end
 
   def permitted_params

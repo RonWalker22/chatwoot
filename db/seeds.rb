@@ -63,21 +63,18 @@ unless Rails.env.production?
 
   feedback_one = Feedback.create!(
     title: 'Patreon integration - Give IK4 credit for patreon pledges',
-    funding_goal: 1000,
     inbox_id: inbox.id,
     account_id: web_widget.account.id,
     status: 'review'
   )
   feedback_two = Feedback.create!(
     title: 'Import feature requests from other platforms',
-    funding_goal: 1000,
     inbox_id: inbox.id,
     account_id: web_widget.account.id,
     status: 'review'
   )
   feedback_three = Feedback.create!(
     title: 'Support organizations with multiple products',
-    funding_goal: 1000,
     inbox_id: inbox.id,
     account_id: web_widget.account.id,
     status: 'review'

@@ -3,7 +3,6 @@
 # Table name: feedbacks
 #
 #  id                :bigint           not null, primary key
-#  funding_goal      :integer          default(0)
 #  kind              :string           default("request"), not null
 #  requester_type    :string
 #  status            :string           default("review"), not null

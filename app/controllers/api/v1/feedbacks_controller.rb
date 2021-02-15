@@ -34,7 +34,7 @@ class Api::V1::FeedbacksController < Api::V1::FeedbackBaseController
   private
 
   def feedback_params
-    params.require(:feedback).permit(:title, :organization_id, :status, :funding_goal, :kind)
+    params.require(:feedback).permit(:title, :organization_id, :status, :kind)
   end
 
   def permitted_params
