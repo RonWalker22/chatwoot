@@ -185,7 +185,7 @@ h3 {
 }
 
 .card-active {
-  background: #cce8ff;
+  background: #f4f6fb;
 }
 
 .title-row {

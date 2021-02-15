@@ -108,12 +108,6 @@ export default {
   margin-bottom: 4rem;
 }
 
-.card-section {
-  p {
-    text-align: left !important;
-  }
-}
-
 h1 {
   font-size: $font-size-large;
 }

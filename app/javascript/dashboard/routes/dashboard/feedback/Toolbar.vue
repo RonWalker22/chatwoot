@@ -4,7 +4,7 @@
       <div class="row align-center">
         <div class="columns small-6">
           <button
-            class="button large expanded"
+            class="button large expanded support-btn"
             :class="[isSupported ? 'support-selected' : 'pick-unselected']"
             data-test-id="support-feedback-btn"
             @click="supportFeedback"
@@ -15,7 +15,7 @@
         </div>
         <div class="columns small-6">
           <button
-            class="button large expanded"
+            class="button large expanded reject-btn"
             :class="[isRejected ? 'reject-selected' : 'pick-unselected']"
             data-test-id="reject-feedback-btn"
             @click="rejectFeedback"
@@ -123,6 +123,14 @@ export default {
 .pick-unselected {
   background-color: #f5f5f5;
   color: black;
+}
+
+.reject-btn {
+  border-radius: 0% 20% 20% 0%;
+}
+
+.support-btn {
+  border-radius: 20% 0% 0% 20%;
 }
 
 .dropdown-pane {

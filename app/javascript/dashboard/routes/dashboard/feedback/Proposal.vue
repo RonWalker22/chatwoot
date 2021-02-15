@@ -290,11 +290,11 @@ h2 {
 
 .card-section {
   padding: 1rem 1rem 1rem 0rem;
+  margin-left: 1rem;
 }
 
 .proposal-details {
   font-size: 1.3rem;
-  // margin-right: 3rem;
 }
 
 .primary-checkmark {
