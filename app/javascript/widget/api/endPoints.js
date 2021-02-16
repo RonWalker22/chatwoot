@@ -65,59 +65,6 @@ const getAvailableAgents = token => ({
   },
 });
 
-const getFeedbacks = token => ({
-  url: '/api/v1/feedbacks',
-  params: {
-    website_token: token,
-  },
-});
-
-const createFeedback = payload => ({
-  url: '/api/v1/feedbacks',
-  params: {
-    feedback: {
-      title: payload.title,
-      kind: payload.kind,
-    },
-    support_level: payload.supportLevel,
-    problem: payload.problem,
-    solution: payload.solution,
-    email: payload.email,
-    details: payload.details,
-    website_token: payload.websiteToken,
-    supporter: true,
-  },
-});
-
-const createComment = payload => ({
-  url: '/api/v1/clarification_posts',
-  params: {
-    body: payload.details,
-    website_token: payload.websiteToken,
-    feedback_id: payload.feedbackId,
-    email: payload.email,
-    supporter: false,
-  },
-});
-
-const createSupporter = payload => ({
-  url: '/api/v1/feedback_contacts',
-  params: {
-    support_level: payload.supportLevel,
-    website_token: payload.websiteToken,
-    feedback_id: payload.feedbackId,
-    email: payload.email,
-    supporter: true,
-  },
-});
-
-const getRoadmap = token => ({
-  url: '/api/v1/roadmaps',
-  params: {
-    website_token: token,
-  },
-});
-
 export default {
   createConversation,
   sendMessage,
@@ -125,9 +72,4 @@ export default {
   getConversation,
   updateMessage,
   getAvailableAgents,
-  getFeedbacks,
-  createFeedback,
-  createComment,
-  createSupporter,
-  getRoadmap,
 };

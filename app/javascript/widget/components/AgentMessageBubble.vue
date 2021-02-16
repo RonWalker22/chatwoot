@@ -52,6 +52,7 @@ import ChatForm from 'shared/components/ChatForm';
 import ChatOptions from 'shared/components/ChatOptions';
 import ChatArticle from './template/Article';
 import EmailInput from './template/EmailInput';
+
 export default {
   name: 'AgentMessageBubble',
   components: {
@@ -118,11 +119,13 @@ export default {
 
 <style lang="scss">
 @import '~widget/assets/scss/variables.scss';
+
 .chat-bubble {
   &.agent {
     background: $color-white;
     border-bottom-left-radius: $space-smaller;
     color: $color-body;
+
     .link {
       word-break: break-word;
       color: $color-woot;

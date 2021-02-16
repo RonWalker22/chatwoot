@@ -68,6 +68,7 @@ export default {
 <style scoped lang="scss">
 @import '~widget/assets/scss/variables.scss';
 @import '~widget/assets/scss/mixins.scss';
+
 .header-collapsed {
   display: flex;
   justify-content: space-between;
@@ -78,10 +79,12 @@ export default {
   .header-branding {
     display: flex;
     align-items: center;
+
     img {
       border-radius: 50%;
     }
   }
+
   .title {
     font-weight: $font-weight-medium;
   }

@@ -8,6 +8,7 @@
 
 <script>
 import messageFormatterMixin from 'shared/mixins/messageFormatterMixin';
+
 export default {
   name: 'UserMessageBubble',
   mixins: [messageFormatterMixin],
@@ -31,6 +32,7 @@ export default {
 <style lang="scss">
 @import '~widget/assets/scss/variables.scss';
 @import '~widget/assets/scss/mixins.scss';
+
 .chat-bubble {
   @include light-shadow;
   background: $color-woot;
@@ -55,6 +57,7 @@ export default {
 
   &.user {
     border-bottom-right-radius: $space-smaller;
+
     > a {
       color: $color-white;
     }

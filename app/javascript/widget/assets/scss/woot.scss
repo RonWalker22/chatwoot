@@ -13,14 +13,12 @@
 html,
 body {
   font-family: $font-family;
-  font-size: 16px;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   height: 100%;
 }
 
 .woot-widget-wrap {
-  background-color: $color-background;
   height: 100%;
 }
 
