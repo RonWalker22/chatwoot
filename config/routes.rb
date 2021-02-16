@@ -35,7 +35,7 @@ Rails.application.routes.draw do
           resources :feedbacks, only: [:create, :index, :update, :show] do
             collection do
               post :bulk_update
-              post :bulk_destroy
+              delete :bulk_destroy
             end
           end
           resources :clarification_posts, only: [:create, :destroy]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_12_154240) do
+ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -631,9 +631,11 @@ ActiveRecord::Schema.define(version: 2021_02_12_154240) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
     t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
     t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
     t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
     t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+    t.index ["tagger_type", "tagger_id"], name: "index_taggings_on_tagger_type_and_tagger_id"
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|
@@ -737,6 +739,7 @@ ActiveRecord::Schema.define(version: 2021_02_12_154240) do
   add_foreign_key "contact_inboxes", "inboxes"
   add_foreign_key "conversations", "contact_inboxes"
   add_foreign_key "conversations", "teams"
+  add_foreign_key "data_imports", "accounts"
   add_foreign_key "feedback_contacts", "contacts"
   add_foreign_key "feedback_contacts", "feedbacks"
   add_foreign_key "feedback_users", "feedbacks"
@@ -745,7 +748,6 @@ ActiveRecord::Schema.define(version: 2021_02_12_154240) do
   add_foreign_key "proposal_users", "proposals"
   add_foreign_key "proposal_users", "users"
   add_foreign_key "roadmap_items", "feedbacks"
-  add_foreign_key "data_imports", "accounts"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "accounts"

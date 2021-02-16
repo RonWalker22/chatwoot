@@ -12,7 +12,7 @@ class Feedbacks extends ApiClient {
 
   bulkDelete(data) {
     // eslint-disable-next-line no-undef
-    return axios.post(`${this.url}/bulk_destroy`, data);
+    return axios.delete(`${this.url}/bulk_destroy`, { data: data });
   }
 }
 
