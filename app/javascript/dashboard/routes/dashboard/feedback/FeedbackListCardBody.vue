@@ -41,10 +41,10 @@
       @click.exact="cardClick(feedback.id)"
       @click.shift="cardClickShift()"
     >
-      <h3>
-        {{ feedback.kind }}
-      </h3>
       <p>{{ feedback.title }}</p>
+      <p>
+        <span class="feedback-kind">{{ feedback.kind }}</span>
+      </p>
     </div>
   </div>
 </template>
@@ -290,5 +290,10 @@ h3 {
 
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+.feedback-kind {
+  font-size: $font-size-mini;
+  text-align: right;
 }
 </style>

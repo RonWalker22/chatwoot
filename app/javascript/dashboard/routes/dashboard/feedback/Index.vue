@@ -93,7 +93,6 @@ export default {
 @import '~dashboard/assets/scss/mixins';
 
 .feedback-list {
-  background: #f4f6fb;
   overflow-y: scroll;
 }
 

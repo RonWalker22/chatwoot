@@ -142,7 +142,6 @@ export default {
 }
 
 .feedback-list-container {
-  background: white;
   padding: 1.5em;
 }
 
