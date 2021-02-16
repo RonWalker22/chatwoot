@@ -8,6 +8,7 @@ export const getSidebarItems = accountId => ({
       'inbox_conversation',
       'conversation_through_inbox',
       'contacts_dashboard',
+      'notifications_dashboard',
       'settings_account_reports',
       'feedback_home',
       'feedback_item',
@@ -17,6 +18,9 @@ export const getSidebarItems = accountId => ({
       'profile_settings_index',
       'label_conversations',
       'conversations_through_label',
+      'team_conversations',
+      'conversations_through_team',
+      'notifications_index',
     ],
     menuItems: {
       assignedToMe: {
@@ -42,6 +46,13 @@ export const getSidebarItems = accountId => ({
         hasSubMenu: false,
         toState: frontendURL(`accounts/${accountId}/contacts`),
         toStateName: 'contacts_dashboard',
+      },
+      notifications: {
+        icon: 'ion-ios-bell',
+        label: 'NOTIFICATIONS',
+        hasSubMenu: false,
+        toState: frontendURL(`accounts/${accountId}/notifications`),
+        toStateName: 'notifications_dashboard',
       },
       report: {
         icon: 'ion-arrow-graph-up-right',

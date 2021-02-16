@@ -1,24 +1,13 @@
 <template>
-  <div
-    id="app"
-    class="woot-widget-wrap"
-    :class="{ 'is-mobile': isMobile, 'is-widget-right': !isLeftAligned }"
-  >
-    <router-view
-      :show-unread-view="showUnreadView"
-      :is-mobile="isMobile"
-      :grouped-messages="groupedMessages"
-      :unread-messages="unreadMessages"
-      :conversation-size="conversationSize"
-      :available-agents="availableAgents"
-      :has-fetched="hasFetched"
-      :conversation-attributes="conversationAttributes"
-      :unread-message-count="unreadMessageCount"
-      :is-left-aligned="isLeftAligned"
-      :hide-message-bubble="hideMessageBubble"
-      :show-popout-button="showPopoutButton"
-    />
-  </div>
+  <router
+    :show-unread-view="showUnreadView"
+    :is-mobile="isMobile"
+    :has-fetched="hasFetched"
+    :unread-message-count="unreadMessageCount"
+    :is-left-aligned="isLeftAligned"
+    :hide-message-bubble="hideMessageBubble"
+    :show-popout-button="showPopoutButton"
+  />
 </template>
 
 <script>
@@ -26,11 +15,15 @@ import { mapGetters, mapActions } from 'vuex';
 import { setHeader } from 'widget/helpers/axios';
 import { IFrameHelper } from 'widget/helpers/utils';
 
+import Router from './views/Router';
 import { getLocale } from './helpers/urlParamsHelper';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 
 export default {
   name: 'App',
+  components: {
+    Router,
+  },
   data() {
     return {
       showUnreadView: false,
@@ -42,12 +35,7 @@ export default {
   },
   computed: {
     ...mapGetters({
-      groupedMessages: 'conversation/getGroupedConversation',
-      unreadMessages: 'conversation/getUnreadTextMessages',
-      conversationSize: 'conversation/getConversationSize',
-      availableAgents: 'agent/availableAgents',
       hasFetched: 'agent/getHasFetched',
-      conversationAttributes: 'conversationAttributes/getConversationParams',
       unreadMessageCount: 'conversation/getUnreadMessageCount',
     }),
     isLeftAligned() {
@@ -57,10 +45,6 @@ export default {
     isIFrame() {
       return IFrameHelper.isIFrame();
     },
-  },
-  created() {
-    this.fetchOldFeedbacks(window.chatwootWebChannel.websiteToken);
-    this.fetchRoadmap(window.chatwootWebChannel.websiteToken);
   },
   mounted() {
     const { websiteToken, locale } = window.chatwootWebChannel;
@@ -83,8 +67,6 @@ export default {
     ...mapActions('appConfig', ['setWidgetColor']),
     ...mapActions('conversation', ['fetchOldConversations', 'setUserLastSeen']),
     ...mapActions('agent', ['fetchAvailableAgents']),
-    ...mapActions('feedback', ['fetchOldFeedbacks']),
-    ...mapActions('roadmap', ['fetchRoadmap']),
     scrollConversationToBottom() {
       const container = this.$el.querySelector('.conversation-wrap');
       container.scrollTop = container.scrollHeight;
