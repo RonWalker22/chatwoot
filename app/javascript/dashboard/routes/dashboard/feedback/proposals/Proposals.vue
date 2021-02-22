@@ -48,7 +48,7 @@
 
 <script>
 import Proposal from './Proposal.vue';
-import Comments from './Comments';
+import Comments from './comments/Comments';
 
 export default {
   components: {

@@ -136,8 +136,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import router from '../../../routes';
-import { frontendURL, feedbackUrl } from '../../../helper/URLHelper';
+import router from '../../../../routes';
+import { frontendURL, feedbackUrl } from '../../../../helper/URLHelper';
 
 export default {
   data() {

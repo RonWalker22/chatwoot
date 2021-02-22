@@ -51,8 +51,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import router from '../../../routes';
-import { frontendURL, feedbackUrl } from '../../../helper/URLHelper';
+import router from '../../../../routes';
+import { frontendURL, feedbackUrl } from '../../../../helper/URLHelper';
 
 export default {
   props: {

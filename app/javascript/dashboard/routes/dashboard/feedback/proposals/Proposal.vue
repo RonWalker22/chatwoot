@@ -109,8 +109,8 @@
 
 <script>
 import { mapActions } from 'vuex';
-import MoreActions from './MoreActions';
-import ProCons from './ProCons';
+import MoreActions from '../MoreActions';
+import ProCons from './proCons/ProCons';
 
 export default {
   components: {

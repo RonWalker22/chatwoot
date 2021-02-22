@@ -35,8 +35,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import FeedbackItem from './FeedbackItem';
-import FeedbackList from './FeedbackList';
+import FeedbackItem from './feedbackItem/FeedbackItem';
+import FeedbackList from './feedbackList/FeedbackList';
 import BulkEditToolbar from './BulkEditToolbar';
 import Spinner from 'shared/components/Spinner.vue';
 

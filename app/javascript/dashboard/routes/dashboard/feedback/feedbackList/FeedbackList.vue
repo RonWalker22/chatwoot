@@ -1,35 +1,37 @@
 <template>
-  <div class="feedback-list-container">
-    <div class="row title-row align-justify">
-      <div class="columns">
-        <div class="row">
-          <div class="column">
-            <h1 class="page-title">
-              Feedback
-            </h1>
-          </div>
-          <div class="column shrink">
-            <select
-              v-if="selectStatusOptions.length > 1"
-              v-model="selectStatus"
-              class="select-status"
-              @change="onFilterChange()"
-            >
-              <option
-                v-for="option in selectStatusOptions"
-                :key="option"
-                :value="option"
+  <div>
+    <div class="feedback-list-header">
+      <div class="row title-row align-justify">
+        <div class="columns">
+          <div class="row">
+            <div class="column">
+              <h1 class="page-title">
+                Feedback
+              </h1>
+            </div>
+            <div class="column shrink">
+              <select
+                v-if="selectStatusOptions.length > 1"
+                v-model="selectStatus"
+                class="select-status"
+                @change="onFilterChange()"
               >
-                {{ option }}
-              </option>
-            </select>
+                <option
+                  v-for="option in selectStatusOptions"
+                  :key="option"
+                  :value="option"
+                >
+                  {{ option }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="column shrink">
-        <NewFeedback />
+      <div class="row">
+        <div class="column shrink">
+          <NewFeedback />
+        </div>
       </div>
     </div>
     <div v-if="!uiFlags.fetchingList">
@@ -63,8 +65,8 @@ import { mapGetters, mapActions } from 'vuex';
 import Spinner from 'shared/components/Spinner.vue';
 import NewFeedback from './NewFeedback';
 import FeedbackListCards from './FeedbackListCards';
-import router from '../../../routes';
-import { frontendURL, feedbackUrl } from '../../../helper/URLHelper';
+import router from '../../../../routes';
+import { frontendURL, feedbackUrl } from '../../../../helper/URLHelper';
 
 export default {
   components: {
@@ -141,7 +143,7 @@ export default {
   background: transparent;
 }
 
-.feedback-list-container {
+.feedback-list-header {
   padding: 1.5em;
 }
 

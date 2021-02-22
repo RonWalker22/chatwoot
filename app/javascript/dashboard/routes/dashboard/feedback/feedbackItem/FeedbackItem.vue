@@ -28,9 +28,9 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import Proposals from './Proposals';
+import Proposals from '../proposals/Proposals';
 import Toolbar from './Toolbar';
-import NewSolution from './NewSolution.vue';
+import NewSolution from '../proposals/NewSolution';
 
 export default {
   components: {
