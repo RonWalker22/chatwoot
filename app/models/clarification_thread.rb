@@ -5,11 +5,13 @@
 #  id          :bigint           not null, primary key
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  account_id  :bigint           not null
 #  feedback_id :bigint           not null
 #  proposal_id :bigint
 #
 # Indexes
 #
+#  index_clarification_threads_on_account_id   (account_id)
 #  index_clarification_threads_on_feedback_id  (feedback_id)
 #  index_clarification_threads_on_proposal_id  (proposal_id)
 #
@@ -21,5 +23,6 @@
 class ClarificationThread < ApplicationRecord
   belongs_to :feedback
   belongs_to :proposal, optional: true
+  belongs_to :account
   has_many :clarification_posts, dependent: :destroy
 end

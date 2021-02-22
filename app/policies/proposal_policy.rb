@@ -1,4 +1,8 @@
 class ProposalPolicy < ApplicationPolicy
+  def create?
+    @account_user.agent? || @account_user.administrator?
+  end
+
   def update?
     own_record || @account_user.administrator?
   end
@@ -10,10 +14,6 @@ class ProposalPolicy < ApplicationPolicy
   private
 
   def own_record
-    !user_proposal && @user.id == @record.proposer.user_id
-  end
-
-  def user_proposal
-    @record.proposer_type == 'FeedbackContact'
+    @user.id == @record.user_id
   end
 end

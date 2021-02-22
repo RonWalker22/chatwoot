@@ -29,7 +29,4 @@ class FeedbackUser < ApplicationRecord
   validates :evaluation, inclusion: { in: EVALUATION_OPTIONS }
   belongs_to :feedback
   belongs_to :user
-  has_many :feedbacks, as: :requester, dependent: :nullify
-  has_many :proposals, as: :proposer, dependent: :nullify
-  has_many :clarification_posts, as: :author, dependent: :nullify
 end

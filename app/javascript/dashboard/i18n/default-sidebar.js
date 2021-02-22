@@ -36,7 +36,7 @@ export const getSidebarItems = accountId => ({
         icon: 'ion-loop',
         label: 'FEEDBACK',
         hasSubMenu: false,
-        toState: frontendURL(`accounts/${accountId}/feedback`),
+        toState: frontendURL(`accounts/${accountId}/feedbacks`),
         toolTip: 'General feedback, feature requests, and bug reports',
         toStateName: 'feedback_home',
       },

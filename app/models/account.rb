@@ -53,7 +53,10 @@ class Account < ApplicationRecord
   has_many :notification_settings, dependent: :destroy
   has_many :hooks, dependent: :destroy, class_name: 'Integrations::Hook'
   has_many :feedbacks, dependent: :destroy
-  has_many :roadmap_groups, dependent: :destroy
+  has_many :pro_cons, dependent: :destroy
+  has_many :clarification_posts, dependent: :destroy
+  has_many :clarification_threads, dependent: :destroy
+  has_many :proposals, dependent: :destroy
   has_many :working_hours, dependent: :destroy
   has_many :kbase_portals, dependent: :destroy, class_name: '::Kbase::Portal'
   has_many :kbase_categories, dependent: :destroy, class_name: '::Kbase::Category'

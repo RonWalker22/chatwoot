@@ -1,4 +1,8 @@
 class FeedbackUserPolicy < ApplicationPolicy
+  def create?
+    @account_user.agent? || @account_user.administrator?
+  end
+
   def update?
     own_record || @account_user.administrator?
   end

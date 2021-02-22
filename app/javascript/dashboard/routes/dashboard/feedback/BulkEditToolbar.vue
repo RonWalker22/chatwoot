@@ -84,6 +84,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { frontendURL, feedbackUrl } from '../../../helper/URLHelper';
+import router from '../../../routes';
 
 export default {
   data() {
@@ -153,6 +155,11 @@ export default {
         },
       });
       this.resetBulkEditCheckStatus();
+      this.$store.dispatch('feedback/resetSelectedFeedbackId');
+      const path = feedbackUrl({
+        accountId: this.accountId,
+      });
+      router.push({ path: frontendURL(path) });
     },
     updateTitle() {
       let payload = {

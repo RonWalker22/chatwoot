@@ -81,9 +81,9 @@ export default {
           feedback_user: {
             evaluation: kind,
           },
+          feedback_id: this.feedback.id,
         },
         id: this.feedback.feedback_user_id,
-        feedback_id: this.feedback.id,
       });
     },
   },

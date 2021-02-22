@@ -5,13 +5,13 @@ import Index from './Index';
 export default {
   routes: [
     {
-      path: frontendURL('accounts/:accountId/feedback'),
+      path: frontendURL('accounts/:accountId/feedbacks'),
       component: Index,
       name: 'feedback_home',
       roles: ['administrator', 'agent'],
     },
     {
-      path: frontendURL('accounts/:accountId/feedback/:feedback_id'),
+      path: frontendURL('accounts/:accountId/feedbacks/:feedback_id'),
       name: 'feedback_item',
       roles: ['administrator', 'agent'],
       component: Index,
@@ -20,7 +20,7 @@ export default {
       },
     },
     {
-      path: frontendURL('accounts/:accountId/label/:label/feedback'),
+      path: frontendURL('accounts/:accountId/label/:label/feedbacks'),
       name: 'label_feedback',
       roles: ['administrator', 'agent'],
       component: Index,
@@ -28,7 +28,7 @@ export default {
     },
     {
       path: frontendURL(
-        'accounts/:accountId/label/:label/feedback/:feedback_id'
+        'accounts/:accountId/label/:label/feedbacks/:feedback_id'
       ),
       name: 'feedback_through_label',
       roles: ['administrator', 'agent'],

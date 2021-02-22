@@ -93,7 +93,7 @@
             {{ proposal.date }}
           </span>
           <span v-if="voted" data-test-id="proposal-author">
-            by {{ proposal.proposer }}
+            by {{ proposal.user }}
           </span>
         </p>
       </div>
@@ -198,10 +198,10 @@ export default {
         payload: {
           proposal_user: {
             evaluation: kind,
-            proposal_id: this.proposal.id,
             id: this.proposal.proposal_user_id,
             voted: true,
           },
+          proposal_id: this.proposal.id,
         },
         proposalUser: this.checkProposalUser(),
         id: this.proposal.proposal_user_id,

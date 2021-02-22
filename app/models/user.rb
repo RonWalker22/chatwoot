@@ -84,7 +84,7 @@ class User < ApplicationRecord
 
   has_many :feedback_users, dependent: :destroy
   has_many :proposal_users, dependent: :destroy
-  has_many :pro_cons, through: :proposal_users
+  has_many :pro_cons
 
   has_many :clarification_posts, through: :feedback_users, dependent: :destroy
   has_many :proposals, through: :feedback_users

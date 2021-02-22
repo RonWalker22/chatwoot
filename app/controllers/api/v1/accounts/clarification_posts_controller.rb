@@ -1,23 +1,17 @@
 class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseController
   before_action :set_clarification_post, only: [:destroy]
-  before_action :check_authorization, except: [:create]
-  before_action :set_feedback, only: [:create]
+  before_action :check_authorization
 
   def create
-    find_feedback_user
-
-    post = ClarificationPost.new(clarification_post_params)
-    post.author = @feedback_user
+    post = Current.account.clarification_posts.new(clarification_post_params)
+    post.user = Current.user
 
     if post.save
-      user = post.author.user
-      name = user.display_name.presence ? user.display_name : user.name
-
       render json: {
-        feedback_id: post.author.feedback_id,
+        feedback_id: post.clarification_thread.feedback_id,
         post: {
           body: post.body,
-          author: name,
+          user: post.author_name,
           id: post.id,
           date: post.created_at.to_date,
           thread: post.clarification_thread_id
@@ -30,7 +24,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
   def destroy
     id = @clarification_post.id
-    feedback_id = @clarification_post.author.feedback_id
+    feedback_id = @clarification_post.clarification_thread.feedback_id
     @clarification_post.destroy
     render json: {
       feedback_id: feedback_id,
@@ -41,12 +35,11 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
   private
 
   def set_clarification_post
-    @clarification_post = ClarificationPost.find(params[:id])
+    @clarification_post = Current.account.clarification_posts.find(params[:id])
   end
 
   def clarification_post_params
     params.require(:clarification_post).permit(:body,
-                                               :id,
                                                :clarification_thread_id)
   end
 
@@ -54,16 +47,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
     params.permit(:feedback_id)
   end
 
-  def set_feedback
-    @feedback = Current.account.feedbacks.find(extra_parms['feedback_id'])
-  end
-
-  def find_feedback_user
-    @feedback_user = FeedbackUser.find_by user: Current.user,
-                                          feedback: @feedback
-  end
-
   def check_authorization
-    authorize(@clarification_post)
+    authorize(@clarification_post || ClarificationPost)
   end
 end

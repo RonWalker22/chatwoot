@@ -1,11 +1,12 @@
 class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseController
+  before_action :set_proposal
   before_action :set_proposal_user, only: [:update]
-  before_action :check_authorization, except: [:create]
+  before_action :check_authorization
 
   def create
     proposal_user = ProposalUser.new(proposal_user_params)
-    authorize(proposal_user)
     proposal_user.user = Current.user
+    proposal_user.proposal = @proposal
 
     if proposal_user.save
       render json: {
@@ -41,15 +42,18 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
 
   def proposal_user_params
     params.require('proposal_user').permit(:evaluation,
-                                           :proposal_id,
                                            :voted)
   end
 
   def set_proposal_user
-    @proposal_user = ProposalUser.find(params[:id])
+    @proposal_user = ProposalUser.find_by(id: params[:id], proposal: @proposal)
+  end
+
+  def set_proposal
+    @proposal = Current.account.proposals.find(params[:proposal_id])
   end
 
   def check_authorization
-    authorize(@proposal_user)
+    authorize(@proposal_user || ProposalUser)
   end
 end

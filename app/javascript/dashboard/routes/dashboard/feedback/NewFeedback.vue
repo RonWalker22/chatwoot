@@ -163,7 +163,11 @@ export default {
   methods: {
     ...mapActions('feedback', ['createFeedback']),
     CancelModal() {
-      let resetFeedback = {
+      this.show = false;
+      this.payload = this.resetFeedback();
+    },
+    resetFeedback() {
+      return {
         feedback: {
           title: '',
           kind: 'request',
@@ -172,8 +176,6 @@ export default {
         problem: '',
         solution: '',
       };
-      this.show = false;
-      this.payload = resetFeedback;
     },
     closeModal() {
       this.show = false;
@@ -207,6 +209,7 @@ export default {
     submitFeedback() {
       this.closeModal();
       this.createFeedback(this.getFeedbackArray()).then(feedback => {
+        this.payload = this.resetFeedback();
         this.$store.dispatch('feedback/setSelectedFeedbackId', feedback.id);
         const path = feedbackUrl({
           accountId: this.accountId,

@@ -2,43 +2,45 @@
 #
 # Table name: proposals
 #
-#  id            :bigint           not null, primary key
-#  details       :text             not null
-#  primary       :boolean          default(FALSE), not null
-#  proposer_type :string
-#  solution      :boolean          default(FALSE), not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  feedback_id   :bigint           not null
-#  proposer_id   :bigint
+#  id          :bigint           not null, primary key
+#  details     :text             not null
+#  primary     :boolean          default(FALSE), not null
+#  solution    :boolean          default(FALSE), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  account_id  :bigint           not null
+#  feedback_id :bigint           not null
+#  user_id     :bigint
 #
 # Indexes
 #
-#  index_proposals_on_feedback_id                    (feedback_id)
-#  index_proposals_on_proposer_type_and_proposer_id  (proposer_type,proposer_id)
+#  index_proposals_on_account_id   (account_id)
+#  index_proposals_on_feedback_id  (feedback_id)
+#  index_proposals_on_user_id      (user_id)
 #
 class Proposal < ApplicationRecord
   validates :details, presence: true, allow_blank: false
-  belongs_to :proposer, polymorphic: true
+  belongs_to :user, optional: true
   belongs_to :feedback
+  belongs_to :account
   has_one :clarification_thread, dependent: :destroy
   has_many :clarification_posts, through: :clarification_thread
   has_many :proposal_users, dependent: :destroy
-  has_many :pro_cons, through: :proposal_users
+  has_many :pro_cons, dependent: :destroy
 
   after_create :create_thread
 
   def proposer_name
-    proposer_type == 'FeedbackContact' ? proposer.contact.name : proposer.user.available_name
+    user ? user.available_name : ''
   end
 
   def extra_details
     find_proposal_user
     {
-      proposer: proposer_name,
+      user: proposer_name,
       thread: clarification_thread.id,
-      proposal_user_id: proposal_user_id,
       evaluation: proposal_evaluation,
+      proposal_user_id: proposal_user_id,
       score: proposal_score,
       pro_cons: format_pro_cons,
       date: created_at.strftime('%b %d %Y'),
@@ -53,7 +55,7 @@ class Proposal < ApplicationRecord
   end
 
   def create_thread
-    ClarificationThread.create feedback: feedback, proposal: self
+    ClarificationThread.create feedback: feedback, proposal: self, account: feedback.account
   end
 
   def proposal_evaluation
@@ -79,7 +81,7 @@ class Proposal < ApplicationRecord
   def format_pro_cons
     result = []
     pro_cons.each do |pro_con|
-      result.push pro_con.as_json.merge user_name: pro_con.user.available_name
+      result.push pro_con.as_json.merge user_name: pro_con.author_name
     end
     result
   end

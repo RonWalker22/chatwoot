@@ -1,10 +1,6 @@
 class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
-  before_action :set_feedback, only: [:update, :show]
-  before_action :check_authorization, except: [:create,
-                                               :index,
-                                               :show,
-                                               :bulk_update,
-                                               :bulk_destroy]
+  before_action :set_feedback, only: [:show]
+  before_action :check_authorization, except: [:index, :show]
 
   def index
     @feedbacks = feedbacks
@@ -18,22 +14,12 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def create
-    @feedback = Feedback.new(feedback_params)
-    @feedback.account = Current.account
-
-    if @feedback.save
-      render :create
-    else
-      render json: feedback.errors, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      @feedback = Current.account.feedbacks.new(feedback_params)
+      @feedback.user = Current.user
+      @feedback.save!
+      FeedbackUser.create user: Current.user, feedback: @feedback
     end
-  end
-
-  def update
-    @feedback.update!(feedback_params)
-  rescue ActiveRecord::RecordInvalid => e
-    render json: {
-      message: e.record.errors.full_messages.join(', ')
-    }, status: :unprocessable_entity
   end
 
   def bulk_update
@@ -69,8 +55,8 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   def format_proposals
     @proposals = @feedback.proposals.includes(
       :clarification_thread,
-      pro_cons: [:user],
-      proposer: [:feedback_contact, :feedback_user, :user, :contact]
+      :user,
+      pro_cons: [:user]
     ).order(:created_at)
     @proposals = @proposals.map do |proposal|
       proposal.as_json.merge(proposal.extra_details)
@@ -78,19 +64,14 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def set_posts
-    @posts = @feedback.clarification_posts.includes(author: [:feedback_contact, :feedback_user, :user, :contact]).order(:created_at)
+    @posts = @feedback.clarification_posts.includes(:user).order(:created_at)
     @posts = formate_posts(@posts)
   end
 
   def formate_posts(posts)
     posts.map do |post|
-      name = if post.author_type == 'FeedbackContact'
-               post.author.contact.name
-             else
-               post.author.user.available_name
-             end
       { body: post.body,
-        author: name,
+        user: post.author_name,
         id: post.id,
         date: post.created_at.strftime('%b %d %Y'),
         thread: post.clarification_thread_id }
@@ -118,6 +99,6 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def check_authorization
-    authorize(@feedback)
+    authorize(@feedback || Feedback)
   end
 end

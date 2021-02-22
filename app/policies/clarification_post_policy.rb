@@ -1,14 +1,6 @@
 class ClarificationPostPolicy < ApplicationPolicy
-  def index?
-    true
-  end
-
   def create?
-    true
-  end
-
-  def update?
-    own_record || @account_user.administrator?
+    @account_user.agent? || @account_user.administrator?
   end
 
   def destroy?
@@ -18,6 +10,6 @@ class ClarificationPostPolicy < ApplicationPolicy
   private
 
   def own_record
-    @user.clarification_posts.pluck(:id).include?(@record.id)
+    @user.id == @record.user_id
   end
 end

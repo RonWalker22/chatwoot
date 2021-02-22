@@ -51,7 +51,7 @@ describe('Feedback interactions with & without new Proposal', function() {
 
   it('edit feedback - start and cancel with button', function() {
     cy.login();
-    cy.visit('/app/accounts/1/feedback/2');
+    cy.visit('/app/accounts/1/feedbacks/2');
     cy.RunEditFeedbackSpecs('btn');
   })
 
@@ -85,13 +85,13 @@ describe('Feedback interactions with & without new Proposal', function() {
 
   it('RunFeedbackCardSpecs', function() {
     cy.login();
-    cy.visit('/app/accounts/1/feedback/2');
+    cy.visit('/app/accounts/1/feedbacks/2');
     cy.RunFeedbackCardSpecs();
   })
 
   it('RunProConSpecs', function() {
     cy.login();
-    cy.visit('/app/accounts/1/feedback/4');
+    cy.visit('/app/accounts/1/feedbacks/4');
     cy.RunProConSpecs();
   })
 })

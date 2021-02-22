@@ -3,7 +3,7 @@
     <div class="media-object">
       <div class="media-object-section">
         <h6 data-test-id="proposal-comment-author">
-          {{ post.author }}
+          {{ post.user }}
         </h6>
       </div>
       <div class="media-object-section">

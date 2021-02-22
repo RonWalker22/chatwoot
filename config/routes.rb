@@ -32,9 +32,9 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
-          resources :feedbacks, only: [:create, :index, :update, :show] do
+          resources :feedbacks, only: [:create, :index, :show] do
             collection do
-              post :bulk_update
+              patch :bulk_update
               delete :bulk_destroy
             end
           end
@@ -150,8 +150,6 @@ Rails.application.routes.draw do
       resources :clarification_posts, only: [:show, :create]
 
       resources :feedback_contacts, only: [:index, :create, :destroy]
-
-      resources :roadmaps, only: [:index]
 
       resource :profile, only: [:show, :update]
       resource :notification_subscriptions, only: [:create]

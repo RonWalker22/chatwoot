@@ -71,57 +71,36 @@ unless Rails.env.production?
     role: :agent
   )
 
-  InboxMember.create!(user: agent_one, inbox: inbox)
+  InboxMember.create!(user_id: agent_one.id, inbox: inbox)
 
   # - + - feedback - + -
 
   feedback_one = Feedback.create!(
     title: 'Patreon integration - Give IK4 credit for patreon pledges',
     inbox_id: inbox.id,
-    account_id: web_widget.account.id,
-    status: 'review'
+    account_id: account.id,
+    status: 'review',
+    user_id: agent_one.id
   )
   feedback_two = Feedback.create!(
     title: 'Import feature requests from other platforms',
     inbox_id: inbox.id,
-    account_id: web_widget.account.id,
-    status: 'review'
+    account_id: account.id,
+    status: 'review',
+    user_id: agent_one.id
   )
   feedback_three = Feedback.create!(
     title: 'Support organizations with multiple products',
     inbox_id: inbox.id,
-    account_id: web_widget.account.id,
-    status: 'review'
+    account_id: account.id,
+    status: 'review',
+    user_id: agent_one.id
   )
 
-  feedback_contact_one = FeedbackContact.create! contact_id: contact.id,
-                                                 feedback_id: feedback_one.id,
-                                                 support_level: 600,
-                                                 prefund_level: 600,
-                                                 supporter: true
-
-  feedback_one.update(requester: feedback_contact_one)
-
-  feedback_contact_two = FeedbackContact.create! contact_id: contact.id,
-                                                 feedback_id: feedback_two.id,
-                                                 support_level: 900,
-                                                 prefund_level: 900,
-                                                 supporter: true
-
-  feedback_two.update(requester: feedback_contact_two)
-
-  feedback_contact_three = FeedbackContact.create! contact_id: contact.id,
-                                                   feedback_id:
-                                                    feedback_three.id,
-                                                   support_level: 200,
-                                                   prefund_level: 200,
-                                                   supporter: true
-
-  feedback_three.update(requester: feedback_contact_three)
-
   Proposal.create!(
-    proposer: feedback_contact_one,
-    feedback: feedback_contact_one.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_one,
+    account_id: account.id,
     details: "Because I have use the IK4 platform and patreon, some of my\
   supporters might transition from pledging monthly to one-time contributions.\
   I do not want to discourage any of my supporters from canceling or lowering\
@@ -131,53 +110,60 @@ unless Rails.env.production?
   )
 
   Proposal.create!(
-    proposer: feedback_contact_one,
-    feedback: feedback_contact_one.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_one,
+    account_id: account.id,
     details: 'Provide patreon supporters with dollar for dollar credit for each pledge.',
     primary: true,
     solution: true
   )
 
   2.times do
-    Proposal.create proposer: feedback_contact_one,
-                    feedback: feedback_contact_one.feedback,
+    Proposal.create user_id: agent_one.id,
+                    feedback: feedback_one,
+                    account_id: account.id,
                     details: Faker::Lorem.paragraph(sentence_count: 15),
                     primary: false,
                     solution: true
 
     ClarificationPost.create(
-      author: feedback_contact_two,
+      user_id: agent_one.id,
+      account_id: account.id,
       body: Faker::Lorem.paragraph(sentence_count: 3),
-      clarification_thread: feedback_two.clarification_thread
+      clarification_thread_id: feedback_two.clarification_thread.id
     )
   end
 
   Proposal.create!(
-    proposer: feedback_contact_two,
-    feedback: feedback_contact_two.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_two,
+    account_id: account.id,
     details: 'I am transitioning from another platform and have a lot of data from their that I can’t utilize.',
     primary: true,
     solution: false
   )
   Proposal.create!(
-    proposer: feedback_contact_two,
-    feedback: feedback_contact_two.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_two,
+    account_id: account.id,
     details: 'Add the ability to import feedback from other platforms.',
     primary: true,
     solution: true
   )
 
   Proposal.create!(
-    proposer: feedback_contact_three,
-    feedback: feedback_contact_three.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_three,
+    account_id: account.id,
     details: 'Switching between different organization accounts in order to manage multiple products is time consuming.',
     primary: true,
     solution: false
   )
 
   proposal_one = Proposal.create!(
-    proposer: feedback_contact_three,
-    feedback: feedback_contact_three.feedback,
+    user_id: agent_one.id,
+    feedback: feedback_three,
+    account_id: account.id,
     details: 'Allow each organization to have multiple products and associate
     customers and feature request to individual products instead of the
     organization. This way I don’t have to sign in and out of my account to
@@ -187,12 +173,13 @@ unless Rails.env.production?
   )
 
   ClarificationPost.create(
-    author: feedback_contact_two,
+    user_id: agent_one.id,
+    account_id: account.id,
     body: Faker::Lorem.paragraph(sentence_count: 3),
-    clarification_thread: proposal_one.clarification_thread
+    clarification_thread_id: proposal_one.clarification_thread.id
   )
 
-  proposal_user_one = ProposalUser.create(
+  ProposalUser.create(
     proposal: proposal_one,
     user: User.first
   )
@@ -203,7 +190,9 @@ unless Rails.env.production?
     Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
     ",
     pro: true,
-    proposal_user: proposal_user_one
+    user_id: agent_one.id,
+    proposal_id: proposal_one,
+    account_id: account.id
   )
 
   ProCon.create(
@@ -212,90 +201,10 @@ unless Rails.env.production?
     Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
     ",
     pro: false,
-    proposal_user: proposal_user_one
+    user_id: agent_one.id,
+    proposal_id: proposal_one,
+    account_id: account.id
   )
 
-  10.times do |i|
-    FeedbackGroup.create! active: true,
-                          priority: i + 1,
-                          title: "Review Priority #{i + 1}"
-  end
-
   # - + - feedback - + -
-
-  # - + - roadmap - + -
-
-  solo_now = RoadmapGroup.create!(title: 'solo now',
-                                  status: 'now',
-                                  inbox: inbox,
-                                  account: web_widget.account,
-                                  due_by: Date.new(2007, 5, 12))
-
-  solo_next = RoadmapGroup.create!(title: 'solo next',
-                                   status: 'next',
-                                   inbox: inbox,
-                                   account: web_widget.account,
-                                   due_by: Date.new(2007, 5, 12))
-
-  solo_later = RoadmapGroup.create!(title: 'solo later',
-                                    status: 'later',
-                                    inbox: inbox,
-                                    account: web_widget.account,
-                                    due_by: Date.new(2007, 5, 12))
-
-  intergate_reddit = RoadmapItem.create!(title: 'Intergate Reddit',
-                                         body: 'Intergate the social media  network, Reddit',
-                                         due_by: Date.new(2007, 5, 12))
-
-  intergate_dropbox = RoadmapItem.create!(title: 'Intergate Dropbox',
-                                          body: 'Intergate cloud storage and file storage - Dropbox',
-                                          due_by: Date.new(2007, 5, 12))
-
-  intergate_slack = RoadmapItem.create!(title: 'Intergate Slack',
-                                        body: 'Intergate platform for team communication - Slack',
-                                        feedback: feedback_one,
-                                        due_by: Date.new(2007, 5, 12))
-
-  RoadmapGroupItem.create!(roadmap_group: solo_now,
-                           roadmap_item: intergate_reddit)
-
-  RoadmapGroupItem.create!(roadmap_group: solo_next,
-                           roadmap_item: intergate_dropbox)
-
-  RoadmapGroupItem.create!(roadmap_group: solo_later,
-                           roadmap_item: intergate_slack)
-
-  # - + - roadmap - + -
-
-  # - + - changelog - + -
-
-  solo_done = RoadmapGroup.create!(title: 'solo done',
-                                   status: 'done',
-                                   inbox: inbox,
-                                   account: web_widget.account,
-                                   due_by: Date.new(2007, 5, 12))
-
-  drag_drop = RoadmapItem.create!(title: 'Drag and Drop',
-                                  body: 'Enable drag and drop, copy & paste image/files in the agent input box.',
-                                  due_by: Date.new(2007, 5, 12))
-
-  brand_icon = RoadmapItem.create!(title: 'Brand Icon',
-                                   body: 'Ability to set brand icon as staff/ agent avatar',
-                                   due_by: Date.new(2007, 5, 12))
-
-  dialogflow_integration = RoadmapItem.create!(title: 'Dialogflow Integration',
-                                               body: 'Intergate Dialogflow  platform,',
-                                               feedback: feedback_two,
-                                               due_by: Date.new(2007, 5, 12))
-
-  RoadmapGroupItem.create!(roadmap_group: solo_done,
-                           roadmap_item: drag_drop)
-
-  RoadmapGroupItem.create!(roadmap_group: solo_done,
-                           roadmap_item: brand_icon)
-
-  RoadmapGroupItem.create!(roadmap_group: solo_done,
-                           roadmap_item: dialogflow_integration)
-
-  # - + - changelog - + -
 end

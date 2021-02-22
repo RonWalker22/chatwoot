@@ -17,12 +17,12 @@ export const conversationUrl = ({ accountId, activeInbox, id, label }) => {
 
 export const feedbackUrl = ({ accountId, id, label }) => {
   if (label) {
-    return `accounts/${accountId}/label/${label}/feedback/${id}`;
+    return `accounts/${accountId}/label/${label}/feedbacks/${id}`;
   }
   if (id) {
-    return `accounts/${accountId}/feedback/${id}`;
+    return `accounts/${accountId}/feedbacks/${id}`;
   }
-  return `accounts/${accountId}/feedback`;
+  return `accounts/${accountId}/feedbacks`;
 };
 
 export const accountIdFromPathname = pathname => {

@@ -1,22 +1,20 @@
 class Api::V1::Accounts::ProConsController < Api::V1::Accounts::BaseController
   before_action :set_pro_con, only: [:destroy, :update]
-  before_action :check_authorization, except: [:create]
-  before_action :find_proposal_user, only: [:create]
+  before_action :check_authorization
+  before_action :find_proposal, only: [:create]
 
   def create
-    pro_con = ProCon.new(pro_con_params)
-    pro_con.proposal_user = @proposal_user
+    pro_con = Current.account.pro_cons.new(pro_con_params)
+    pro_con.user = Current.user
+    pro_con.proposal = @proposal
+    pro_con.save!
 
-    if pro_con.save
-      render json: { id: pro_con.id,
-                     pro_con: pro_con.as_json.merge(
-                       user_name: pro_con.user.available_name
-                     ),
-                     feedback_id: pro_con.proposal.feedback_id,
-                     proposal_id: pro_con.proposal.id }
-    else
-      render json: pro_con.errors, status: :unprocessable_entity
-    end
+    render json: { id: pro_con.id,
+                   pro_con: pro_con.as_json.merge(
+                     user_name: pro_con.author_name
+                   ),
+                   feedback_id: pro_con.proposal.feedback_id,
+                   proposal_id: pro_con.proposal.id }
   end
 
   def destroy
@@ -49,25 +47,18 @@ class Api::V1::Accounts::ProConsController < Api::V1::Accounts::BaseController
   private
 
   def set_pro_con
-    @pro_con = ProCon.find(params[:id])
+    @pro_con = Current.account.pro_cons.find(params[:id])
   end
 
   def pro_con_params
     params.require(:pro_con).permit(:body, :pro, :id)
   end
 
-  def create_proposal_user
-    @proposal_user = ProposalUser.create(user: Current.user,
-                                         proposal_id: params[:proposal_id])
-  end
-
-  def find_proposal_user
-    @proposal_user = ProposalUser.find_by(user: Current.user,
-                                          proposal_id: params[:proposal_id])
-    @proposal_user || create_proposal_user
+  def find_proposal
+    @proposal = Current.account.proposals.find(params[:proposal_id])
   end
 
   def check_authorization
-    authorize(@pro_con)
+    authorize(@pro_con || ProCon)
   end
 end

@@ -1,18 +1,18 @@
 class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   before_action :set_proposal, only: [:destroy, :update]
-  before_action :check_authorization, except: [:create]
+  before_action :check_authorization
   before_action :set_feedback, only: [:create]
   before_action :find_feedback_user, only: [:create]
 
   def create
-    proposal = Proposal.new(proposal_params)
-    proposal.proposer = @feedback_user
-    proposal.primary = false
+    ActiveRecord::Base.transaction do
+      proposal = Current.account.proposals.new(proposal_params)
+      proposal.user = Current.user
+      proposal.primary = false
+      proposal.save!
+      ProposalUser.create(user: Current.user, proposal: proposal)
 
-    if proposal.save
       render json: proposal.as_json.merge(proposal.extra_details)
-    else
-      render json: proposal.errors, status: :unprocessable_entity
     end
   end
 
@@ -40,7 +40,7 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   private
 
   def set_proposal
-    @proposal = Proposal.find(params[:id])
+    @proposal = Current.account.proposals.find(params[:id])
   end
 
   def proposal_params
@@ -66,6 +66,6 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   end
 
   def check_authorization
-    authorize(@proposal)
+    authorize(@proposal || Proposal)
   end
 end

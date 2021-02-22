@@ -1,12 +1,10 @@
 class Api::V1::Accounts::FeedbackUsersController < Api::V1::Accounts::BaseController
+  before_action :set_feedback
   before_action :set_feedback_user, only: [:update]
-  before_action :check_authorization, except: [:create]
+  before_action :check_authorization
 
   def create
-    feedback_user = FeedbackUser.new(
-      feedback_id: params[:feedback_id],
-      user: Current.user
-    )
+    feedback_user = FeedbackUser.new feedback: @feedback, user: Current.user
     if feedback_user.save
       render json: { id: feedback_user.id }
     else
@@ -31,21 +29,27 @@ class Api::V1::Accounts::FeedbackUsersController < Api::V1::Accounts::BaseContro
   private
 
   def feedback_user_params
-    params.require('feedback_user').permit(:evaluation, :feedback_user_id, :feedback_id)
+    params.require('feedback_user').permit(:evaluation)
+  end
+
+  def set_feedback
+    @feedback = Current.account.feedbacks.find(params[:feedback_id])
   end
 
   def set_feedback_user
-    @feedback_user = FeedbackUser.find(params[:id]) || create_feedback_user
+    @feedback_user = FeedbackUser.find_by(feedback: @feedback,
+                                          id: params[:id]) ||
+                     create_feedback_user
   end
 
   def create_feedback_user
-    return unless params[:feedback_id]
+    return unless @feedback
 
     FeedbackUser.create user: Current.user,
-                        feedback: FeedbackUser.find(params[:feedback_id])
+                        feedback: @feedback
   end
 
   def check_authorization
-    authorize(@feedback_user)
+    authorize(@feedback_user || FeedbackUser)
   end
 end

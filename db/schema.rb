@@ -191,20 +191,23 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "clarification_posts", force: :cascade do |t|
     t.text "body", null: false
-    t.string "author_type"
-    t.bigint "author_id"
+    t.bigint "user_id"
+    t.bigint "account_id", null: false
     t.bigint "clarification_thread_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["author_type", "author_id"], name: "index_clarification_posts_on_author_type_and_author_id"
+    t.index ["account_id"], name: "index_clarification_posts_on_account_id"
     t.index ["clarification_thread_id"], name: "index_clarification_posts_on_clarification_thread_id"
+    t.index ["user_id"], name: "index_clarification_posts_on_user_id"
   end
 
   create_table "clarification_threads", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "proposal_id"
+    t.bigint "account_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_clarification_threads_on_account_id"
     t.index ["feedback_id"], name: "index_clarification_threads_on_feedback_id"
     t.index ["proposal_id"], name: "index_clarification_threads_on_proposal_id"
   end
@@ -302,27 +305,6 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
-  create_table "feedback_contacts", force: :cascade do |t|
-    t.bigint "feedback_id", null: false
-    t.bigint "contact_id", null: false
-    t.integer "prefund_level", default: 0, null: false
-    t.integer "support_level", default: 0, null: false
-    t.boolean "supporter", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["contact_id"], name: "index_feedback_contacts_on_contact_id"
-    t.index ["feedback_id", "contact_id"], name: "index_feedback_contacts_on_feedback_id_and_contact_id", unique: true
-    t.index ["feedback_id"], name: "index_feedback_contacts_on_feedback_id"
-  end
-
-  create_table "feedback_groups", force: :cascade do |t|
-    t.string "title"
-    t.integer "priority"
-    t.boolean "active"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "feedback_users", force: :cascade do |t|
     t.bigint "feedback_id", null: false
     t.bigint "user_id", null: false
@@ -336,8 +318,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "feedbacks", force: :cascade do |t|
     t.string "title", null: false
-    t.string "requester_type"
-    t.bigint "requester_id"
+    t.bigint "user_id"
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
     t.bigint "feedback_group_id"
@@ -348,7 +329,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
     t.index ["feedback_group_id"], name: "index_feedbacks_on_feedback_group_id"
     t.index ["inbox_id"], name: "index_feedbacks_on_inbox_id"
-    t.index ["requester_type", "requester_id"], name: "index_feedbacks_on_requester_type_and_requester_id"
+    t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
 
   create_table "inbox_members", id: :serial, force: :cascade do |t|
@@ -537,11 +518,15 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "pro_cons", force: :cascade do |t|
     t.text "body", null: false
-    t.bigint "proposal_user_id", null: false
+    t.bigint "user_id"
+    t.bigint "account_id", null: false
+    t.bigint "proposal_id", null: false
     t.boolean "pro", default: true, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["proposal_user_id"], name: "index_pro_cons_on_proposal_user_id"
+    t.index ["account_id"], name: "index_pro_cons_on_account_id"
+    t.index ["proposal_id"], name: "index_pro_cons_on_proposal_id"
+    t.index ["user_id"], name: "index_pro_cons_on_user_id"
   end
 
   create_table "proposal_users", force: :cascade do |t|
@@ -557,50 +542,17 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   end
 
   create_table "proposals", force: :cascade do |t|
-    t.string "proposer_type"
-    t.bigint "proposer_id"
+    t.bigint "user_id"
     t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
     t.boolean "solution", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_proposals_on_feedback_id"
-    t.index ["proposer_type", "proposer_id"], name: "index_proposals_on_proposer_type_and_proposer_id"
-  end
-
-  create_table "roadmap_group_items", force: :cascade do |t|
-    t.bigint "roadmap_item_id", null: false
-    t.bigint "roadmap_group_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["roadmap_group_id"], name: "index_roadmap_group_items_on_roadmap_group_id"
-    t.index ["roadmap_item_id", "roadmap_group_id"], name: "roadmap_item_roadmap_group_index", unique: true
-    t.index ["roadmap_item_id"], name: "index_roadmap_group_items_on_roadmap_item_id"
-  end
-
-  create_table "roadmap_groups", force: :cascade do |t|
-    t.string "title", null: false
-    t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
-    t.text "body"
-    t.date "due_by"
-    t.string "status", default: "later", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_roadmap_groups_on_account_id"
-    t.index ["inbox_id"], name: "index_roadmap_groups_on_inbox_id"
-  end
-
-  create_table "roadmap_items", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
-    t.date "due_by"
-    t.string "status", default: "later", null: false
-    t.bigint "feedback_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["feedback_id"], name: "index_roadmap_items_on_feedback_id", unique: true
+    t.index ["account_id"], name: "index_proposals_on_account_id"
+    t.index ["feedback_id"], name: "index_proposals_on_feedback_id"
+    t.index ["user_id"], name: "index_proposals_on_user_id"
   end
 
   create_table "super_admins", force: :cascade do |t|
@@ -631,11 +583,9 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
     t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
     t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
-    t.index ["taggable_type", "taggable_id"], name: "index_taggings_on_taggable_type_and_taggable_id"
     t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
     t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
     t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
-    t.index ["tagger_type", "tagger_id"], name: "index_taggings_on_tagger_type_and_tagger_id"
   end
 
   create_table "tags", id: :serial, force: :cascade do |t|
@@ -740,14 +690,10 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   add_foreign_key "conversations", "contact_inboxes"
   add_foreign_key "conversations", "teams"
   add_foreign_key "data_imports", "accounts"
-  add_foreign_key "feedback_contacts", "contacts"
-  add_foreign_key "feedback_contacts", "feedbacks"
   add_foreign_key "feedback_users", "feedbacks"
   add_foreign_key "feedback_users", "users"
-  add_foreign_key "pro_cons", "proposal_users"
   add_foreign_key "proposal_users", "proposals"
   add_foreign_key "proposal_users", "users"
-  add_foreign_key "roadmap_items", "feedbacks"
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "accounts"
