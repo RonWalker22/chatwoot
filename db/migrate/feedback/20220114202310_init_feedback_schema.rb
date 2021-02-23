@@ -6,7 +6,7 @@ class InitFeedbackSchema < ActiveRecord::Migration[6.0]
       t.references :inbox, null: false
       t.references :account, null: false
       t.references :feedback_group, null: true
-      t.string :status, null: false, default: 'review'
+      t.string :status, null: false, default: 'preview'
       t.string :kind, null: false, default: 'request'
 
       t.timestamps

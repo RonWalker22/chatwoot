@@ -21,17 +21,11 @@
 #  index_feedbacks_on_user_id            (user_id)
 #
 class Feedback < ApplicationRecord
-  STATUS_OPTIONS = %w[review
+  STATUS_OPTIONS = %w[preview
                       upcoming
-                      reject
+                      review
                       accept
-                      active
-                      preview
-                      now
-                      next
-                      later
-                      done
-                      completed].freeze
+                      reject].freeze
   validates :status, inclusion: { in: STATUS_OPTIONS }
   validates :title, presence: true, allow_blank: false
 
