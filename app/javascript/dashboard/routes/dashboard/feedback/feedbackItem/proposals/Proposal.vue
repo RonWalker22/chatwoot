@@ -88,18 +88,20 @@
     <div class="row align-right">
       <div class="column shrink">
         <p class="proposal-details">
-          proposed
-          <span data-test-id="proposal-date">
-            {{ proposal.date }}
-          </span>
-          <span v-if="voted" data-test-id="proposal-author">
-            by {{ proposal.user }}
+          <span v-if="showProposalDetails">
+            [ {{ proposalScoreDetails }} ]
           </span>
         </p>
       </div>
       <div class="column shrink">
         <p class="proposal-details">
-          <span v-if="isSolution && voted">({{ proposalScoreDetails }})</span>
+          proposed
+          <span data-test-id="proposal-date">
+            {{ proposal.date }}
+          </span>
+          <span v-if="showProposalDetails" data-test-id="proposal-author">
+            by {{ proposal.user }}
+          </span>
         </p>
       </div>
     </div>
@@ -108,8 +110,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import MoreActions from '../MoreActions';
+import { mapActions, mapGetters } from 'vuex';
+import MoreActions from '../../MoreActions';
 import ProCons from './proCons/ProCons';
 
 export default {
@@ -132,6 +134,24 @@ export default {
     },
   },
   computed: {
+    ...mapGetters({
+      bulkEditActive: 'feedback/getBulkEditActive',
+      selectedFeedbackId: 'feedback/getSelectedFeedbackId',
+      bulkSelectIndex: 'feedback/getBulkSelectIndex',
+      bulkEditCheckStatus: 'feedback/getBulkEditCheckStatus',
+      accountId: 'getCurrentAccountId',
+      currentRole: 'getCurrentRole',
+    }),
+    showProposalDetails() {
+      let finishStatus = ['accept', 'reject'];
+      if (finishStatus.includes(this.feedbackStatus)) {
+        return true;
+      }
+      return this.voted && this.isAdmin;
+    },
+    isAdmin() {
+      return this.currentRole === 'administrator';
+    },
     isProblem() {
       return !this.proposal.solution;
     },
@@ -157,7 +177,7 @@ export default {
       return this.proposal.voted;
     },
     proposalScore() {
-      return this.voted
+      return this.showProposalDetails
         ? this.proposal.score.up - this.proposal.score.down
         : 'vote';
     },
@@ -273,7 +293,7 @@ export default {
 }
 
 .downvote-proposal {
-  color: $color-woot;
+  color: #b22222;
 }
 
 .upvote-proposal {
@@ -295,6 +315,7 @@ h2 {
 
 .proposal-details {
   font-size: 1.3rem;
+  margin-left: 1rem;
 }
 
 .primary-checkmark {

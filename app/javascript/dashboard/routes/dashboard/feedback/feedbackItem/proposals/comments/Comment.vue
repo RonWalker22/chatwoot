@@ -23,7 +23,7 @@
 
 <script>
 import { mapActions } from 'vuex';
-import MoreActions from '../../MoreActions';
+import MoreActions from '../../../MoreActions';
 
 export default {
   components: {

@@ -55,7 +55,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { mixin as clickaway } from 'vue-clickaway';
-import NewProCon from './proposals/proCons/NewProCon';
+import NewProCon from './feedbackItem/proposals/proCons/NewProCon';
 
 export default {
   components: {
