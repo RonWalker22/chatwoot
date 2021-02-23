@@ -214,7 +214,7 @@ h3 {
 
 .ion-bug {
   font-size: 4rem;
-  color: #0072ce;
+  color: #277dce;
 }
 
 .icon-container {
@@ -227,7 +227,7 @@ h3 {
 .ion-checkmark-round {
   font-size: 2rem;
   padding-left: 0.6rem;
-  color: #0072ce;
+  color: #277dce;
 }
 
 .request-hand {
@@ -256,7 +256,7 @@ h3 {
   height: 4.5rem;
   width: 3.5rem;
   margin-top: 0.5rem;
-  border: #0072ce solid 4px;
+  border: #277dce solid 4px;
 }
 
 .checkbox__input {

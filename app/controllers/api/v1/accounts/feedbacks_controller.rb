@@ -16,6 +16,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   def create
     ActiveRecord::Base.transaction do
       @feedback = Current.account.feedbacks.new(feedback_params)
+      @feedback.status = 'upcoming' if Current.account_user.administrator?
       @feedback.user = Current.user
       @feedback.save!
       FeedbackUser.create user: Current.user, feedback: @feedback

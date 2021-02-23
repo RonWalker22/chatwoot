@@ -3,11 +3,9 @@
     <div class="feedback-list-header">
       <div class="row title-row align-justify">
         <div class="columns">
-          <div class="row">
-            <div class="column">
-              <h1 class="page-title">
-                Feedback
-              </h1>
+          <div class="row align-justify">
+            <div class="column shrink new-fb-column">
+              <NewFeedback />
             </div>
             <div class="column shrink">
               <select
@@ -29,8 +27,10 @@
         </div>
       </div>
       <div class="row">
-        <div class="column shrink">
-          <NewFeedback />
+        <div class="column">
+          <h1 class="page-title">
+            Feedback
+          </h1>
         </div>
       </div>
     </div>
@@ -95,7 +95,10 @@ export default {
     selectStatusOptions() {
       // eslint-disable-next-line vue/no-side-effects-in-computed-properties
       this.selectStatus = this.feedbackStatus.filter;
-      return this.feedbackStatus.options;
+      if (this.isAdmin) {
+        return this.feedbackStatus.options;
+      }
+      return this.statusTabs.map(tab => tab.options).flat();
     },
   },
   methods: {
@@ -135,8 +138,8 @@ export default {
 @import '~dashboard/assets/scss/variables';
 @import '~dashboard/assets/scss/mixins';
 
-.title-row {
-  margin-bottom: 1.5em;
+.new-fb-column {
+  margin-bottom: 1.5rem;
 }
 
 .conversations-list-container {
@@ -145,6 +148,7 @@ export default {
 
 .feedback-list-header {
   padding: 1.5em;
+  padding-bottom: 0;
 }
 
 .select-status {

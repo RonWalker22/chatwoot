@@ -216,6 +216,14 @@ export default {
           id: feedback.id,
         });
         this.$store.dispatch('feedback/fetchFeedbackItem', feedback.id);
+        this.$store.dispatch('feedback/setSelectedFeedbackId', feedback.id);
+        let index = feedback.status === 'preview' ? 0 : 1;
+        let filter = {
+          index: index,
+          value: feedback.status,
+        };
+        this.$store.dispatch('feedback/setSelectedStatusTabFilter', filter);
+        this.$store.dispatch('feedback/setSelectedStatusTabIndex', index);
         router.push({ path: frontendURL(path) });
       });
     },
