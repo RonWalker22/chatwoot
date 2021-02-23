@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_19_085719) do
+ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -322,7 +322,7 @@ ActiveRecord::Schema.define(version: 2021_02_19_085719) do
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
     t.bigint "feedback_group_id"
-    t.string "status", default: "review", null: false
+    t.string "status", default: "preview", null: false
     t.string "kind", default: "request", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

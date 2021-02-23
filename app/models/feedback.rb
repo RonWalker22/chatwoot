@@ -4,7 +4,7 @@
 #
 #  id                :bigint           not null, primary key
 #  kind              :string           default("request"), not null
-#  status            :string           default("review"), not null
+#  status            :string           default("preview"), not null
 #  title             :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
