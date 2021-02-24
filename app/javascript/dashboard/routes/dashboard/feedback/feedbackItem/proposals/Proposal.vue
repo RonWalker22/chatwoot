@@ -5,7 +5,6 @@
         <div class="columns">
           <h2 class="proposal-title">
             {{ proposalType }}
-            <span v-if="isSolution" class="solution-id"> #{{ index }}</span>
           </h2>
           <div v-if="isPrimarySolution" class="primary-checkmark">
             <i
@@ -302,10 +301,6 @@ export default {
 
 h2 {
   font-size: $font-size-medium;
-}
-
-.solution-id {
-  color: #6e767d;
 }
 
 .card-section {

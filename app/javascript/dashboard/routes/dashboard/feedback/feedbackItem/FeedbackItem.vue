@@ -17,9 +17,15 @@
           </div>
         </div>
       </div>
-      <h1 class="feedback-title text-center" data-test-id="feedback-title">
+      <h1 class="feedback-title" data-test-id="feedback-title">
         {{ feedback.title }}
+        <span class="feedback-id"> #{{ feedback.id }}</span>
       </h1>
+      <div>
+        <span class="label" :class="feedback.status + '-label'">
+          {{ feedback.status }}
+        </span>
+      </div>
       <Proposals :feedback="feedback" />
       <Toolbar :feedback="feedback" />
     </div>
@@ -127,5 +133,35 @@ h1 {
       color: #6e767d;
     }
   }
+}
+
+.feedback-id {
+  color: #6e767d;
+}
+
+.review-label,
+.upcoming-label,
+.accept-label,
+.preview-label,
+.reject-label {
+  font-size: 1.2rem;
+  color: #000;
+}
+
+.review-label {
+  background: #cae7ff;
+}
+
+.upcoming-label {
+  background: #e1e1e1;
+}
+.preview-label {
+  background: #fdda82;
+}
+.accept-label {
+  background: #83ff8a;
+}
+.reject-label {
+  background: #ffc3c3;
 }
 </style>
