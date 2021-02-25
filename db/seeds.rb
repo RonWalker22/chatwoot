@@ -11,16 +11,15 @@ end
 ## Seeds for Local Development
 unless Rails.env.production?
   SuperAdmin.create!(email: 'john@acme.inc', password: '123456')
+  user = User.new(name: 'John', email: 'john@acme.inc', password: '123456')
+  user.skip_confirmation!
+  user.save!
 
   account = Account.create!(
     name: 'Acme Inc',
     domain: 'support.chatwoot.com',
     support_email: ENV.fetch('MAILER_SENDER_EMAIL', 'accounts@chatwoot.com')
   )
-
-  user = User.new(name: 'John', email: 'john@acme.inc', password: '123456')
-  user.skip_confirmation!
-  user.save!
 
   AccountUser.create!(
     account_id: account.id,
@@ -97,6 +96,20 @@ unless Rails.env.production?
     user_id: agent_one.id
   )
 
+  feedback_four = Feedback.create!(
+    title: 'Hide vote results during the review phase',
+    inbox_id: inbox.id,
+    account_id: account.id,
+    status: 'review',
+    user_id: agent_one.id
+  )
+
+  FeedbackUser.create!(
+    feedback: feedback_four,
+    user: user,
+    evaluation: 'support'
+  )
+
   Proposal.create!(
     user_id: agent_one.id,
     feedback: feedback_one,
@@ -119,14 +132,14 @@ unless Rails.env.production?
   )
 
   2.times do
-    Proposal.create user_id: agent_one.id,
-                    feedback: feedback_one,
-                    account_id: account.id,
-                    details: Faker::Lorem.paragraph(sentence_count: 15),
-                    primary: false,
-                    solution: true
+    Proposal.create! user_id: agent_one.id,
+                     feedback: feedback_one,
+                     account_id: account.id,
+                     details: Faker::Lorem.paragraph(sentence_count: 15),
+                     primary: false,
+                     solution: true
 
-    ClarificationPost.create(
+    ClarificationPost.create!(
       user_id: agent_one.id,
       account_id: account.id,
       body: Faker::Lorem.paragraph(sentence_count: 3),
@@ -172,38 +185,139 @@ unless Rails.env.production?
     solution: true
   )
 
-  ClarificationPost.create(
+  Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_four,
+    account_id: account.id,
+    details: 'During the review process, agents may be negatively influenced by
+    the current vote results of the feedback items and solutions. Traditional
+    survey questions do not come with a real-time popularity score that
+    participants view before they complete each answer. Vote totals may
+    interfere with honest feedback.',
+    primary: false,
+    solution: false
+  )
+
+  proposal_two = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_four,
+    account_id: account.id,
+    details: 'For agents, hide the vote details until after the review phase.
+    For admins, hide the vote details until they evaluate the feedback and
+    solutions.',
+    primary: true,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_two,
+    user: user,
+    evaluation: 'support',
+    voted: true
+  )
+
+  ProCon.create!(
+    body: "This gives admins the opportunity to provide their initial opinions
+    without being influenced by the early votes.",
+    pro: true,
+    user: user,
+    proposal: proposal_two,
+    account: account
+  )
+
+  ProCon.create!(
+    body: "Because everyone can change their votes, the admins are not entirely
+    out of the influence of the early votes. ",
+    pro: false,
+    user: user,
+    proposal: proposal_two,
+    account: account
+  )
+
+  proposal_three = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_four,
+    account_id: account.id,
+    details: 'Hide vote details during the review phase',
+    primary: false,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_three,
+    user: user,
+    evaluation: 'reject',
+    voted: true
+  )
+
+  ProCon.create!(
+    body: "This would hide the total number of votes from admins. Admins use
+    the vote details to know when to end the review phase.",
+    pro: false,
+    user: user,
+    proposal: proposal_three,
+    account: account
+  )
+
+  proposal_four = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_four,
+    account_id: account.id,
+    details: 'Hide the vote results from agents until the feedback item
+    finishes the review phase. Allow the admins to view everything. ',
+    primary: false,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_four,
+    user: user,
+    evaluation: 'reject',
+    voted: true
+  )
+
+  ProCon.create!(
+    body: "This solution assumes we only want opinions from agents. Admins, who
+    will also be sharing their opinions, are not immune from the influence of
+    the early votes.",
+    pro: false,
+    user: user,
+    proposal: proposal_four,
+    account: account
+  )
+
+  ClarificationPost.create!(
     user_id: agent_one.id,
     account_id: account.id,
     body: Faker::Lorem.paragraph(sentence_count: 3),
     clarification_thread_id: proposal_one.clarification_thread.id
   )
 
-  ProposalUser.create(
+  ProposalUser.create!(
     proposal: proposal_one,
     user: User.first
   )
 
-  ProCon.create(
+  ProCon.create!(
     body: "Moluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
     quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
     Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
     ",
     pro: true,
-    user_id: agent_one.id,
-    proposal_id: proposal_one,
-    account_id: account.id
+    user: agent_one,
+    proposal: proposal_one,
+    account: account
   )
 
-  ProCon.create(
+  ProCon.create!(
     body: "Toluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
     quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
     Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
     ",
     pro: false,
-    user_id: agent_one.id,
-    proposal_id: proposal_one,
-    account_id: account.id
+    user: agent_one,
+    proposal: proposal_one,
+    account: account
   )
 
   # - + - feedback - + -
