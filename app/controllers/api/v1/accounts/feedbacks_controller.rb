@@ -1,5 +1,5 @@
 class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
-  before_action :set_feedback, only: [:show]
+  before_action :set_feedback, only: [:show, :update]
   before_action :check_authorization, except: [:index, :show]
 
   def index
@@ -23,22 +23,27 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
     end
   end
 
+  def update
+    @feedback.update!(title: feedback_params['title'])
+  end
+
   def bulk_update
-    @feedbacks = Current.account.feedbacks.find(params[:ids])
-    @feedbacks.each do |feedback|
-      feedback.update(feedback_params)
+    @feedbacks = Current.account.feedbacks.where(
+      display_id: params[:ids]
+    ).find_each do |fb|
+      fb.update(feedback_params)
     end
   end
 
   def bulk_destroy
-    feedbacks = Current.account.feedbacks.destroy_by(id: params[:ids])
-    render json: { ids: feedbacks.pluck(:id) }
+    feedbacks = Current.account.feedbacks.destroy_by(display_id: params[:ids])
+    render json: { ids: feedbacks.pluck(:display_id) }
   end
 
   private
 
   def set_feedback
-    @feedback = Current.account.feedbacks.find(params[:id])
+    @feedback = Current.account.feedbacks.find_by(display_id: params[:id])
   end
 
   def feedback_params

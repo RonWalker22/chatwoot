@@ -1,4 +1,4 @@
-json.id @feedback.id
+json.id @feedback.display_id
 json.title @feedback.title
 json.kind @feedback.kind
 json.account @feedback.account.id

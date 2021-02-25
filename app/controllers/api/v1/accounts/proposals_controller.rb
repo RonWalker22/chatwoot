@@ -18,7 +18,7 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
 
   def destroy
     id = @proposal.id
-    feedback_id = @proposal.feedback_id
+    feedback_id = @proposal.feedback.display_id
     @proposal.destroy
     render json: {
       feedback_id: feedback_id,
@@ -30,7 +30,7 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
     @proposal.update!(proposal_params)
     render json: { id: @proposal.id,
                    primary: @proposal.primary,
-                   feedback_id: @proposal.feedback_id }
+                   feedback_id: @proposal.feedback.display_id }
   rescue ActiveRecord::RecordInvalid => e
     render json: {
       message: e.record.errors.full_messages.join(', ')
@@ -51,7 +51,9 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   end
 
   def set_feedback
-    @feedback = Current.account.feedbacks.find(proposal_params[:feedback_id])
+    @feedback = Current.account.feedbacks.find_by(
+      display_id: proposal_params[:feedback_id]
+    )
   end
 
   def create_feedback_user

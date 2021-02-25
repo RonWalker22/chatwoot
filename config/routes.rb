@@ -32,7 +32,7 @@ Rails.application.routes.draw do
             resource :contact_merge, only: [:create]
           end
 
-          resources :feedbacks, only: [:create, :index, :show] do
+          resources :feedbacks, only: [:create, :index, :show, :update] do
             collection do
               patch :bulk_update
               delete :bulk_destroy

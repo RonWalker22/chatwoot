@@ -2,23 +2,23 @@
 #
 # Table name: feedbacks
 #
-#  id                :bigint           not null, primary key
-#  kind              :string           default("request"), not null
-#  status            :string           default("preview"), not null
-#  title             :string           not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  account_id        :bigint           not null
-#  feedback_group_id :bigint
-#  inbox_id          :bigint           not null
-#  user_id           :bigint
+#  id         :bigint           not null, primary key
+#  kind       :string           default("request"), not null
+#  status     :string           default("preview"), not null
+#  title      :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  account_id :bigint           not null
+#  display_id :integer          not null
+#  inbox_id   :bigint           not null
+#  user_id    :bigint
 #
 # Indexes
 #
-#  index_feedbacks_on_account_id         (account_id)
-#  index_feedbacks_on_feedback_group_id  (feedback_group_id)
-#  index_feedbacks_on_inbox_id           (inbox_id)
-#  index_feedbacks_on_user_id            (user_id)
+#  index_feedbacks_on_account_id                 (account_id)
+#  index_feedbacks_on_account_id_and_display_id  (account_id,display_id) UNIQUE
+#  index_feedbacks_on_inbox_id                   (inbox_id)
+#  index_feedbacks_on_user_id                    (user_id)
 #
 class Feedback < ApplicationRecord
   STATUS_OPTIONS = %w[preview
@@ -39,6 +39,8 @@ class Feedback < ApplicationRecord
 
   after_create :create_thread
 
+  after_commit :set_display_id, unless: :display_id?
+
   def requester_name
     user ? user.available_name : ''
   end
@@ -47,5 +49,14 @@ class Feedback < ApplicationRecord
 
   def create_thread
     ClarificationThread.create feedback: self, account: account
+  end
+
+  def set_display_id
+    reload
+  end
+
+  # creating db triggers
+  trigger.before(:insert).for_each(:row) do
+    "NEW.display_id := nextval('feedb_dpid_seq_' || NEW.account_id);"
   end
 end

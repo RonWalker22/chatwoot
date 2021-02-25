@@ -2,12 +2,13 @@ class InitFeedbackSchema < ActiveRecord::Migration[6.0]
   def change
     create_table :feedbacks do |t|
       t.string :title, null: false
+      t.integer :display_id, null: false
       t.references :user, null: true
       t.references :inbox, null: false
       t.references :account, null: false
-      t.references :feedback_group, null: true
       t.string :status, null: false, default: 'preview'
       t.string :kind, null: false, default: 'request'
+      t.index [:account_id, :display_id], name: 'index_feedbacks_on_account_id_and_display_id', unique: true
 
       t.timestamps
     end

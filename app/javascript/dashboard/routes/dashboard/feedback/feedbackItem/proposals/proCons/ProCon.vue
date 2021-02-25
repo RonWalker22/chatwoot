@@ -8,7 +8,7 @@
       <h5 data-test-id="pro-con-heading">
         {{ proCon.pro ? 'Pro' : 'Con' }}
       </h5>
-      <p data-test-id="pro-con-body">
+      <p class="pro-con-body" data-test-id="pro-con-body">
         {{ proCon.body }}
       </p>
     </div>
@@ -39,28 +39,30 @@ export default {
 
 .con,
 .pro {
-  padding-left: 2rem;
-  padding-top: 1rem;
+  padding: 1rem;
   box-shadow: -2px 2px 5px gainsboro;
 }
 
 .con {
-  border-left: 4px solid black;
   h5 {
-    color: black;
+    color: #22223e;
   }
 }
 
 .pro {
-  border-left: 4px solid $color-woot;
   h5 {
     color: $color-woot;
   }
 }
 
 .pro-con-row {
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
+
+.pro-con-body {
+  margin: 0;
+}
+
 h5 {
   padding: 0.5rem;
   font-size: 1.5rem;

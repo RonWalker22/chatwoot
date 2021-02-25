@@ -23,9 +23,7 @@
 class FeedbackUser < ApplicationRecord
   EVALUATION_OPTIONS = %w[reject
                           support
-                          undecided
-                          ready
-                          wait].freeze
+                          undecided].freeze
   validates :evaluation, inclusion: { in: EVALUATION_OPTIONS }
   belongs_to :feedback
   belongs_to :user

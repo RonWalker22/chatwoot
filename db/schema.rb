@@ -318,16 +318,16 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "feedbacks", force: :cascade do |t|
     t.string "title", null: false
+    t.integer "display_id", null: false
     t.bigint "user_id"
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
-    t.bigint "feedback_group_id"
     t.string "status", default: "preview", null: false
     t.string "kind", default: "request", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id", "display_id"], name: "index_feedbacks_on_account_id_and_display_id", unique: true
     t.index ["account_id"], name: "index_feedbacks_on_account_id"
-    t.index ["feedback_group_id"], name: "index_feedbacks_on_feedback_group_id"
     t.index ["inbox_id"], name: "index_feedbacks_on_inbox_id"
     t.index ["user_id"], name: "index_feedbacks_on_user_id"
   end
@@ -697,18 +697,29 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   add_foreign_key "team_members", "teams"
   add_foreign_key "team_members", "users"
   add_foreign_key "teams", "accounts"
-  create_trigger("accounts_after_insert_row_tr", :generated => true, :compatibility => 1).
-      on("accounts").
-      after(:insert).
-      for_each(:row) do
-    "execute format('create sequence IF NOT EXISTS conv_dpid_seq_%s', NEW.id);"
-  end
-
   create_trigger("conversations_before_insert_row_tr", :generated => true, :compatibility => 1).
       on("conversations").
       before(:insert).
       for_each(:row) do
     "NEW.display_id := nextval('conv_dpid_seq_' || NEW.account_id);"
+  end
+
+  create_trigger("accounts_after_insert_row_tr", :generated => true, :compatibility => 1).
+      on("accounts").
+      after(:insert).
+      for_each(:row) do
+    <<-SQL_ACTIONS
+execute format('create sequence IF NOT EXISTS conv_dpid_seq_%s', NEW.id);
+     execute format('create sequence IF NOT EXISTS feedb_dpid_seq_%s',
+      NEW.id);
+    SQL_ACTIONS
+  end
+
+  create_trigger("feedbacks_before_insert_row_tr", :generated => true, :compatibility => 1).
+      on("feedbacks").
+      before(:insert).
+      for_each(:row) do
+    "NEW.display_id := nextval('feedb_dpid_seq_' || NEW.account_id);"
   end
 
 end

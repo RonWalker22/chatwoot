@@ -1,6 +1,5 @@
 json.proposals @proposals
 json.posts @posts || []
-json.id @feedback.id
 json.title @feedback.title
 json.requester @feedback.requester_name
 json.account @feedback.account_id
@@ -9,3 +8,4 @@ json.status @feedback.status
 json.evaluation @evaluation if @evaluation
 json.feedback_user_id @feedback_user_id
 json.thread @feedback.clarification_thread.id
+json.id @feedback.display_id

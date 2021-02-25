@@ -11,7 +11,7 @@ RSpec.describe 'Proposals API', type: :request do
   let(:path_name) { 'proposals' }
   let(:id_target) { proposal.id }
   let(:post_params) do
-    { proposal: { details: 'test data', feedback_id: feedback.id } }
+    { proposal: { details: 'test data', feedback_id: feedback.display_id } }
   end
   let(:patch_params) do
     { proposal: { details: 'new test data' } }

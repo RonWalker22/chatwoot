@@ -13,13 +13,13 @@ class Api::V1::Accounts::ProConsController < Api::V1::Accounts::BaseController
                    pro_con: pro_con.as_json.merge(
                      user_name: pro_con.author_name
                    ),
-                   feedback_id: pro_con.proposal.feedback_id,
+                   feedback_id: pro_con.proposal.feedback.display_id,
                    proposal_id: pro_con.proposal.id }
   end
 
   def destroy
     id = @pro_con.id
-    feedback_id = @pro_con.proposal.feedback_id
+    feedback_id = @pro_con.proposal.feedback.display_id
     proposal_id = @pro_con.proposal.id
     if @pro_con.destroy
       render json: {
@@ -36,7 +36,7 @@ class Api::V1::Accounts::ProConsController < Api::V1::Accounts::BaseController
     @pro_con.update!(pro_con_params)
     render json: { id: @pro_con.id,
                    pro: @pro_con.pro,
-                   feedback_id: @pro_con.proposal.feedback_id,
+                   feedback_id: @pro_con.proposal.feedback.display_id,
                    proposal_id: @pro_con.proposal.id }
   rescue ActiveRecord::RecordInvalid => e
     render json: {

@@ -22,6 +22,10 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class ProposalUser < ApplicationRecord
+  EVALUATION_OPTIONS = %w[reject
+                          support
+                          undecided].freeze
+  validates :evaluation, inclusion: { in: EVALUATION_OPTIONS }
   belongs_to :proposal
   belongs_to :user
 end

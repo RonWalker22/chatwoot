@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe 'Feedbacks API', type: :request do
   include_context 'with fb authorization'
 
-  let!(:ids) { [feedback.id, feedback_two.id] }
+  let!(:ids) { [feedback.display_id, feedback_two.display_id] }
 
   let(:klass) { Feedback }
   let(:path_name) { 'feedbacks' }
-  let(:id_target) { feedback.id }
+  let(:id_target) { feedback.display_id }
   let(:post_params) do
     { feedback: { title: 'love',
                   inbox_id: inbox.id,

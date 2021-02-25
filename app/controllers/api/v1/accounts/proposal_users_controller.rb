@@ -11,7 +11,7 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
     if proposal_user.save
       render json: {
         evaluation: proposal_user.evaluation,
-        feedback_id: proposal_user.proposal.feedback.id,
+        feedback_id: proposal_user.proposal.feedback.display_id,
         proposal_user_id: proposal_user.id,
         proposal_id: proposal_user.proposal.id,
         id: proposal_user.proposal.id,
@@ -26,7 +26,7 @@ class Api::V1::Accounts::ProposalUsersController < Api::V1::Accounts::BaseContro
     @proposal_user.update!(proposal_user_params)
     render json: {
       evaluation: @proposal_user.evaluation,
-      feedback_id: @proposal_user.proposal.feedback.id,
+      feedback_id: @proposal_user.proposal.feedback.display_id,
       proposal_user_id: @proposal_user.id,
       proposal_id: @proposal_user.proposal.id,
       id: @proposal_user.proposal.id,

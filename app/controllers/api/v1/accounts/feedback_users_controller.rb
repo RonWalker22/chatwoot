@@ -16,9 +16,8 @@ class Api::V1::Accounts::FeedbackUsersController < Api::V1::Accounts::BaseContro
     @feedback_user.update!(feedback_user_params)
     render json: {
       evaluation: @feedback_user.evaluation,
-      feedback_id: @feedback_user.feedback.id,
       feedback_user_id: @feedback_user.id,
-      id: @feedback_user.feedback_id
+      id: @feedback_user.feedback.display_id
     }
   rescue ActiveRecord::RecordInvalid => e
     render json: {
@@ -33,7 +32,9 @@ class Api::V1::Accounts::FeedbackUsersController < Api::V1::Accounts::BaseContro
   end
 
   def set_feedback
-    @feedback = Current.account.feedbacks.find(params[:feedback_id])
+    @feedback = Current.account.feedbacks.find_by(
+      display_id: params[:feedback_id]
+    )
   end
 
   def set_feedback_user

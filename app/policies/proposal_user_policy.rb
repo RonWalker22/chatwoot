@@ -4,8 +4,6 @@ class ProposalUserPolicy < ApplicationPolicy
   end
 
   def update?
-    return false unless review_status
-
     own_record || @account_user.administrator?
   end
 
@@ -17,9 +15,5 @@ class ProposalUserPolicy < ApplicationPolicy
 
   def own_record
     @user.id == @record.user_id
-  end
-
-  def review_status
-    @record.proposal.feedback.status == 'review'
   end
 end

@@ -22,7 +22,6 @@ class FeedbackPolicy < ApplicationPolicy
   private
 
   def own_record
-    requester_type = @record.requester_type
-    requester_type == 'FeedbackUser' && @user.id == @record.requester.user_id
+    @user.id == @record.user_id
   end
 end

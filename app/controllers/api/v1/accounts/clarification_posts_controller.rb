@@ -8,7 +8,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
     if post.save
       render json: {
-        feedback_id: post.clarification_thread.feedback_id,
+        feedback_id: post.clarification_thread.feedback.display_id,
         post: {
           body: post.body,
           user: post.author_name,
@@ -24,7 +24,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
   def destroy
     id = @clarification_post.id
-    feedback_id = @clarification_post.clarification_thread.feedback_id
+    feedback_id = @clarification_post.clarification_thread.feedback.display_id
     @clarification_post.destroy
     render json: {
       feedback_id: feedback_id,
@@ -41,10 +41,6 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
   def clarification_post_params
     params.require(:clarification_post).permit(:body,
                                                :clarification_thread_id)
-  end
-
-  def extra_parms
-    params.permit(:feedback_id)
   end
 
   def check_authorization
