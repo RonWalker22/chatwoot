@@ -40,12 +40,6 @@
                         Feature Request
                       </option>
                       <option
-                        value="general"
-                        data-test-id="new-feedback-select-type-option-general"
-                      >
-                        General
-                      </option>
-                      <option
                         value="bug"
                         data-test-id="new-feedback-select-type-option-bug"
                       >
