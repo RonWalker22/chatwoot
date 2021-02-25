@@ -28,9 +28,8 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
   end
 
   def bulk_update
-    @feedbacks = Current.account.feedbacks.where(
-      display_id: params[:ids]
-    ).find_each do |fb|
+    @feedbacks = Current.account.feedbacks.where(display_id: params[:ids])
+    @feedbacks.find_each do |fb|
       fb.update(feedback_params)
     end
   end
