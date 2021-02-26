@@ -74,28 +74,6 @@ unless Rails.env.production?
 
   # - + - feedback - + -
 
-  feedback_one = Feedback.create!(
-    title: 'Patreon integration - Give IK4 credit for patreon pledges',
-    inbox_id: inbox.id,
-    account_id: account.id,
-    status: 'review',
-    user_id: agent_one.id
-  )
-  feedback_two = Feedback.create!(
-    title: 'Import feature requests from other platforms',
-    inbox_id: inbox.id,
-    account_id: account.id,
-    status: 'review',
-    user_id: agent_one.id
-  )
-  feedback_three = Feedback.create!(
-    title: 'Support organizations with multiple products',
-    inbox_id: inbox.id,
-    account_id: account.id,
-    status: 'review',
-    user_id: agent_one.id
-  )
-
   feedback_four = Feedback.create!(
     title: 'Hide vote results during the review phase',
     inbox_id: inbox.id,
@@ -106,83 +84,7 @@ unless Rails.env.production?
 
   FeedbackUser.create!(
     feedback: feedback_four,
-    user: user,
-    evaluation: 'support'
-  )
-
-  Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_one,
-    account_id: account.id,
-    details: "Because I have use the IK4 platform and patreon, some of my\
-  supporters might transition from pledging monthly to one-time contributions.\
-  I do not want to discourage any of my supporters from canceling or lowering\
-  their monthly pledges.",
-    primary: true,
-    solution: false
-  )
-
-  Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_one,
-    account_id: account.id,
-    details: 'Provide patreon supporters with dollar for dollar credit for each pledge.',
-    primary: true,
-    solution: true
-  )
-
-  2.times do
-    Proposal.create! user_id: agent_one.id,
-                     feedback: feedback_one,
-                     account_id: account.id,
-                     details: Faker::Lorem.paragraph(sentence_count: 15),
-                     primary: false,
-                     solution: true
-
-    ClarificationPost.create!(
-      user_id: agent_one.id,
-      account_id: account.id,
-      body: Faker::Lorem.paragraph(sentence_count: 3),
-      clarification_thread_id: feedback_two.clarification_thread.id
-    )
-  end
-
-  Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_two,
-    account_id: account.id,
-    details: 'I am transitioning from another platform and have a lot of data from their that I can’t utilize.',
-    primary: true,
-    solution: false
-  )
-  Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_two,
-    account_id: account.id,
-    details: 'Add the ability to import feedback from other platforms.',
-    primary: true,
-    solution: true
-  )
-
-  Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_three,
-    account_id: account.id,
-    details: 'Switching between different organization accounts in order to manage multiple products is time consuming.',
-    primary: true,
-    solution: false
-  )
-
-  proposal_one = Proposal.create!(
-    user_id: agent_one.id,
-    feedback: feedback_three,
-    account_id: account.id,
-    details: 'Allow each organization to have multiple products and associate
-    customers and feature request to individual products instead of the
-    organization. This way I don’t have to sign in and out of my account to
-    management multiple products that are tied to the same organization.',
-    primary: true,
-    solution: true
+    user: user
   )
 
   Proposal.create!(
@@ -205,15 +107,14 @@ unless Rails.env.production?
     details: 'For agents, hide the vote details until after the review phase.
     For admins, hide the vote details until they evaluate the feedback and
     solutions.',
-    primary: true,
+    primary: false,
     solution: true
   )
 
   ProposalUser.create!(
     proposal: proposal_two,
     user: user,
-    evaluation: 'support',
-    voted: true
+    voted: false
   )
 
   ProCon.create!(
@@ -245,9 +146,7 @@ unless Rails.env.production?
 
   ProposalUser.create!(
     proposal: proposal_three,
-    user: user,
-    evaluation: 'reject',
-    voted: true
+    user: user
   )
 
   ProCon.create!(
@@ -271,9 +170,7 @@ unless Rails.env.production?
 
   ProposalUser.create!(
     proposal: proposal_four,
-    user: user,
-    evaluation: 'reject',
-    voted: true
+    user: user
   )
 
   ProCon.create!(
@@ -285,40 +182,5 @@ unless Rails.env.production?
     proposal: proposal_four,
     account: account
   )
-
-  ClarificationPost.create!(
-    user_id: agent_one.id,
-    account_id: account.id,
-    body: Faker::Lorem.paragraph(sentence_count: 3),
-    clarification_thread_id: proposal_one.clarification_thread.id
-  )
-
-  ProposalUser.create!(
-    proposal: proposal_one,
-    user: User.first
-  )
-
-  ProCon.create!(
-    body: "Moluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
-    quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
-    Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
-    ",
-    pro: true,
-    user: agent_one,
-    proposal: proposal_one,
-    account: account
-  )
-
-  ProCon.create!(
-    body: "Toluptatum ea quam. Voluptatem dolorem tempore. Qui itaque
-    quisquam. Ad itaque atque. Iure dicta error. Illum occaecati vitae.
-    Architecto adipisci corporis. Animi occaecati quod. Voluptatem reiciendis qui.
-    ",
-    pro: false,
-    user: agent_one,
-    proposal: proposal_one,
-    account: account
-  )
-
   # - + - feedback - + -
 end
