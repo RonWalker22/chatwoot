@@ -26,7 +26,9 @@ class Feedback < ApplicationRecord
                       review
                       accept
                       reject].freeze
+  KIND_OPTIONS = %w[bug request].freeze
   validates :status, inclusion: { in: STATUS_OPTIONS }
+  validates :kind, inclusion: { in: KIND_OPTIONS }
   validates :title, presence: true, allow_blank: false
 
   belongs_to :user, optional: true
