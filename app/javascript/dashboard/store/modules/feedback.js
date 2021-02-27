@@ -72,10 +72,10 @@ export const getters = {
     }
     return feedbackItem;
   },
-  getPosts: ($state, $getters) => (feedbackId, threadId) => {
+  getPosts: ($state, $getters) => (feedbackId, proposalId) => {
     const feedback = $getters.getFeedbackItem(feedbackId);
     return feedback.posts.filter(post => {
-      return post.thread === threadId;
+      return post.proposal === proposalId;
     });
   },
   getUIFlags($state) {

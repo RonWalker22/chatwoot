@@ -105,9 +105,9 @@ export default {
       return {
         proposal: {
           details: this.proposal.details,
-          feedback_id: this.feedbackId,
           solution: true,
         },
+        feedback_id: this.feedbackId,
       };
     },
     submitProposal() {

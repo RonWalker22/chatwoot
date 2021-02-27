@@ -4,6 +4,7 @@
     :class="{
       'card-active': selectedFeedbackId == feedback.id && !bulkEditActive,
     }"
+    data-test-id="feedback-list-card"
   >
     <div class="column shrink" @click.shift="shiftClickCheckbox()">
       <label v-show="bulkEditActive" class="checkbox">

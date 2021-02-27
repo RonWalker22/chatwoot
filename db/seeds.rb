@@ -74,22 +74,22 @@ unless Rails.env.production?
 
   # - + - feedback - + -
 
-  feedback_four = Feedback.create!(
+  feedback_one = Feedback.create!(
     title: 'Hide vote results during the review phase',
     inbox_id: inbox.id,
     account_id: account.id,
     status: 'review',
-    user_id: agent_one.id
+    user_id: user.id
   )
 
   FeedbackUser.create!(
-    feedback: feedback_four,
+    feedback: feedback_one,
     user: user
   )
 
   Proposal.create!(
     user_id: user.id,
-    feedback: feedback_four,
+    feedback: feedback_one,
     account_id: account.id,
     details: 'During the review process, agents may be negatively influenced by
     the current vote results of the feedback items and solutions. Traditional
@@ -102,7 +102,7 @@ unless Rails.env.production?
 
   proposal_two = Proposal.create!(
     user_id: user.id,
-    feedback: feedback_four,
+    feedback: feedback_one,
     account_id: account.id,
     details: 'For agents, hide the vote details until after the review phase.
     For admins, hide the vote details until they evaluate the feedback and
@@ -137,7 +137,7 @@ unless Rails.env.production?
 
   proposal_three = Proposal.create!(
     user_id: user.id,
-    feedback: feedback_four,
+    feedback: feedback_one,
     account_id: account.id,
     details: 'Hide vote details during the review phase',
     primary: false,
@@ -160,7 +160,7 @@ unless Rails.env.production?
 
   proposal_four = Proposal.create!(
     user_id: user.id,
-    feedback: feedback_four,
+    feedback: feedback_one,
     account_id: account.id,
     details: 'Hide the vote results from agents until the feedback item
     finishes the review phase. Allow the admins to view everything. ',
@@ -181,6 +181,13 @@ unless Rails.env.production?
     user: user,
     proposal: proposal_four,
     account: account
+  )
+
+  ClarificationPost.create(
+    user: user,
+    account: account,
+    body: Faker::Lorem.paragraph(sentence_count: 3),
+    proposal: proposal_three
   )
   # - + - feedback - + -
 end

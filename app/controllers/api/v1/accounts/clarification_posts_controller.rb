@@ -8,13 +8,13 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
     if post.save
       render json: {
-        feedback_id: post.clarification_thread.feedback.display_id,
+        feedback_id: post.proposal.feedback.display_id,
         post: {
           body: post.body,
           user: post.author_name,
           id: post.id,
-          date: post.created_at.to_date,
-          thread: post.clarification_thread_id
+          date: post.created_at.strftime('%b %d %Y'),
+          proposal: post.proposal_id
         }
       }
     else
@@ -24,7 +24,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
   def destroy
     id = @clarification_post.id
-    feedback_id = @clarification_post.clarification_thread.feedback.display_id
+    feedback_id = @clarification_post.proposal.feedback.display_id
     @clarification_post.destroy
     render json: {
       feedback_id: feedback_id,
@@ -40,7 +40,7 @@ class Api::V1::Accounts::ClarificationPostsController < Api::V1::Accounts::BaseC
 
   def clarification_post_params
     params.require(:clarification_post).permit(:body,
-                                               :clarification_thread_id)
+                                               :proposal_id)
   end
 
   def check_authorization

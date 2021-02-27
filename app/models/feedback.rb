@@ -11,7 +11,7 @@
 #  account_id :bigint           not null
 #  display_id :integer          not null
 #  inbox_id   :bigint           not null
-#  user_id    :bigint
+#  user_id    :bigint           not null
 #
 # Indexes
 #
@@ -36,10 +36,7 @@ class Feedback < ApplicationRecord
   belongs_to :inbox
   belongs_to :account
   has_many :proposals, dependent: :destroy
-  has_one :clarification_thread, dependent: :destroy
-  has_many :clarification_posts, through: :clarification_thread
-
-  after_create :create_thread
+  has_many :clarification_posts, through: :proposals
 
   after_commit :set_display_id, unless: :display_id?
 
@@ -48,10 +45,6 @@ class Feedback < ApplicationRecord
   end
 
   private
-
-  def create_thread
-    ClarificationThread.create feedback: self, account: account
-  end
 
   def set_display_id
     reload

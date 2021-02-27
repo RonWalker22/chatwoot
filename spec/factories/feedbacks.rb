@@ -3,5 +3,6 @@ FactoryBot.define do
     title { 'test data' }
     inbox
     account
+    user
   end
 end

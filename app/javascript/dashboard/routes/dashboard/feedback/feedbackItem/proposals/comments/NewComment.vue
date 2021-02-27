@@ -50,8 +50,8 @@ export default {
     },
   },
   props: {
-    threadId: {
-      type: [Number],
+    proposalId: {
+      type: Number,
       default: 0,
     },
   },
@@ -68,7 +68,7 @@ export default {
         let payload = {
           clarification_post: {
             body: this.details,
-            clarification_thread_id: this.threadId,
+            proposal_id: this.proposalId,
           },
           feedback_id: this.$route.params.feedback_id,
         };

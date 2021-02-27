@@ -7,7 +7,7 @@
         :post="post"
         :index="index"
       />
-      <NewComment :thread-id="threadId" />
+      <NewComment :proposal-id="proposalId" />
     </div>
     <div v-else>
       <button
@@ -31,12 +31,7 @@ export default {
     NewComment,
   },
   props: {
-    mainBoard: {
-      type: Boolean,
-      requried: true,
-      default: false,
-    },
-    threadId: {
+    proposalId: {
       type: Number,
       required: true,
       default: 0,
@@ -56,7 +51,7 @@ export default {
     posts() {
       return this.$store.getters['feedback/getPosts'](
         this.feedbackId,
-        this.threadId
+        this.proposalId
       );
     },
     zeroComments() {

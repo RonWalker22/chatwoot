@@ -10,7 +10,7 @@
 #  updated_at  :datetime         not null
 #  account_id  :bigint           not null
 #  feedback_id :bigint           not null
-#  user_id     :bigint
+#  user_id     :bigint           not null
 #
 # Indexes
 #
@@ -23,12 +23,9 @@ class Proposal < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :feedback
   belongs_to :account
-  has_one :clarification_thread, dependent: :destroy
-  has_many :clarification_posts, through: :clarification_thread
+  has_many :clarification_posts, dependent: :destroy
   has_many :proposal_users, dependent: :destroy
   has_many :pro_cons, dependent: :destroy
-
-  after_create :create_thread
 
   def proposer_name
     user ? user.available_name : ''
@@ -38,7 +35,6 @@ class Proposal < ApplicationRecord
     find_proposal_user
     {
       user: proposer_name,
-      thread: clarification_thread.id,
       evaluation: proposal_evaluation,
       proposal_user_id: proposal_user_id,
       score: proposal_score,
@@ -52,10 +48,6 @@ class Proposal < ApplicationRecord
 
   def find_proposal_user
     @proposal_user = ProposalUser.find_by proposal: self, user: Current.user
-  end
-
-  def create_thread
-    ClarificationThread.create feedback: feedback, proposal: self, account: feedback.account
   end
 
   def proposal_evaluation

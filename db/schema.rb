@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_14_202310) do
+ActiveRecord::Schema.define(version: 2022_01_14_202320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -191,25 +191,14 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "clarification_posts", force: :cascade do |t|
     t.text "body", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.bigint "account_id", null: false
-    t.bigint "clarification_thread_id", null: false
+    t.bigint "proposal_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["account_id"], name: "index_clarification_posts_on_account_id"
-    t.index ["clarification_thread_id"], name: "index_clarification_posts_on_clarification_thread_id"
+    t.index ["proposal_id"], name: "index_clarification_posts_on_proposal_id"
     t.index ["user_id"], name: "index_clarification_posts_on_user_id"
-  end
-
-  create_table "clarification_threads", force: :cascade do |t|
-    t.bigint "feedback_id", null: false
-    t.bigint "proposal_id"
-    t.bigint "account_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_clarification_threads_on_account_id"
-    t.index ["feedback_id"], name: "index_clarification_threads_on_feedback_id"
-    t.index ["proposal_id"], name: "index_clarification_threads_on_proposal_id"
   end
 
   create_table "contact_inboxes", force: :cascade do |t|
@@ -319,7 +308,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   create_table "feedbacks", force: :cascade do |t|
     t.string "title", null: false
     t.integer "display_id", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.bigint "inbox_id", null: false
     t.bigint "account_id", null: false
     t.string "status", default: "preview", null: false
@@ -518,7 +507,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
 
   create_table "pro_cons", force: :cascade do |t|
     t.text "body", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.bigint "account_id", null: false
     t.bigint "proposal_id", null: false
     t.boolean "pro", default: true, null: false
@@ -542,7 +531,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   end
 
   create_table "proposals", force: :cascade do |t|
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.bigint "feedback_id", null: false
     t.text "details", null: false
     t.boolean "primary", default: false, null: false
@@ -682,9 +671,9 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
   add_foreign_key "account_users", "accounts"
   add_foreign_key "account_users", "users"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "clarification_posts", "clarification_threads"
-  add_foreign_key "clarification_threads", "feedbacks"
-  add_foreign_key "clarification_threads", "proposals"
+  add_foreign_key "clarification_posts", "accounts"
+  add_foreign_key "clarification_posts", "proposals"
+  add_foreign_key "clarification_posts", "users"
   add_foreign_key "contact_inboxes", "contacts"
   add_foreign_key "contact_inboxes", "inboxes"
   add_foreign_key "conversations", "contact_inboxes"
@@ -709,7 +698,7 @@ ActiveRecord::Schema.define(version: 2022_01_14_202310) do
       after(:insert).
       for_each(:row) do
     <<-SQL_ACTIONS
-execute format('create sequence IF NOT EXISTS conv_dpid_seq_%s', NEW.id);
+  execute format('create sequence IF NOT EXISTS conv_dpid_seq_%s', NEW.id);
      execute format('create sequence IF NOT EXISTS feedb_dpid_seq_%s',
       NEW.id);
     SQL_ACTIONS

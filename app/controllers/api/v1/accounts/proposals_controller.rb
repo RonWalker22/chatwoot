@@ -2,12 +2,12 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
   before_action :set_proposal, only: [:destroy, :update]
   before_action :check_authorization
   before_action :set_feedback, only: [:create]
-  before_action :find_feedback_user, only: [:create]
 
   def create
     ActiveRecord::Base.transaction do
       proposal = Current.account.proposals.new(proposal_params)
       proposal.user = Current.user
+      proposal.feedback = @feedback
       proposal.primary = false
       proposal.save!
       ProposalUser.create(user: Current.user, proposal: proposal)
@@ -45,26 +45,14 @@ class Api::V1::Accounts::ProposalsController < Api::V1::Accounts::BaseController
 
   def proposal_params
     params.require(:proposal).permit(:details,
-                                     :feedback_id,
                                      :primary,
                                      :solution)
   end
 
   def set_feedback
     @feedback = Current.account.feedbacks.find_by(
-      display_id: proposal_params[:feedback_id]
+      display_id: params[:feedback_id]
     )
-  end
-
-  def create_feedback_user
-    @feedback_user = FeedbackUser.create user: Current.user,
-                                         feedback: @feedback
-  end
-
-  def find_feedback_user
-    @feedback_user = FeedbackUser.find_by user: Current.user,
-                                          feedback: @feedback
-    @feedback_user || create_feedback_user
   end
 
   def check_authorization

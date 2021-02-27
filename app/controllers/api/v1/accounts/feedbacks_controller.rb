@@ -59,7 +59,6 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
 
   def format_proposals
     @proposals = @feedback.proposals.includes(
-      :clarification_thread,
       :user,
       pro_cons: [:user]
     ).order(:created_at)
@@ -79,7 +78,7 @@ class Api::V1::Accounts::FeedbacksController < Api::V1::Accounts::BaseController
         user: post.author_name,
         id: post.id,
         date: post.created_at.strftime('%b %d %Y'),
-        thread: post.clarification_thread_id }
+        proposal: post.proposal_id }
     end
   end
 

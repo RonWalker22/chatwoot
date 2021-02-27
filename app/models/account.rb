@@ -55,7 +55,6 @@ class Account < ApplicationRecord
   has_many :feedbacks, dependent: :destroy
   has_many :pro_cons, dependent: :destroy
   has_many :clarification_posts, dependent: :destroy
-  has_many :clarification_threads, dependent: :destroy
   has_many :proposals, dependent: :destroy
   has_many :working_hours, dependent: :destroy
   has_many :kbase_portals, dependent: :destroy, class_name: '::Kbase::Portal'

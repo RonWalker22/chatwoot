@@ -10,8 +10,7 @@
           :feedback-status="feedback.status"
         >
           <Comments
-            :thread-id="proposal.thread"
-            :main-board="false"
+            :proposal-id="proposal.id"
             :feedback-id="proposal.feedback_id"
           />
         </Proposal>
@@ -23,8 +22,7 @@
           :feedback-status="feedback.status"
         >
           <Comments
-            :thread-id="proposal.thread"
-            :main-board="false"
+            :proposal-id="proposal.id"
             :feedback-id="proposal.feedback_id"
           />
         </Proposal>
@@ -36,8 +34,7 @@
           :feedback-status="feedback.status"
         >
           <Comments
-            :thread-id="proposal.thread"
-            :main-board="false"
+            :proposal-id="proposal.id"
             :feedback-id="proposal.feedback_id"
           />
         </Proposal>

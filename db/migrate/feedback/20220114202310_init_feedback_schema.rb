@@ -3,7 +3,7 @@ class InitFeedbackSchema < ActiveRecord::Migration[6.0]
     create_table :feedbacks do |t|
       t.string :title, null: false
       t.integer :display_id, null: false
-      t.references :user, null: true
+      t.references :user, null: false
       t.references :inbox, null: false
       t.references :account, null: false
       t.string :status, null: false, default: 'preview'
@@ -13,7 +13,7 @@ class InitFeedbackSchema < ActiveRecord::Migration[6.0]
       t.timestamps
     end
     create_table :proposals do |t|
-      t.references :user, null: true
+      t.references :user, null: false
       t.references :feedback, null: false
       t.text :details, null: false
       t.boolean :primary, default: false, null: false
@@ -30,24 +30,17 @@ class InitFeedbackSchema < ActiveRecord::Migration[6.0]
       t.timestamps
       t.index [:proposal_id, :user_id], name: 'index_proposal_user_uniqueness', unique: true
     end
-    create_table :clarification_threads do |t|
-      t.references :feedback, null: false, foreign_key: true
-      t.references :proposal, null: true, foreign_key: true
-      t.references :account, null: false
-
-      t.timestamps
-    end
     create_table :clarification_posts do |t|
       t.text :body, null: false
-      t.references :user, null: true
-      t.references :account, null: false
-      t.references :clarification_thread, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true
+      t.references :account, null: false, foreign_key: true
+      t.references :proposal, null: false, foreign_key: true
 
       t.timestamps
     end
     create_table :pro_cons do |t|
       t.text :body, null: false
-      t.references :user, null: true
+      t.references :user, null: false
       t.references :account, null: false
       t.references :proposal, null: false
       t.boolean :pro, null: false, default: true

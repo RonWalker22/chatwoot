@@ -3,10 +3,13 @@ require 'support/shared_context/fb_authorization_context'
 
 RSpec.describe 'Clarification Posts API', type: :request do
   include_context 'with fb authorization'
+  let!(:proposal) do
+    create(:proposal, feedback: feedback, user: agent, account: account)
+  end
   let!(:clarification_post) do
     create(:clarification_post,
            user: agent,
-           clarification_thread: feedback.clarification_thread,
+           proposal: proposal,
            account: account)
   end
 
@@ -15,8 +18,7 @@ RSpec.describe 'Clarification Posts API', type: :request do
   let(:id_target) { clarification_post.id }
   let(:post_params) do
     { clarification_post: { body: 'test data',
-                            clarification_thread_id:
-                              feedback.clarification_thread.id } }
+                            proposal_id: proposal.id } }
   end
   let(:patch_params) do
     { clarification_post: { body: 'new test data' } }
