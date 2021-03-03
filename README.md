@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/javascript/dashboard/assets/images/feature-request.svg" alt="Killer Feedback" width="240">
+  <img src="app/javascript/dashboard/assets/images/feature-request.svg" alt="Killer Feedback" width="400">
 
   <div align="center">Chat support plus feedback management.</div>
   <div align="center">An <u>unofficial</u> extension to 
