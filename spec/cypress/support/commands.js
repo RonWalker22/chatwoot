@@ -34,7 +34,7 @@ Cypress.Commands.add('login', () => {
   cy.get("[data-test-id='no-conversation-selected']")
   cy.get("[data-test-id='main-sidebar-item-feedback_home']")
     .click();
-  cy.get("[data-test-id='feedback-tab-active']")
+  cy.get("[data-test-id='feedback-tab-review']")
     .click();
   cy.get("[data-test-id='feedback-list-card']")
     .first()

@@ -27,10 +27,8 @@
                     <textarea
                       v-model="proposal.details"
                       tabindex="0"
-                      placeholder="Shift + enter for new line."
                       rows="5"
                       data-test-id="new-solution-textarea"
-                      @keydown.enter.exact.prevent="submitProposal"
                     >
                     </textarea>
                   </div>

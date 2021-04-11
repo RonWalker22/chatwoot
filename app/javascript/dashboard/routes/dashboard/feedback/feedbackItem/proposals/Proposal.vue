@@ -6,7 +6,11 @@
           <h2 class="proposal-title">
             {{ proposalType }}
           </h2>
-          <div v-if="isPrimarySolution" class="primary-checkmark">
+          <div
+            v-if="isPrimarySolution"
+            class="primary-checkmark"
+            data-test-id="proposal-primary-checkmark"
+          >
             <i
               class="ion-checkmark-round"
               title="Selected Solution"

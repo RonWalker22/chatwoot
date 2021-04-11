@@ -45,7 +45,6 @@ Cypress.Commands.add('submitNewSolution', () => {
 
 Cypress.Commands.add('confirmSubmission', (content) => {
   cy.get('[data-test-id="proposal-body"]')
-    .should('have.length', 5)
     .last()
     .contains(content);
 });

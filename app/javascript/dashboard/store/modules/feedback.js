@@ -157,11 +157,11 @@ export const actions = {
     try {
       const newFeedback = await FeedbackAPI.create(feedbackData[0]);
       if (feedbackData[1].proposal.details !== '') {
-        feedbackData[1].proposal.feedback_id = newFeedback.data.id;
+        feedbackData[1].feedback_id = newFeedback.data.id;
         await ProposalsAPI.create(feedbackData[1]);
       }
       if (feedbackData[2].proposal.details !== '') {
-        feedbackData[2].proposal.feedback_id = newFeedback.data.id;
+        feedbackData[2].feedback_id = newFeedback.data.id;
         await ProposalsAPI.create(feedbackData[2]);
       }
       commit(types.default.ADD_FEEDBACK, newFeedback.data);

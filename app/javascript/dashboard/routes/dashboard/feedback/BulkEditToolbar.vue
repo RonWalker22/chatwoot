@@ -3,11 +3,16 @@
     <div class="row align-justify">
       <button
         class="button clear bulk-edit-cancel-btn"
+        data-test-id="bulk-edit-cancel-btn"
         @click="resetBulkEditCheckStatus()"
       >
         cancel edit
       </button>
-      <button class="button clear bulk-edit-cancel-btn" @click="bulkDelete()">
+      <button
+        class="button clear bulk-edit-cancel-btn"
+        data-test-id="bulk-edit-delete-all-btn"
+        @click="bulkDelete()"
+      >
         delete all
       </button>
     </div>
@@ -19,12 +24,14 @@
         <div class="row align-center">
           <button
             class="button large-expand"
+            data-test-id="bulk-edit-status-change-reject"
             @click="bulkUpdateStatus('reject')"
           >
             Reject
           </button>
           <button
             class="button large-expand"
+            data-test-id="bulk-edit-status-change-accept"
             @click="bulkUpdateStatus('accept')"
           >
             Accept
@@ -40,6 +47,7 @@
             v-for="(status, index) in moveToStatusTabs"
             :key="index"
             class="button large-expand move-to-btn"
+            :data-test-id="'bulk-edit-status-change-' + status.value"
             @click="bulkUpdateStatus(status.value)"
           >
             {{ status.name }}
@@ -70,10 +78,15 @@
             Title
             <textarea
               :value="feedback.title"
+              data-test-id="bulk-edit-title-input"
               @input="title = $event.target.value"
             />
           </label>
-          <button class="button" @click="updateTitle()">
+          <button
+            class="button"
+            data-test-id="bulk-edit-update-btn"
+            @click="updateTitle()"
+          >
             Update
           </button>
         </div>
@@ -99,6 +112,7 @@ export default {
       statusTabs: 'feedback/getStatusTabs',
       mainStatusTabs: 'feedback/getStatusTabs',
       ids: 'feedback/getBulkSelectedIds',
+      accountId: 'getCurrentAccountId',
     }),
     moveToStatusTabs() {
       return [
@@ -120,8 +134,11 @@ export default {
     ...mapActions('feedback', [
       'resetBulkEditCheckStatus',
       'updateMultipleFeedbacks',
+      'resetSelectedFeedbackId',
       'deleteMultipleFeedbacks',
       'updateFeedback',
+      'setSelectedStatusTabIndex',
+      'setSelectedStatusTabFilter',
     ]),
     bulkUpdateStatus(status) {
       const ids = this.ids;
@@ -132,8 +149,24 @@ export default {
           },
           ids: ids,
         },
+      }).then(() => {
+        this.resetBulkEditCheckStatus();
+        this.setSelectedStatusTabIndex(this.findTabIndex(status));
+        let filter = {
+          index: this.findTabIndex(status),
+          value: status,
+        };
+        this.setSelectedStatusTabFilter(filter);
       });
-      this.resetBulkEditCheckStatus();
+    },
+    findTabIndex(name) {
+      let statusTabIndex = 0;
+      this.mainStatusTabs.forEach((tab, i) => {
+        if (tab.options.includes(name)) {
+          statusTabIndex = i;
+        }
+      });
+      return statusTabIndex;
     },
     bulkUpdateKind(kind) {
       const ids = this.ids;

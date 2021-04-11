@@ -27,10 +27,8 @@
                     <textarea
                       v-model="proCon.body"
                       tabindex="0"
-                      placeholder="Shift + enter for new line."
                       rows="5"
                       data-test-id="new-pro-con-textarea-body"
-                      @keydown.enter.exact.prevent="submitProCon"
                     >
                     </textarea>
                   </div>

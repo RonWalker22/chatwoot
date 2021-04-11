@@ -1,68 +1,52 @@
-const feedbackStatic = {
-  title: 'Import feature requests from other platforms',
-  status: {name: 'active' , value: 'active'},
-  kind: {name: 'Feature Request' , value: 'request'}
-};
+const editOptions = {
+  finalJudgment: ['reject', 'accept'],
+  moveTo: ['upcoming', 'review', 'preview'],
+  changeType: ['feature', 'bug'],
+  newTitle: "GoTosGoTo",
+  oldTitle: 'Hide vote results during the review',
+}
 
-const feedbackEdits = {
-  title: 'new title - war82',
-  status: {name: 'Review' , value: 'review'},
-  kind: {name: 'General' , value: 'general'}
-};
-
-const feedbackEditsSecond = {
-  title: 'new title - happy22',
-  status: {name: 'Resolved' , value: 'resolved'},
-  kind: {name: 'Bug Report' , value: 'bug'}
-};
-
-Cypress.Commands.add('startEditFeedback', () => {
+Cypress.Commands.add('finishBulkEditFeedback', (editType) => {
+  cy.get(`[data-test-id="feedback-status-label"]`)
+    .contains(editOptions.moveTo[1])
   cy.get(`[data-test-id="edit-feedback-btn"]`)
     .click();
-  cy.get(`[data-test-id="edit-feedback-new-title-input"]`)
-    .type(feedbackEdits.title);
-  cy.get(`[data-test-id="edit-feedback-change-status-select"]`)
-    .select(feedbackEdits.status.name)
-    .should('have.value', feedbackEdits.status.value);
-  cy.get(`[data-test-id="edit-feedback-change-type-select"]`)
-    .select(feedbackEdits.kind.name)
-    .should('have.value', feedbackEdits.kind.value);
+  cy.get(`[data-test-id="bulk-edit-status-change-${editType}"]`)
+    .click()
+  cy.get(`[data-test-id="feedback-status-label"]`)
+    .contains(editType)
 });
 
-Cypress.Commands.add('finishEditFeedback', () => {
-  cy.get(`[data-test-id="edit-feedback-submit-btn"]`)
+Cypress.Commands.add('cancelBulkEditFeedback', () => {
+  cy.get(`[data-test-id="feedback-title"]`)
+  cy.get(`[data-test-id="edit-feedback-btn"]`)
     .click();
   cy.get(`[data-test-id="feedback-title"]`)
-    .contains(feedbackEdits.title);
-  cy.get(`[data-test-id="feedback-status"]`)
-    .contains(feedbackEdits.status.value);
-  cy.get(`[data-test-id="feedback-type"]`)
-    .contains(feedbackEdits.kind.value);
-  cy.get('[data-test-id="edit-feedback-new-title-input"]')
-    .should('not.exist');
-});
-
-Cypress.Commands.add('cancelEditFeedback', (cancelType) => {
-  cy.get(`[data-test-id="edit-feedback-cancel-${cancelType}"]`)
-    .click('left');
+    .should('not.exist')
+  cy.get(`[data-test-id="bulk-edit-cancel-btn"]`)
+    .click();
   cy.get(`[data-test-id="feedback-title"]`)
-    .contains(feedbackStatic.title);
-  cy.get(`[data-test-id="feedback-status"]`)
-    .contains(feedbackStatic.status.value);
-  cy.get(`[data-test-id="feedback-type"]`)
-    .contains(feedbackStatic.kind.value);
-  cy.get('[data-test-id="edit-feedback-new-title-input"]')
-    .should('not.exist');
+});
+
+Cypress.Commands.add('updateTitle', () => {
+  cy.get(`[data-test-id="feedback-title"]`)
+    .contains(editOptions.oldTitle)
+  cy.get(`[data-test-id="edit-feedback-btn"]`)
+    .click();
+  cy.get(`[data-test-id="bulk-edit-title-input"]`)
+    .should('have.value', editOptions.oldTitle)
+    .clear()
+    .type(editOptions.newTitle);
+  cy.get(`[data-test-id="bulk-edit-update-btn"]`)
+    .click()
+  cy.get(`[data-test-id="feedback-title"]`)
+    .contains(editOptions.newTitle)
 });
 
 
 
-Cypress.Commands.add('RunEditFeedbackSpecs', (cancelType) => {
-  if (cancelType === 'finish') {
-    cy.startEditFeedback();
-    cy.finishEditFeedback();
-  } else {
-    cy.startEditFeedback();
-    cy.cancelEditFeedback(cancelType);
-  }
+Cypress.Commands.add('RunEditFeedbackSpecs', () => {
+  cy.cancelBulkEditFeedback();
+  cy.updateTitle();
+  cy.finishBulkEditFeedback('preview');
 });

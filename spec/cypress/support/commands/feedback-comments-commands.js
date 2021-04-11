@@ -1,44 +1,49 @@
 let testMessageOne = 'landy candy 2';
 let testMessageTwo = 'red wing 21';
 
-Cypress.Commands.add('addNewComment', (message) => {
-  cy.get('[data-test-id="proposal-comment-preview-btn"]')
-    .eq(-2)  
-    .click();
-  cy.get('[data-test-id="proposal-comment-textarea"]')
-    .type(testMessageOne);
-  cy.get('[data-test-id="proposal-comment-cancel-btn"]')
+Cypress.Commands.add('RunCommentsSpecs', (message) => {
+  cy.addNewComment(testMessageOne, 0)
+
+  cy.deleteComment(0)
+  cy.get('[data-test-id="proposal-card"]')
+    .eq(1)
+    .find('[data-test-id="comments-show-btn"]')
     .click()
-  cy.get('[data-test-id="proposal-comment-preview-btn"]')
-    .eq(-2)  
-    .click();
-  cy.get('[data-test-id="proposal-comment-textarea"]')
-    .should('be.empty')
-    .type(testMessageTwo);
-  cy.get('[data-test-id="proposal-comment-submit-btn"]')
-    .click()
-  cy.get('[data-test-id="proposal-comment-body"]')
-    .last()
-    .contains(testMessageTwo);
+  cy.deleteComment(1)
 });
 
-Cypress.Commands.add('deleteComment', (message) => {
-  cy.get('[data-test-id="proposal-comment-preview-btn"]')
-    .eq(-2)  
+Cypress.Commands.add('addNewComment', (message, index) => {
+  cy.get('[data-test-id="proposal-comment-preview-reply-btn"]')
+    .eq(index)  
     .click();
   cy.get('[data-test-id="proposal-comment-textarea"]')
-    .type(testMessageOne);
+    .type(message);
   cy.get('[data-test-id="proposal-comment-cancel-btn"]')
     .click()
-  cy.get('[data-test-id="proposal-comment-preview-btn"]')
-    .eq(-2)  
+  cy.get('[data-test-id="proposal-comment-preview-reply-btn"]')
+    .eq(index) 
     .click();
   cy.get('[data-test-id="proposal-comment-textarea"]')
     .should('be.empty')
-    .type(testMessageTwo);
+    .type(message);
   cy.get('[data-test-id="proposal-comment-submit-btn"]')
     .click()
   cy.get('[data-test-id="proposal-comment-body"]')
-    .last()
-    .contains(testMessageTwo);
+    .eq(index)
+    .contains(message);
+});
+
+Cypress.Commands.add('deleteComment', (index) => {
+  cy.get('[data-test-id="proposal-card"]')
+    .eq(index)
+    .find('[data-test-id="more-toolbar-btn-comment"]')
+    .click()
+  cy.get('[data-test-id="proposal-card"]')
+    .eq(index)
+    .find('[data-test-id="delete-comment"]')
+    .click()
+  cy.get('[data-test-id="proposal-card"]')
+    .eq(index)
+    .find('[data-test-id="more-toolbar-btn-comment"]')
+    .should('not.exist');
 });

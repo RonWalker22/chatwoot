@@ -72,7 +72,7 @@ unless Rails.env.production?
 
   InboxMember.create!(user_id: agent_one.id, inbox: inbox)
 
-  # - + - feedback - + -
+  # - + - feedback one - + -
 
   feedback_one = Feedback.create!(
     title: 'Hide vote results during the review phase',
@@ -84,7 +84,8 @@ unless Rails.env.production?
 
   FeedbackUser.create!(
     feedback: feedback_one,
-    user: user
+    user: user,
+    evaluation: 'support'
   )
 
   Proposal.create!(
@@ -107,14 +108,15 @@ unless Rails.env.production?
     details: 'For agents, hide the vote details until after the review phase.
     For admins, hide the vote details until they evaluate the feedback and
     solutions.',
-    primary: false,
+    primary: true,
     solution: true
   )
 
   ProposalUser.create!(
     proposal: proposal_two,
     user: user,
-    voted: false
+    voted: true,
+    evaluation: 'support'
   )
 
   ProCon.create!(
@@ -146,7 +148,9 @@ unless Rails.env.production?
 
   ProposalUser.create!(
     proposal: proposal_three,
-    user: user
+    user: user,
+    voted: true,
+    evaluation: 'reject'
   )
 
   ProCon.create!(
@@ -163,14 +167,16 @@ unless Rails.env.production?
     feedback: feedback_one,
     account_id: account.id,
     details: 'Hide the vote results from agents until the feedback item
-    finishes the review phase. Allow the admins to view everything. ',
+    finishes the review phase. Allow the admins to view everything.',
     primary: false,
     solution: true
   )
 
   ProposalUser.create!(
     proposal: proposal_four,
-    user: user
+    user: user,
+    voted: true,
+    evaluation: 'reject'
   )
 
   ProCon.create!(
@@ -183,11 +189,139 @@ unless Rails.env.production?
     account: account
   )
 
-  ClarificationPost.create(
+  ClarificationPost.create!(
     user: user,
     account: account,
     body: Faker::Lorem.paragraph(sentence_count: 3),
-    proposal: proposal_three
+    proposal: proposal_two
   )
-  # - + - feedback - + -
+  # - + - feedback one - + -
+
+  # - + - feedback two - + -
+
+  feedback_two = Feedback.create!(
+    title: 'Clear form input data on cancel/exit of new feedback',
+    inbox_id: inbox.id,
+    account_id: account.id,
+    status: 'review',
+    user_id: user.id
+  )
+
+  FeedbackUser.create!(
+    feedback: feedback_two,
+    user: user,
+    evaluation: 'support'
+  )
+
+  Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_two,
+    account_id: account.id,
+    details: 'When an agent/admin starts and cancels a new feedback item and
+    later returns to enter a new feedback item, the old input data is still
+    present. The agent/admin has to go through an additional step of removing
+    the old data before providing the new data.',
+    primary: false,
+    solution: false
+  )
+
+  proposal_two = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_two,
+    account_id: account.id,
+    details: 'Never clear form input data on cancel/exit of new feedback.
+    Instead, explicitly reset/clear form input data with a “Clear Form” button.
+    ',
+    primary: true,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_two,
+    user: user,
+    voted: true,
+    evaluation: 'support'
+  )
+
+  ProCon.create!(
+    body: 'Users who accidentally click away from the form will not be affected.
+    ',
+    pro: true,
+    user: user,
+    proposal: proposal_two,
+    account: account
+  )
+
+  ProCon.create!(
+    body: 'Maintains UX consistency for all three ways of canceling a new
+    feedback item.',
+    pro: true,
+    user: user,
+    proposal: proposal_two,
+    account: account
+  )
+
+  proposal_three = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_two,
+    account_id: account.id,
+    details: 'Clear form input data on cancel of new feedback items.',
+    primary: false,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_three,
+    user: user,
+    voted: true,
+    evaluation: 'reject'
+  )
+
+  ProCon.create!(
+    body: 'While creating a new feedback item, if a user clicks away from the
+    form, the new feedback item is canceled. Because some users may do this
+    accidentally, resetting the data in the case may cause unnecessary
+    frustration.',
+    pro: false,
+    user: user,
+    proposal: proposal_three,
+    account: account
+  )
+
+  proposal_four = Proposal.create!(
+    user_id: user.id,
+    feedback: feedback_two,
+    account_id: account.id,
+    details: 'Clear form input data on cancel of new feedback items. But only
+    do this when the user clicks the cancel icon(top right) or cancel button
+    (bottom left).',
+    primary: false,
+    solution: true
+  )
+
+  ProposalUser.create!(
+    proposal: proposal_four,
+    user: user,
+    voted: true,
+    evaluation: 'reject'
+  )
+
+  ProCon.create!(
+    body: 'Breaks consistency. Users who click away from the form may expect
+    the same forgiveness when canceling a form with the icon or button.',
+    pro: false,
+    user: user,
+    proposal: proposal_four,
+    account: account
+  )
+
+  ProCon.create!(
+    body: 'Users who accidentally click away from the form will not be affected.
+    ',
+    pro: true,
+    user: user,
+    proposal: proposal_four,
+    account: account
+  )
+  # - + - feedback two - + -
 end

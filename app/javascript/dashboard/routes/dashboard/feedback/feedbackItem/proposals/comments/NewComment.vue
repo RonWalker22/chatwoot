@@ -3,7 +3,7 @@
     <button
       v-if="!active"
       class="new-comment-preview button hollow"
-      data-test-id="proposal-comment-preview-btn"
+      data-test-id="proposal-comment-preview-reply-btn"
       @click="active = true"
     >
       reply
@@ -74,8 +74,8 @@ export default {
         };
         this.createComment({ ...payload }).then(() => {
           this.active = false;
+          this.details = '';
         });
-        this.details = '';
       }
     },
   },

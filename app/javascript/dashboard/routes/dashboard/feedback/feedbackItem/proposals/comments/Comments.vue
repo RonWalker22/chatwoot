@@ -1,6 +1,6 @@
 <template>
   <div class="comments">
-    <div v-if="show || zeroComments">
+    <div v-if="show">
       <Comment
         v-for="(post, index) in posts"
         :key="post.id"
@@ -10,7 +10,13 @@
       <NewComment :proposal-id="proposalId" />
     </div>
     <div v-else>
+      <NewComment
+        v-if="zeroComments"
+        :proposal-id="proposalId"
+        @click.native="show = true"
+      />
       <button
+        v-else
         class="button small hollow"
         data-test-id="comments-show-btn"
         @click="show = true"

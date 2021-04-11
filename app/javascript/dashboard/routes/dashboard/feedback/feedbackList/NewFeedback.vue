@@ -5,7 +5,7 @@
         v-if="show"
         class="modal-mask"
         transition="modal"
-        data-test-id="new-feedback-close-mask"
+        data-test-id="new-feedback-cancel-mask"
         @click="closeModal"
       >
         <div class="modal-container" @click.stop>
@@ -16,7 +16,7 @@
               </h1>
               <i
                 class="ion-android-close modal--close"
-                data-test-id="new-feedback-close-icon"
+                data-test-id="new-feedback-cancel-icon"
                 @click="closeModal"
               >
               </i>
@@ -30,9 +30,6 @@
                       v-model="payload.feedback.kind"
                       data-test-id="new-feedback-select-type"
                     >
-                      <option value="selected disabled hidden">
-                        Choose Feedback Type
-                      </option>
                       <option
                         value="request"
                         data-test-id="new-feedback-select-type-option-request"
@@ -93,8 +90,8 @@
                   </label>
                 </div>
               </div>
-              <div class="modal-footer">
-                <div class="medium-12 columns">
+              <div class="row align-justify">
+                <div class="column shrink">
                   <button
                     class="button"
                     type="submit"
@@ -109,6 +106,15 @@
                     @click.prevent="CancelModal"
                   >
                     Cancel
+                  </button>
+                </div>
+                <div class="column shrink">
+                  <button
+                    class="button clear"
+                    data-test-id="new-feedback-cancel-btn"
+                    @click.prevent="resetFeedback"
+                  >
+                    Clear Form
                   </button>
                 </div>
               </div>
@@ -158,10 +164,9 @@ export default {
     ...mapActions('feedback', ['createFeedback']),
     CancelModal() {
       this.show = false;
-      this.payload = this.resetFeedback();
     },
     resetFeedback() {
-      return {
+      let newItem = {
         feedback: {
           title: '',
           kind: 'request',
@@ -170,6 +175,7 @@ export default {
         problem: '',
         solution: '',
       };
+      this.payload = newItem;
     },
     closeModal() {
       this.show = false;
@@ -203,7 +209,7 @@ export default {
     submitFeedback() {
       this.closeModal();
       this.createFeedback(this.getFeedbackArray()).then(feedback => {
-        this.payload = this.resetFeedback();
+        this.resetFeedback();
         this.$store.dispatch('feedback/setSelectedFeedbackId', feedback.id);
         const path = feedbackUrl({
           accountId: this.accountId,

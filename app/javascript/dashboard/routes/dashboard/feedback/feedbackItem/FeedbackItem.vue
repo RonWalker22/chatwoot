@@ -21,9 +21,12 @@
         {{ feedback.title }}
         <span class="feedback-id"> #{{ feedback.id }}</span>
       </h1>
-      <div>
-        <span class="label" :class="feedback.status + '-label'">
+      <div class="label" :class="feedback.status + '-label'">
+        <span data-test-id="feedback-status-label">
           {{ feedback.status }}
+        </span>
+        <span data-test-id="feedback-kind-label">
+          {{ feedback.kind }}
         </span>
       </div>
       <Proposals :feedback="feedback" />
@@ -37,6 +40,8 @@ import { mapActions, mapGetters } from 'vuex';
 import Proposals from './proposals/Proposals';
 import Toolbar from './Toolbar';
 import NewSolution from './proposals/NewSolution';
+import { frontendURL, feedbackUrl } from '../../../../helper/URLHelper';
+import router from '../../../../routes';
 
 export default {
   components: {
@@ -57,6 +62,7 @@ export default {
       currentRole: 'getCurrentRole',
       feedbackList: 'feedback/getAllFeedback',
       bulkSelectIndex: 'feedback/getBulkSelectIndex',
+      accountId: 'getCurrentAccountId',
     }),
     isAdmin() {
       return this.currentRole === 'administrator';
@@ -70,8 +76,17 @@ export default {
     });
   },
   methods: {
-    ...mapActions('feedback', ['setBulkEditCheckStatus', 'setBulkSelectIndex']),
+    ...mapActions('feedback', [
+      'setBulkEditCheckStatus',
+      'setBulkSelectIndex',
+      'resetSelectedFeedbackId',
+    ]),
     editFeedback() {
+      this.resetSelectedFeedbackId();
+      const path = feedbackUrl({
+        accountId: this.accountId,
+      });
+      router.push({ path: frontendURL(path) });
       for (let i = 0; i < this.feedbackList.length; i += 1) {
         if (this.feedbackList[i].id === this.feedback.id) {
           this.setBulkEditCheckStatus([
@@ -146,22 +161,13 @@ h1 {
 .reject-label {
   font-size: 1.2rem;
   color: #000;
-}
-
-.review-label {
-  background: #cae7ff;
-}
-
-.upcoming-label {
   background: #e1e1e1;
 }
-.preview-label {
-  background: #fdda82;
-}
+
 .accept-label {
-  background: #83ff8a;
+  background: #1397134f;
 }
 .reject-label {
-  background: #ffc3c3;
+  background: #b2222242;
 }
 </style>

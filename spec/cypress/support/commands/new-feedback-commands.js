@@ -7,9 +7,13 @@ const feedbackNew = {
   status: {name: 'review', value: 'review'},
 };
 
-Cypress.Commands.add('startNewFeedback', () => {
+Cypress.Commands.add('openNewFeedback', () => {
   cy.get(`[data-test-id="new-feedback-btn"]`)
     .click();
+  cy.get(`[data-test-id="new-feedback-title"]`)
+});
+
+Cypress.Commands.add('startNewFeedback', () => {
   cy.get(`[data-test-id="new-feedback-select-type"]`)
     .select(feedbackNew.kind.name)
     .should('have.value', feedbackNew.kind.value);
@@ -57,35 +61,52 @@ Cypress.Commands.add('finishNewFeedback', () => {
     .should('have.class', 'card-active');
 });
 
-Cypress.Commands.add('cancelNewFeedback', (kind, location) => {
-  cy.get(`[data-test-id="new-feedback-${kind}-${location}"]`)
+Cypress.Commands.add('cancelNewFeedback', (location) => {
+  cy.get(`[data-test-id="new-feedback-cancel-${location}"]`)
     .click('left');
-  cy.get('[data-test-id="new-feedback-title-input"]')
+  cy.get('[data-test-id="new-feedback-title"]')
     .should('not.exist');
-  if(kind === 'close') {
-    cy.get(`[data-test-id="new-feedback-btn"]`)
-      .click();
-    cy.get(`[data-test-id="new-feedback-select-type"]`)
-      .should('have.value', feedbackNew.kind.value);
-    cy.get(`[data-test-id="new-feedback-select-inbox"]`)
+  cy.get(`[data-test-id="new-feedback-btn"]`)
+});
+
+Cypress.Commands.add('checkFormData', (kind) => {
+  cy.openNewFeedback();
+
+  if (kind === 'reset') {
+    cy.get(`[data-test-id="new-feedback-select-type"]`).as('kind')
+    .should('have.value', 'request');
+    cy.get(`[data-test-id="new-feedback-select-inbox"]`).as('inbox')
+      .should('have.value', null);
+    cy.get(`[data-test-id="new-feedback-input-title"]`).as('title')
+      .should('be.empty');
+    cy.get(`[data-test-id="new-feedback-input-problem"]`).as('problem')
+      .should('be.empty');
+    cy.get(`[data-test-id="new-feedback-input-solution"]`).as('solution')
+      .should('be.empty');
+  } else {
+    cy.get(`[data-test-id="new-feedback-select-type"]`).as('kind')
+    .should('have.value', feedbackNew.kind.value);
+    cy.get(`[data-test-id="new-feedback-select-inbox"]`).as('inbox')
       .should('have.value', feedbackNew.inbox.value);
-    cy.get(`[data-test-id="new-feedback-input-title"]`)
+    cy.get(`[data-test-id="new-feedback-input-title"]`).as('title')
       .should('have.value', feedbackNew.title);
-    cy.get(`[data-test-id="new-feedback-input-problem"]`)
+    cy.get(`[data-test-id="new-feedback-input-problem"]`).as('problem')
       .should('have.value', feedbackNew.problem);
-    cy.get(`[data-test-id="new-feedback-input-solution"]`)
+    cy.get(`[data-test-id="new-feedback-input-solution"]`).as('solution')
       .should('have.value', feedbackNew.solution);
-    cy.get(`[data-test-id="new-feedback-${kind}-${location}"]`)
-      .click('left');
   }
 });
 
-Cypress.Commands.add('RunNewFeedbackSpecs', (cancelKind, cancelLocation) => {
-  if (cancelKind === 'finish') {
-    cy.startNewFeedback();
-    cy.finishNewFeedback();
-  } else {
-    cy.startNewFeedback();
-    cy.cancelNewFeedback(cancelKind, cancelLocation);
-  }
+Cypress.Commands.add('RunNewFeedbackSpecs', () => {
+  cy.openNewFeedback();
+  cy.startNewFeedback();
+
+  cy.cancelNewFeedback('btn');
+  cy.checkFormData('preserved');
+
+  cy.cancelNewFeedback('icon');
+  cy.checkFormData('preserved');
+
+  cy.cancelNewFeedback('mask');
+  cy.checkFormData('preserved');
 });

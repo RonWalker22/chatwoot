@@ -3,7 +3,9 @@
     <woot-button
       class="clear more--button"
       icon="ion-android-more-vertical"
-      data-test-id="more-toolbar-btn"
+      :data-test-id="
+        isSolution ? 'more-toolbar-btn-solution' : 'more-toolbar-btn-comment'
+      "
       @click="toggleActions"
     />
     <div

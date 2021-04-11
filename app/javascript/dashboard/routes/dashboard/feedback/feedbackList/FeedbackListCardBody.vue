@@ -23,17 +23,26 @@
       <div
         v-show="!bulkEditActive"
         class="icon-container"
-        @click="clickCheckbox()"
+        @click="firstClickCheckbox()"
       >
         <transition name="fade">
-          <img
-            v-if="feedback.kind === 'request'"
-            src="~dashboard/assets/images/request-hand.svg"
-            alt="Feature Request"
-            class="request-hand"
+          <i
+            v-if="feedback.kind === 'bug'"
+            class="ion-bug"
+            :class="{
+              'icon-bug-reject': feedback.status === 'reject',
+              'icon-bug-accept': feedback.status === 'accept',
+              'icon-bug-upcoming': feedback.status === 'upcoming',
+              'icon-bug-preview': feedback.status === 'preview',
+            }"
             aria-hidden="true"
+          >
+          </i>
+          <request-hand-icon
+            v-else
+            class="request-hand"
+            :icon-color="findIconColor"
           />
-          <i v-else class="ion-bug" aria-hidden="true"> </i>
         </transition>
       </div>
     </div>
@@ -54,8 +63,12 @@
 import { mapGetters, mapActions } from 'vuex';
 import router from '../../../../routes';
 import { frontendURL, feedbackUrl } from '../../../../helper/URLHelper';
+import RequestHandIcon from './RequestHandIcon';
 
 export default {
+  components: {
+    RequestHandIcon,
+  },
   props: {
     feedback: {
       type: Object,
@@ -75,6 +88,20 @@ export default {
       bulkEditCheckStatus: 'feedback/getBulkEditCheckStatus',
       accountId: 'getCurrentAccountId',
     }),
+    findIconColor() {
+      switch (this.feedback.status) {
+        case 'accept':
+          return '#139713';
+        case 'reject':
+          return '#b22222';
+        case 'preview':
+          return '#8b69d1';
+        case 'upcoming':
+          return '#7e7e7e';
+        default:
+          return '#277dce';
+      }
+    },
   },
   mounted() {
     ['keyup', 'keydown'].forEach(event => {
@@ -86,7 +113,18 @@ export default {
     });
   },
   methods: {
-    ...mapActions('feedback', ['setBulkSelectIndex', 'setBulkEditCheckStatus']),
+    ...mapActions('feedback', [
+      'setBulkSelectIndex',
+      'setBulkEditCheckStatus',
+      'resetSelectedFeedbackId',
+    ]),
+    pathReset() {
+      this.resetSelectedFeedbackId();
+      const path = feedbackUrl({
+        accountId: this.accountId,
+      });
+      router.push({ path: frontendURL(path) });
+    },
     shiftClickCheckbox() {
       if (!this.bulkEditCheckStatus[this.index]) {
         this.setBulkEditCheckStatus([
@@ -108,6 +146,10 @@ export default {
           },
         ]);
       }
+    },
+    firstClickCheckbox() {
+      this.pathReset();
+      this.clickCheckbox();
     },
     clickCheckbox() {
       if (!this.bulkEditCheckStatus[this.index]) {
@@ -216,6 +258,22 @@ h3 {
 .ion-bug {
   font-size: 4rem;
   color: #277dce;
+}
+
+.icon-bug-reject {
+  color: #b22222;
+}
+
+.icon-bug-accept {
+  color: #139713;
+}
+
+.icon-bug-preview {
+  color: #8b69d1;
+}
+
+.icon-bug-upcoming {
+  color: #7e7e7e;
 }
 
 .icon-container {
